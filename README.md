@@ -1,22 +1,22 @@
 🚧 _(This project is under active development, please check below for updates)_ 🚧
 
 # Apocryph DAO Bot
-Discord bot for interacting with Apocryph DAO running on Ethereum.
-You can use the bot to seamlessly query information about the DAO,
-vote, buy / sell tokens on the bonding curve and more relevant
-activities.
+Discord bot for interacting with [Apocryph DAO](https://github.com/comrade-coop/apocryph-dao)
+running on Ethereum. You can use the bot to seamlessly 
+query information about the DAO, vote, buy / sell tokens on 
+the bonding curve and more relevant activities.
 
 ## Getting Started
 You can interact with Apocryph DAO Bot in Apocryph Discord server.
 The bot responds on direct messages and also post various updates
 in the following channels:
- - #voting channel
- - #events channel
+ - `#voting` channel
+ - `#events` channel
 
 To engage the bot, you have to:
 1. Join Apocryph Discord server; 
 2. Have a valid Ethereum address;
-3. Have a browser with configured compatible wallet like: MetaMask, and etc.;
+3. Have a browser with configured compatible wallet like: MetaMask, WalletConnect and others;
 4. Introduce yourself to the bot. 
 
 ### Introduction to the bot
@@ -55,8 +55,16 @@ In order to vote you have to:
 When the voting completes, the bot will edit the message in the `#voting` channel to
 remove the voting links and present the results from the vote.
 
-### Buy / Sell tokens on the bonding curve
-[TODO: Add process for this]
+### Buy tokens on the bonding curve
+As part of Apocryph DAO you can buy tokens on a bonding curve.
+You can do this using direct messages with the bot, in the following way:
+1. Send `/approve <ammount>` to allow certain amount of tokens 
+from your address to be used by the DAO;
+2. The bot will then send you back a link to sign the transaction for
+the approval.
+3. Send `/buy` to open the trading user interface
+4. The bot will send you back a link to a user interface for buying 
+token on specific levels. 
 
 ## Under the hood
 The bot is implemented in C# (.NET 5.0) and [Perper](https://github.com/obecto/perper) - 
