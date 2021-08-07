@@ -6,6 +6,8 @@ Apocryph Discord Bot.
 
 ## Diagram
 
+![Diagram](architecture-overview.png)
+
 ## Modules
 Apocryphh Discord Bot is broken down into three main modules:
 1. Core - .NET 5.0 application based on Perper responsible for bot logic
