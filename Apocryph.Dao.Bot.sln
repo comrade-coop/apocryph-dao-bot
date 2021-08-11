@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31605.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{0B091791-A2EF-44A4-8A84-2851FA283BB9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frontend", "frontend", "{4B0E160C-D8E7-49F4-B3E9-35EFD1CEC05B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Apocryph.Dao.Bot.Core", "core\Apocryph.Dao.Bot.Core\Apocryph.Dao.Bot.Core.csproj", "{5027E3E2-DA49-49ED-A4D6-D8B2C32AF81C}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker\docker-compose.dcproj", "{4A79DBA3-8602-4156-A8E9-5557E592E0E8}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Apocryph.Dao.Bot.Frontend.Intro", "frontend\Apocryph.Dao.Bot.Frontend.Intro\Apocryph.Dao.Bot.Frontend.Intro.njsproj", "{2CF2E895-9260-474D-A94F-ADCC1F290C8D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5027E3E2-DA49-49ED-A4D6-D8B2C32AF81C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5027E3E2-DA49-49ED-A4D6-D8B2C32AF81C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5027E3E2-DA49-49ED-A4D6-D8B2C32AF81C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5027E3E2-DA49-49ED-A4D6-D8B2C32AF81C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A79DBA3-8602-4156-A8E9-5557E592E0E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A79DBA3-8602-4156-A8E9-5557E592E0E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A79DBA3-8602-4156-A8E9-5557E592E0E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A79DBA3-8602-4156-A8E9-5557E592E0E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CF2E895-9260-474D-A94F-ADCC1F290C8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CF2E895-9260-474D-A94F-ADCC1F290C8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CF2E895-9260-474D-A94F-ADCC1F290C8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CF2E895-9260-474D-A94F-ADCC1F290C8D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5027E3E2-DA49-49ED-A4D6-D8B2C32AF81C} = {0B091791-A2EF-44A4-8A84-2851FA283BB9}
+		{2CF2E895-9260-474D-A94F-ADCC1F290C8D} = {4B0E160C-D8E7-49F4-B3E9-35EFD1CEC05B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1DE06AE1-A9A1-4EC5-93D4-03D13C6EE7E8}
+	EndGlobalSection
+EndGlobal

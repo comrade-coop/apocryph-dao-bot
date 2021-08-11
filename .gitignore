@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/Apocryph.Dao.Bot/v16
+/core/Apocryph.Dao.Bot.Core/bin/Debug/net5.0
+/core/Apocryph.Dao.Bot.Core/obj
+/docker/bin/Debug
+/docker/obj
+*.user

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Apocryph.Dao.Bot.Core": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
