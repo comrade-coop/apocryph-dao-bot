@@ -8,3 +8,10 @@ services:
     build:
       context: ../
       dockerfile: core/Apocryph.Dao.Bot.Core/Dockerfile
+    environment:
+    - APACHE_IGNITE_ENDPOINT=obecto.perper.fabric:10800
+    - PERPER_FABRIC_ENDPOINT=http://obecto.perper.fabric:40400
+    - ETHEREUM_PARITY_NODE_ENDPOINT=ethereum.parity
+  ethereum.parity:
+    image: openethereum/openethereum:v3.0.0
+    command: "--jsonrpc-interface all --no-warp --mode passive --tracing on"

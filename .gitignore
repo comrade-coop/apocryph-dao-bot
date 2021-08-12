@@ -8,3 +8,4 @@
 /docker/bin/Debug
 /docker/obj
 *.user
+/.vs/Apocryph.Dao.Bot/DesignTimeBuild

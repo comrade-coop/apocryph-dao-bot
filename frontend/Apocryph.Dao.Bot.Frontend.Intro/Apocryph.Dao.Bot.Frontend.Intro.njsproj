@@ -34,7 +34,6 @@
     <Content Include="src\App.vue" />
     <Content Include="src\components\Home.vue" />
     <Content Include="package.json" />
-    <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dist\" />
