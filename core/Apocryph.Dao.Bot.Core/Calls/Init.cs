@@ -1,4 +1,5 @@
-﻿using Apocryph.Dao.Bot.Core.Streams;
+﻿using Apocryph.Dao.Bot.Core.Data;
+using Apocryph.Dao.Bot.Core.Streams;
 using Perper.Model;
 using System;
 using System.Threading.Tasks;
@@ -13,10 +14,10 @@ namespace Apocryph.Dao.Bot.Core.Calls
 
         public async Task RunAsync()
         {
-            var generator = await context.StreamFunctionAsync<string>(nameof(EthereumTransactions), new object[] { 20 });
-            await foreach (var item in generator)
+            var transactions = await context.StreamFunctionAsync<DaoTransaction>(nameof(EthereumTransactions), Array.Empty<object>());
+            await foreach (var transaction in transactions)
             {
-                Console.WriteLine($"Generated: {item}");
+                Console.WriteLine($"Ingested: {transaction.BlockHash}");
             }
         }
     }

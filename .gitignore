@@ -9,3 +9,8 @@
 /docker/obj
 *.user
 /.vs/Apocryph.Dao.Bot/DesignTimeBuild
+/.vs/apocryph-dao-bot/v16
+/.vs/slnx.sqlite
+/.vs/VSWorkspaceState.json
+/frontend/Apocryph.Dao.Bot.Frontend.Intro/bin
+/frontend/Apocryph.Dao.Bot.Frontend.Intro/obj/Debug
