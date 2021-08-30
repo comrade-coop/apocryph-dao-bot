@@ -1,0 +1,8 @@
+E:\Development\software_development\DotNET\Apocryph\KrisDv_DaoBOT\Apocryph.Dao.Bot.DiscordBotService\obj\Debug\Apocryph.Dao.Bot.DiscordBotService.csproj.AssemblyReference.cache
+E:\Development\software_development\DotNET\Apocryph\KrisDv_DaoBOT\Apocryph.Dao.Bot.DiscordBotService\obj\Debug\_EmptyResource.resources
+E:\Development\software_development\DotNET\Apocryph\KrisDv_DaoBOT\Apocryph.Dao.Bot.DiscordBotService\obj\Debug\Apocryph.Dao.Bot.DiscordBotService.csproj.GenerateResource.cache
+E:\Development\software_development\DotNET\Apocryph\KrisDv_DaoBOT\Apocryph.Dao.Bot.DiscordBotService\obj\Debug\Apocryph.Dao.Bot.DiscordBotService.csproj.CoreCompileInputs.cache
+E:\Development\software_development\DotNET\Apocryph\KrisDv_DaoBOT\Apocryph.Dao.Bot.DiscordBotService\obj\Debug\CSharp\1033\Apocryph.Dao.Bot.DiscordBotService.zip
+E:\Development\software_development\DotNET\Apocryph\KrisDv_DaoBOT\Apocryph.Dao.Bot.DiscordBotService\obj\Debug\Apocryph.Dao.Bot.DiscordBotService.dll
+E:\Development\software_development\DotNET\Apocryph\KrisDv_DaoBOT\Apocryph.Dao.Bot.DiscordBotService\obj\Debug\Apocryph.Dao.Bot.DiscordBotService.pdb
+E:\Development\software_development\DotNET\Apocryph\KrisDv_DaoBOT\Apocryph.Dao.Bot.DiscordBotService\bin\Debug\ProjectTemplates\CSharp\1033\Apocryph.Dao.Bot.DiscordBotService.zip
