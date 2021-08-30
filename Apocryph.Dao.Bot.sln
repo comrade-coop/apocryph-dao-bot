@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "discord", "discord", "{B164
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apocryph.Dao.Bot.DiscordBotService", "Apocryph.Dao.Bot.DiscordBotService\Apocryph.Dao.Bot.DiscordBotService.csproj", "{0A9AF213-0DCD-415D-9D99-6A354283EF0B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apocryph.Dao.Bot.Discord", "Apocryph.Dao.Bot.Discord\Apocryph.Dao.Bot.Discord.csproj", "{2AF31F44-1A50-4949-9E4C-B07648C4B4E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{0A9AF213-0DCD-415D-9D99-6A354283EF0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A9AF213-0DCD-415D-9D99-6A354283EF0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A9AF213-0DCD-415D-9D99-6A354283EF0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AF31F44-1A50-4949-9E4C-B07648C4B4E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AF31F44-1A50-4949-9E4C-B07648C4B4E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AF31F44-1A50-4949-9E4C-B07648C4B4E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AF31F44-1A50-4949-9E4C-B07648C4B4E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -47,6 +53,7 @@ Global
 		{5027E3E2-DA49-49ED-A4D6-D8B2C32AF81C} = {0B091791-A2EF-44A4-8A84-2851FA283BB9}
 		{2CF2E895-9260-474D-A94F-ADCC1F290C8D} = {4B0E160C-D8E7-49F4-B3E9-35EFD1CEC05B}
 		{0A9AF213-0DCD-415D-9D99-6A354283EF0B} = {B164C67D-CA40-4F1C-88CE-718EC0391028}
+		{2AF31F44-1A50-4949-9E4C-B07648C4B4E2} = {B164C67D-CA40-4F1C-88CE-718EC0391028}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1DE06AE1-A9A1-4EC5-93D4-03D13C6EE7E8}
