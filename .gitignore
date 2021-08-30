@@ -1,4 +1,4 @@
-﻿################################################################################
+################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
@@ -14,3 +14,5 @@
 /.vs/VSWorkspaceState.json
 /frontend/Apocryph.Dao.Bot.Frontend.Intro/bin
 /frontend/Apocryph.Dao.Bot.Frontend.Intro/obj/Debug
+UpgradeLog.htm
+UpgradeLog2.htm
