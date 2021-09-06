@@ -24,27 +24,44 @@ namespace Apocryph.Dao.Bot.Discord
 			// 
 
 			// Async context
+			Log("Program starting.");
 
 			var config = new DiscordSocketConfig();
 			//TODO: setup config
 
 			using (var client = new DiscordSocketClient(config))
 			{
-				client.Log += Log;
+				client.Log += LogDiscordMessage;
+
+				//  You can assign your bot token to a string, and pass that in to connect.
+				//  This is, however, insecure, particularly if you plan to have your code hosted in a public repository.
+				var token = "token";
 
 				//TODO: subscribe stuff here...
 				//TODO: listening loop?
+
+				await client.LoginAsync(TokenType.Bot, token);
+				await client.StartAsync();
+
+				// Block this task until the program is closed.
+				await Task.Delay(-1);
+				Log("Program finished.");
 			}
 		}
 
 		/// <summary>
-		/// Catch log events and print to console. Subscribe to the discord bot client.
+		/// Catch log events and print to console. Subscribe to the discord socket client.
 		/// </summary>
-		private Task Log(LogMessage msg)
+		private Task LogDiscordMessage(LogMessage msg)
 		{
 			// Discord.NET uses proprietary LogMessage for error handling
-			Console.WriteLine(msg.ToString());
+			Log(msg.ToString(), false);
 			return Task.CompletedTask;
+		}
+
+		private void Log (object msg, bool timeStamp = true)
+		{
+			Console.WriteLine(timeStamp ? $"[{DateTime.Now}] {msg}" : msg.ToString());
 		}
 	}
 }
