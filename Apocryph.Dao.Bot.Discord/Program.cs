@@ -28,24 +28,32 @@ namespace Apocryph.Dao.Bot.Discord
 
 			var config = new DiscordSocketConfig();
 			//TODO: setup config
+			var localFiles = new LocalFiles();
 
-			using (var client = new DiscordSocketClient(config))
+			if (localFiles.LocalFilesReady)
 			{
-				client.Log += LogDiscordMessage;
+				using (var client = new DiscordSocketClient(config))
+				{
+					client.Log += LogDiscordMessage;
 
-				//  You can assign your bot token to a string, and pass that in to connect.
-				//  This is, however, insecure, particularly if you plan to have your code hosted in a public repository.
-				var token = "token";
+					//  You can assign your bot token to a string, and pass that in to connect.
+					//  This is, however, insecure, particularly if you plan to have your code hosted in a public repository.
+					var token = localFiles.DiscordBotToken;
 
-				//TODO: subscribe stuff here...
-				//TODO: listening loop?
+					await client.LoginAsync(TokenType.Bot, token);
+					await client.StartAsync();
 
-				await client.LoginAsync(TokenType.Bot, token);
-				await client.StartAsync();
+					//TODO: implement network commands, add in netherium hooks
 
-				// Block this task until the program is closed.
-				await Task.Delay(-1);
-				Log("Program finished.");
+					// Block this task until the program is closed.
+					await Task.Delay(-1);
+					Log("Program finished.");
+				}
+			}
+			else
+			{
+				//TODO: More descriptive local files requirements
+				Log($"Initialize local files first = {(int) localFiles.GetRequiredInitalizations()}");
 			}
 		}
 
