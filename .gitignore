@@ -18,3 +18,5 @@ UpgradeLog.htm
 UpgradeLog2.htm
 Apocryph.Dao.Bot.Discord/obj/Debug/
 Apocryph.Dao.Bot.Discord/bin/Debug/
+*.cache
+Apocryph.Dao.Bot.Discord/obj/
