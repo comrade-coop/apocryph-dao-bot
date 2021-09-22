@@ -53,6 +53,7 @@ namespace Apocryph.Dao.Bot.Discord
 					// Block this task until the program is closed.
 					await Task.Delay(-1);
 					Log("Program finished.");
+					CLIENT = null;
 				}
 			}
 			else
