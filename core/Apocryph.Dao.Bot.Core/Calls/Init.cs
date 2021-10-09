@@ -14,6 +14,7 @@ namespace Apocryph.Dao.Bot.Core.Calls
 
         public async Task RunAsync()
         {
+            var address = await context.CallFunctionAsync<string>(nameof(Introduce), Array.Empty<object>());
             var transferEvents = await context.StreamFunctionAsync<TransferEventDTO>(nameof(TransferEvents), Array.Empty<object>());
             await foreach (var transferEvent in transferEvents)
             {

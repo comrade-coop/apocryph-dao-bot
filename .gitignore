@@ -15,3 +15,5 @@
 /frontend/Apocryph.Dao.Bot.Frontend.Intro/bin
 /frontend/Apocryph.Dao.Bot.Frontend.Intro/obj/Debug
 /.vs/Apocryph.Dao.Bot/config/applicationhost.config
+/frontend/Apocryph.Dao.Bot.Frontend.Intro/node_modules
+/frontend/Apocryph.Dao.Bot.Frontend.Intro/dist

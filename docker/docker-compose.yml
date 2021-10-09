@@ -3,6 +3,9 @@ version: '3.4'
 services:
   obecto.perper.fabric:
     image: obecto/perper-fabric:alpha
+    ports:
+    - "10800:10800"
+    - "40400:40400"
   apocryph.dao.bot.core:
     image: ${DOCKER_REGISTRY-}apocryphdaobotcore
     build:
@@ -11,7 +14,7 @@ services:
     environment:
     - APACHE_IGNITE_ENDPOINT=obecto.perper.fabric:10800
     - PERPER_FABRIC_ENDPOINT=http://obecto.perper.fabric:40400
-#    - ETHEREUM_PARITY_NODE_ENDPOINT=http://ethereum.parity:8545
-#  ethereum.parity:
-#    image: openethereum/openethereum:v3.0.0
-#    command: "--jsonrpc-interface all --no-warp --mode passive --tracing on"
+    - ETHEREUM_PARITY_NODE_ENDPOINT=http://ethereum.parity:8545
+  ethereum.parity:
+    image: openethereum/openethereum:v3.0.0
+    command: "--jsonrpc-interface all --no-warp --mode passive --tracing on"

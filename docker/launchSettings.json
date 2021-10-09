@@ -2,9 +2,10 @@
   "profiles": {
     "Docker Compose": {
       "commandName": "DockerCompose",
-      "composeLaunchServiceName": "apocryph.dao.bot.core",
       "serviceActions": {
-        "apocryph.dao.bot.core": "StartDebugging"
+        "apocryph.dao.bot.core": "DoNotStart",
+        "ethereum.parity": "DoNotStart",
+        "obecto.perper.fabric": "StartWithoutDebugging"
       },
       "composeLaunchAction": "None",
       "commandVersion": "1.0"
