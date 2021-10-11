@@ -3,6 +3,9 @@ version: '3.4'
 services:
   obecto.perper.fabric:
     image: obecto/perper-fabric:alpha
+    ports:
+    - "10800:10800"
+    - "40400:40400"
   apocryph.dao.bot.core:
     image: ${DOCKER_REGISTRY-}apocryphdaobotcore
     build:

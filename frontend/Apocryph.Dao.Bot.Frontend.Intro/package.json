@@ -12,7 +12,10 @@
     "name": ""
   },
   "dependencies": {
-    "vue": "2.6.12"
+    "vue": "2.6.12",
+    "walletconnect": "^1.6.6",
+    "web3": "^1.6.0",
+    "web3modal": "^1.9.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "4.5.13",

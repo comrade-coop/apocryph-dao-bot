@@ -20,3 +20,6 @@ Apocryph.Dao.Bot.Discord/obj/Debug/
 Apocryph.Dao.Bot.Discord/bin/Debug/
 *.cache
 Apocryph.Dao.Bot.Discord/obj/
+/.vs/Apocryph.Dao.Bot/config/applicationhost.config
+/frontend/Apocryph.Dao.Bot.Frontend.Intro/node_modules
+/frontend/Apocryph.Dao.Bot.Frontend.Intro/dist

@@ -4,6 +4,8 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>Apocryph.Dao.Bot.Frontend.Intro</Name>
     <RootNamespace>Apocryph.Dao.Bot.Frontend.Intro</RootNamespace>
+    <SaveNodeJsSettingsInProjectFile>True</SaveNodeJsSettingsInProjectFile>
+    <LaunchUrl>https://localhost:1337</LaunchUrl>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -19,8 +21,8 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
     <NodejsPort>1337</NodejsPort>
-    <StartWebBrowser>true</StartWebBrowser>
-    <ScriptArguments>serve</ScriptArguments>
+    <StartWebBrowser>True</StartWebBrowser>
+    <ScriptArguments>serve --https</ScriptArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,6 +36,12 @@
     <Content Include="src\App.vue" />
     <Content Include="src\components\Home.vue" />
     <Content Include="package.json" />
+    <Content Include="src\utils\web3.service.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="vue.config.js">
+      <SubType>Code</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dist\" />
@@ -41,6 +49,7 @@
     <Folder Include="src\" />
     <Folder Include="src\assets\" />
     <Folder Include="src\components\" />
+    <Folder Include="src\utils\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="babel.config.js" />
