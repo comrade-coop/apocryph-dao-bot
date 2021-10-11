@@ -14,10 +14,11 @@ namespace Apocryph.Dao.Bot.Core.Calls
 
         public async Task RunAsync()
         {
-            var transactions = await context.StreamFunctionAsync<DaoTransaction>(nameof(EthereumTransactions), Array.Empty<object>());
-            await foreach (var transaction in transactions)
+            var address = await context.CallFunctionAsync<string>(nameof(Introduce), Array.Empty<object>());
+            var transferEvents = await context.StreamFunctionAsync<TransferEventDTO>(nameof(TransferEvents), Array.Empty<object>());
+            await foreach (var transferEvent in transferEvents)
             {
-                Console.WriteLine($"Ingested: {transaction.BlockHash}");
+                Console.WriteLine($"Ingested: event Transfer(from: {transferEvent.From}, to: {transferEvent.To}, value: {transferEvent.Value})");
             }
         }
     }

@@ -1,1 +1,1 @@
-﻿await Perper.Application.PerperStartup.RunAsync("apocryph-dao-bot", new System.Threading.CancellationToken());
+﻿await Perper.Application.PerperStartup.RunAsync($"apocryph-dao-bot-{System.Guid.NewGuid()}", new System.Threading.CancellationToken());
