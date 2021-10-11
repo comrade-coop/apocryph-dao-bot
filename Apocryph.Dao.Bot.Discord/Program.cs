@@ -3,7 +3,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Nethereum.JsonRpc.Client;
 
 namespace Apocryph.Dao.Bot.Discord
 {
