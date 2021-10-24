@@ -1,23 +1,65 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 
 namespace Apocryph.Dao.Bot.Discord
 {
-	class Program
+	/// <summary>
+	/// This is where the magic happens
+	/// </summary>
+	public class DiscordBot
 	{
-		private static DiscordSocketClient _client;
-		private static LocalFiles _localFiles;
-
-		public static void Main(string[] args)
+		/// <summary>
+		/// Another process can send inbound communication to the bot instance.
+		/// Inbound communications are then queued and processed.
+		/// </summary>
+		public class InboundCommunication
 		{
-			// We like async ops a lot
-			new Program().MainAsync().GetAwaiter().GetResult();
+			public string plainTextMessage;
+			//Note: feel free to add other inbound params here
 		}
 
-		public async Task MainAsync()
+
+		private DiscordSocketClient _client;
+		private LocalFiles _localFiles;
+
+		private Action<string> _onLogEvent;
+		private volatile ConcurrentQueue<InboundCommunication> _inboundQueue = new ConcurrentQueue<InboundCommunication>();
+		private bool running => ! _cancellationToken.IsCancellationRequested;
+		private CancellationToken _cancellationToken;
+
+
+		/// <summary>
+		/// Creates and runs a new Discord Bot instance
+		/// </summary>
+		public static DiscordBot CreateInstance(CancellationToken cancellation)
+		{
+			DiscordBot instance;
+			// We like async ops a lot
+			(instance = new DiscordBot() { _cancellationToken = cancellation }).MainAsync().GetAwaiter().GetResult();
+			return instance;
+		}
+
+		public void Push(InboundCommunication input)
+		{
+			_inboundQueue.Enqueue(input);
+		}
+
+		/// <summary>
+		/// Here go delegates that listen for discord bot's log output.
+		/// (Outbound communication)
+		/// </summary>
+		public void AddLogEventListener(Action<string> onLogEvent)
+		{
+			_onLogEvent -= onLogEvent;
+			_onLogEvent += onLogEvent;
+		}
+
+		private async Task MainAsync()
 		{
 			// 
 			// NOTE (from https://docs.stillu.cc/guides/getting_started/first-bot.html):
@@ -31,8 +73,9 @@ namespace Apocryph.Dao.Bot.Discord
 			Log("Program starting.");
 
 			var config = new DiscordSocketConfig();
-			//TODO: setup config
 			_localFiles = new LocalFiles();
+			//TODO: setup config, get discord output channel from file
+			const ulong discordChannel_botCommands = 888705313807675432;
 
 			if (_localFiles.LocalFilesReady)
 			{
@@ -51,8 +94,22 @@ namespace Apocryph.Dao.Bot.Discord
 					//TODO: implement network commands, add in netherium hooks
 					client.MessageReceived += MessageReceivedAsync;
 
-					// Block this task until the program is closed.
-					await Task.Delay(-1);
+					while (running)
+					{
+						while(!_inboundQueue.IsEmpty)
+						{
+							InboundCommunication com = null;
+							if (_inboundQueue.TryDequeue(out com))
+							{
+								var channel = client.GetChannel(discordChannel_botCommands);
+								if (channel is IMessageChannel messageChannel)
+								{
+									await messageChannel.SendMessageAsync(com.plainTextMessage);
+								}
+							}
+						}
+					}
+
 					Log("Program finished.");
 					_client = null;
 				}
@@ -74,7 +131,7 @@ namespace Apocryph.Dao.Bot.Discord
 
 			// ---------------------- DEBUG --------------------------------
 			// NOTE: THE FOLLOWING CODE IS FOR DEBUG PURPOSES ONLY!
-
+#if false
 			if (message.Content == ".HelloApocryph")
 			{
 				var bal = 100;
@@ -112,6 +169,7 @@ namespace Apocryph.Dao.Bot.Discord
 				commandsList.AppendLine(".Bal");
 				commandsList.AppendLine(".People");
 				commandsList.AppendLine(".Help");
+				commandsList.AppendLine(".TestInboundCommunication");
 				commandsList.AppendLine("----- ---------------- -----");
 
 				await message.Channel.SendMessageAsync(commandsList.ToString());
@@ -151,6 +209,12 @@ namespace Apocryph.Dao.Bot.Discord
 					await message.Channel.SendMessageAsync(balMsg);
 				}
 			}
+
+			if (message.Content.StartsWith(".TestInboundCommunication"))
+			{
+				Push(new InboundCommunication() { plainTextMessage = "Inbound communications work correctly." });
+			}
+#endif
 			// -----------------------------------------------------
 
 			//TODO: Add token trading commands here
@@ -168,7 +232,9 @@ namespace Apocryph.Dao.Bot.Discord
 
 		private void Log (object msg, bool timeStamp = true)
 		{
-			Console.WriteLine(timeStamp ? $"[{DateTime.Now}] {msg}" : msg.ToString());
+			var message = timeStamp ? $"[{DateTime.Now}] {msg}" : msg.ToString();
+			Console.WriteLine(message);
+			_onLogEvent?.Invoke(message);
 		}
 	}
 }

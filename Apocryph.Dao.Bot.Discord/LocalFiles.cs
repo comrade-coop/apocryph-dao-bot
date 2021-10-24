@@ -18,11 +18,9 @@ namespace Apocryph.Dao.Bot.Discord
 
 		public bool LocalFilesReady => GetRequiredInitalizations() == RequiredInitalizations.None;
 
-
-		//-------DEBUG----------
-		private const string _fakeTokenStateFileName = "state.fake";
+		//--------- DEBUG -------------
 		public FakeTestingToken FakeTokenState = new FakeTestingToken();
-		//----------------------
+		//---------------------------
 
 
 		public LocalFiles()
@@ -31,37 +29,21 @@ namespace Apocryph.Dao.Bot.Discord
 			LoadFileContents();
 		}
 
-		private void CreateFilesIfNotExist ()
+		private void CreateFilesIfNotExist()
 		{
 			if (!Exists(_discordAuthTokenFileName))
 			{
 				WriteTextToFile(_discordAuthTokenFileName, string.Empty);
 			}
-
-			//-------DEBUG----------
-			if (!Exists(_fakeTokenStateFileName))
-			{
-				WriteTextToFile(_fakeTokenStateFileName, string.Empty);
-			}
-			//----------------------
 		}
 
 		private void LoadFileContents()
 		{
 			ReadTextFromFile(_discordAuthTokenFileName, out DiscordBotToken);
-
-			//-------DEBUG----------
-			string tokenStateRaw;
-			ReadTextFromFile(_fakeTokenStateFileName, out tokenStateRaw);
-			FakeTokenState = ((FakeTestingToken) Newtonsoft.Json.JsonConvert.DeserializeObject(tokenStateRaw)) ?? new FakeTestingToken();
-			//----------------------
 		}
 
-		public void SaveFileContents ()
+		public void SaveFileContents()
 		{
-			//-------DEBUG----------
-			WriteTextToFile(_fakeTokenStateFileName, Newtonsoft.Json.JsonConvert.SerializeObject(FakeTokenState));
-			//----------------------
 		}
 
 		public RequiredInitalizations GetRequiredInitalizations()
