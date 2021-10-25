@@ -7,7 +7,7 @@
 		/// </summary>
 		public static void Main()
 		{
-			DiscordBot.CreateInstance(new System.Threading.CancellationToken());
+			DiscordBot.CreateInstance(new System.Threading.CancellationToken()).Wait();
 		}
 	}
 }

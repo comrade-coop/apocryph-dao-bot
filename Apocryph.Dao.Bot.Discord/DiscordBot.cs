@@ -31,6 +31,7 @@ namespace Apocryph.Dao.Bot.Discord
 		private volatile ConcurrentQueue<InboundCommunication> _inboundQueue = new ConcurrentQueue<InboundCommunication>();
 		private bool running => ! _cancellationToken.IsCancellationRequested;
 		private CancellationToken _cancellationToken;
+		private System.Runtime.CompilerServices.TaskAwaiter mainTask;
 
 
 		/// <summary>
@@ -38,10 +39,15 @@ namespace Apocryph.Dao.Bot.Discord
 		/// </summary>
 		public static DiscordBot CreateInstance(CancellationToken cancellation)
 		{
-			DiscordBot instance;
+			DiscordBot instance = new DiscordBot() { _cancellationToken = cancellation };
 			// We like async ops a lot
-			(instance = new DiscordBot() { _cancellationToken = cancellation }).MainAsync().GetAwaiter().GetResult();
+			instance.mainTask = instance.MainAsync().GetAwaiter();
 			return instance;
+		}
+
+		public void Wait()
+		{
+			mainTask.GetResult();
 		}
 
 		public void Push(InboundCommunication input)
