@@ -19,18 +19,15 @@ namespace Apocryph.Dao.Bot.Discord.Model
             else
             {
                 localTokenState = new LocalToken();
+                Store(localTokenState);
             }
         }
 		
         public void Store(LocalToken localTokenState)
         {
             var filePath = Path.GetFullPath(TokenStateFile);
-
-            if (File.Exists(filePath))
-            {
-                var content = JsonConvert.SerializeObject(localTokenState);
-                File.WriteAllText(filePath, content);
-            }
+            var content = JsonConvert.SerializeObject(localTokenState);
+            File.WriteAllText(filePath, content);
         }
     }
 }

@@ -8,9 +8,13 @@ namespace Apocryph.Dao.Bot.Discord.Model
     
     public class LocalToken
     {
-        public readonly Dictionary<string, decimal> UserBalances = new();
-        private readonly Dictionary<ulong, string> _userIdToUser = new();
         private static readonly object Locker = new();
+        
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        public Dictionary<string, decimal> UserBalances { get; set; } = new();
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        // ReSharper disable once MemberCanBePrivate.Global
+        public Dictionary<ulong, string> UserIdToUser { get; set; } = new();
  
         internal PayResult Pay(string fromUser, string toUser, decimal amount)
         {
@@ -53,9 +57,9 @@ namespace Apocryph.Dao.Bot.Discord.Model
         {
             lock (Locker)
             {
-                if (!UserBalances.ContainsKey(username) && !_userIdToUser.ContainsKey(userId))
+                if (!UserBalances.ContainsKey(username) && !UserIdToUser.ContainsKey(userId))
                 {
-                    _userIdToUser.Add(userId, username);
+                    UserIdToUser.Add(userId, username);
                     UserBalances.Add(username, balance);
 
                     return new(true, string.Empty);
