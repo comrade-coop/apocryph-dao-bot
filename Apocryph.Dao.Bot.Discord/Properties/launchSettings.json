@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "Apocryph.Dao.Bot.Discord": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

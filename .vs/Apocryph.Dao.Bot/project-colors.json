@@ -1,0 +1,31 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "5027e3e2-da49-49ed-a4d6-d8b2c32af81c": {
+      "ProjectGuid": "5027e3e2-da49-49ed-a4d6-d8b2c32af81c",
+      "DisplayName": "Apocryph.Dao.Bot.Core",
+      "ColorIndex": 0
+    },
+    "2cf2e895-9260-474d-a94f-adcc1f290c8d": {
+      "ProjectGuid": "2cf2e895-9260-474d-a94f-adcc1f290c8d",
+      "DisplayName": "Apocryph.Dao.Bot.Frontend.Intro",
+      "ColorIndex": 1
+    },
+    "2af31f44-1a50-4949-9e4c-b07648c4b4e2": {
+      "ProjectGuid": "2af31f44-1a50-4949-9e4c-b07648c4b4e2",
+      "DisplayName": "Apocryph.Dao.Bot.Discord",
+      "ColorIndex": 2
+    },
+    "4a79dba3-8602-4156-a8e9-5557e592e0e8": {
+      "ProjectGuid": "4a79dba3-8602-4156-a8e9-5557e592e0e8",
+      "DisplayName": "docker-compose",
+      "ColorIndex": 3
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    }
+  },
+  "NextColorIndex": 4
+}
