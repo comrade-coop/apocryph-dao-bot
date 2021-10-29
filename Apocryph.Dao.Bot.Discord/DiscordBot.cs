@@ -23,6 +23,8 @@ namespace Apocryph.Dao.Bot.Discord
 			//Note: feel free to add other inbound params here
 		}
 
+		public delegate void LogAction(object msg, bool time);
+
 
 		private DiscordSocketClient _client;
 		private LocalFiles _localFiles;
@@ -79,9 +81,7 @@ namespace Apocryph.Dao.Bot.Discord
 			Log("Program starting.");
 
 			var config = new DiscordSocketConfig();
-			_localFiles = new LocalFiles();
-			//TODO: setup config, get discord output channel from file
-			const ulong discordChannel_botCommands = 888705313807675432;
+			_localFiles = new LocalFiles(Log);
 
 			if (_localFiles.LocalFilesReady)
 			{
@@ -97,7 +97,6 @@ namespace Apocryph.Dao.Bot.Discord
 					await client.LoginAsync(TokenType.Bot, token);
 					await client.StartAsync();
 
-					//TODO: implement network commands, add in netherium hooks
 					client.MessageReceived += MessageReceivedAsync;
 
 					while (running)
@@ -107,7 +106,7 @@ namespace Apocryph.Dao.Bot.Discord
 							InboundCommunication com = null;
 							if (_inboundQueue.TryDequeue(out com))
 							{
-								var channel = client.GetChannel(discordChannel_botCommands);
+								var channel = client.GetChannel(_localFiles.DiscordOutputChannelId);
 								if (channel is IMessageChannel messageChannel)
 								{
 									await messageChannel.SendMessageAsync(com.plainTextMessage);
@@ -134,94 +133,6 @@ namespace Apocryph.Dao.Bot.Discord
 			//This ensures we don't loop things by responding to ourselves (as the bot)
 			if (message.Author.Id == _client?.CurrentUser.Id)
 				return;
-
-			// ---------------------- DEBUG --------------------------------
-			// NOTE: THE FOLLOWING CODE IS FOR DEBUG PURPOSES ONLY!
-#if false
-			if (message.Content == ".HelloApocryph")
-			{
-				var bal = 100;
-				if (_localFiles.FakeTokenState.Add(message.Author.Username, bal, out string id))
-				{
-					Log($"Added user {message.Author.Username}. ID is {id}.");
-					await message.Channel.SendMessageAsync($"Hello {message.Author.Username}. Your user ID is {id}. Use that ID for transfers. You have been awarded {bal} FAKE tokens.");
-				}
-				else
-				{
-					await message.Channel.SendMessageAsync($"Welcome back {message.Author.Username}.");
-				}
-			}
-
-			if (message.Content.StartsWith(".People"))
-			{
-				var output = new StringBuilder();
-				output.AppendLine("----- FAKE TOKEN STATE -----");
-				foreach (var user in _localFiles.FakeTokenState.data)
-				{
-					output.AppendLine($"{user.Key} : {user.Value}");
-				}
-				output.AppendLine("----- ---------------- -----");
-
-				Log($"[{message.Author.Username}] Requested the state of the token.");
-				await message.Channel.SendMessageAsync(output.ToString());
-			}
-
-			if (message.Content.StartsWith(".Help"))
-			{
-				var commandsList = new StringBuilder();
-				commandsList.AppendLine("---- Apocryph DAO Bot FAKE Commands ----");
-				commandsList.AppendLine(".HelloApocryph");
-				commandsList.AppendLine(".Pay {recipient id} {amount}");
-				commandsList.AppendLine(".Bal");
-				commandsList.AppendLine(".People");
-				commandsList.AppendLine(".Help");
-				commandsList.AppendLine(".TestInboundCommunication");
-				commandsList.AppendLine("----- ---------------- -----");
-
-				await message.Channel.SendMessageAsync(commandsList.ToString());
-			}
-
-			if (message.Content.StartsWith(".Pay"))
-			{
-				var inputs = message.Content.Substring(4, message.Content.Length - 4).Split(' ', StringSplitOptions.RemoveEmptyEntries);
-				if (inputs.Length == 2)
-				{
-					string response;
-					_localFiles.FakeTokenState.Pay(message.Author.Username, inputs[0], int.Parse(inputs[1]), out response);
-					Log($"[{message.Author.Username}] {response}");
-					await message.Channel.SendMessageAsync(response);
-				}
-				else
-				{
-					await message.Channel.SendMessageAsync("Wrong number of arguments!");
-				}
-			}
-
-			if (message.Content.StartsWith(".Bal"))
-			{
-				bool hasError;
-				string errorMsg;
-				float bal = _localFiles.FakeTokenState.Bal(message.Author.Username, out hasError, out errorMsg);
-
-				if (hasError)
-				{
-					Log($"[{message.Author.Username}] {errorMsg}");
-					await message.Channel.SendMessageAsync(errorMsg);
-				}
-				else
-				{
-					var balMsg = $"Current balance for {message.Author.Username} is {bal}";
-					Log($"[{message.Author.Username}] {balMsg}");
-					await message.Channel.SendMessageAsync(balMsg);
-				}
-			}
-
-			if (message.Content.StartsWith(".TestInboundCommunication"))
-			{
-				Push(new InboundCommunication() { plainTextMessage = "Inbound communications work correctly." });
-			}
-#endif
-			// -----------------------------------------------------
 
 			//TODO: Add token trading commands here
 		}

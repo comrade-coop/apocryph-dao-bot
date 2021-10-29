@@ -15,6 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Apocryph.Dao.Bot.Discord\Apocryph.Dao.Bot.Discord.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="apocryph-dao.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
