@@ -7,7 +7,7 @@ query information about the DAO, vote, buy / sell tokens on
 the bonding curve and more relevant activities.
 
 ## Getting Started
-You can interact with Apocryph DAO Bot in Apocryph Discord server.
+You can interact with Apocryph DAO Bot in [Apocryph Discord server](https://discord.gg/C4e37Xhvt4).
 The bot responds on direct messages and also post various updates
 in the following channels:
  - `#voting` channel
