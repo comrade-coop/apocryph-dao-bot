@@ -15,7 +15,11 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Apocryph.Dao.Bot.Frontend.I
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "discord", "discord", "{B164C67D-CA40-4F1C-88CE-718EC0391028}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apocryph.Dao.Bot.Discord", "discord\Apocryph.Dao.Bot.Discord\Apocryph.Dao.Bot.Discord.csproj", "{51F26159-7AA4-4C38-BFFC-C4EF30AA0A81}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "perper", "perper", "{0074904A-61A0-43BC-9BBC-87D779D13D06}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Perper", "perper\agent\dotnet\src\Perper\Perper.csproj", "{70B1542C-FCB2-48F3-B617-E4234A1E23FE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Apocryph.Dao.Bot.Discord", "discord\Apocryph.Dao.Bot.Discord\Apocryph.Dao.Bot.Discord.csproj", "{D8058D5F-2267-42D9-A0B0-A55193DB0864}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +39,14 @@ Global
 		{2CF2E895-9260-474D-A94F-ADCC1F290C8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CF2E895-9260-474D-A94F-ADCC1F290C8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CF2E895-9260-474D-A94F-ADCC1F290C8D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{51F26159-7AA4-4C38-BFFC-C4EF30AA0A81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{51F26159-7AA4-4C38-BFFC-C4EF30AA0A81}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{51F26159-7AA4-4C38-BFFC-C4EF30AA0A81}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{51F26159-7AA4-4C38-BFFC-C4EF30AA0A81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70B1542C-FCB2-48F3-B617-E4234A1E23FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70B1542C-FCB2-48F3-B617-E4234A1E23FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70B1542C-FCB2-48F3-B617-E4234A1E23FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70B1542C-FCB2-48F3-B617-E4234A1E23FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8058D5F-2267-42D9-A0B0-A55193DB0864}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8058D5F-2267-42D9-A0B0-A55193DB0864}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8058D5F-2267-42D9-A0B0-A55193DB0864}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8058D5F-2267-42D9-A0B0-A55193DB0864}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,7 +54,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{5027E3E2-DA49-49ED-A4D6-D8B2C32AF81C} = {0B091791-A2EF-44A4-8A84-2851FA283BB9}
 		{2CF2E895-9260-474D-A94F-ADCC1F290C8D} = {4B0E160C-D8E7-49F4-B3E9-35EFD1CEC05B}
-		{51F26159-7AA4-4C38-BFFC-C4EF30AA0A81} = {B164C67D-CA40-4F1C-88CE-718EC0391028}
+		{70B1542C-FCB2-48F3-B617-E4234A1E23FE} = {0074904A-61A0-43BC-9BBC-87D779D13D06}
+		{D8058D5F-2267-42D9-A0B0-A55193DB0864} = {B164C67D-CA40-4F1C-88CE-718EC0391028}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1DE06AE1-A9A1-4EC5-93D4-03D13C6EE7E8}
