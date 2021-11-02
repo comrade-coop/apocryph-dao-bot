@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Apocryph.Dao.Bot.Discord
 {
@@ -11,57 +12,66 @@ namespace Apocryph.Dao.Bot.Discord
 		{
 			None = 0,
 			DiscordToken = 1,
+			OutputChannelId = 2,
 		}
 
 		private const string _discordAuthTokenFileName = "token.auth";
-		public string DiscordBotToken;
+		public string DiscordBotToken { get; private set; }
 
+		private const string _discordOutputChannelFileName = "output_channel.txt";
+		private const ulong _defaultDiscordChannelId_botCommands = 888705313807675432;
+		public ulong DiscordOutputChannelId { get; private set; }
+
+		private DiscordBot.LogAction _log;
 		public bool LocalFilesReady => GetRequiredInitalizations() == RequiredInitalizations.None;
 
 
-		//-------DEBUG----------
-		private const string _fakeTokenStateFileName = "state.fake";
-		public FakeTestingToken FakeTokenState = new FakeTestingToken();
-		//----------------------
-
-
-		public LocalFiles()
+		public LocalFiles(DiscordBot.LogAction log)
 		{
+			this._log = log;
 			CreateFilesIfNotExist();
 			LoadFileContents();
 		}
 
-		private void CreateFilesIfNotExist ()
+		private void CreateFilesIfNotExist()
 		{
 			if (!Exists(_discordAuthTokenFileName))
 			{
 				WriteTextToFile(_discordAuthTokenFileName, string.Empty);
 			}
 
-			//-------DEBUG----------
-			if (!Exists(_fakeTokenStateFileName))
+			if (!Exists(_discordOutputChannelFileName))
 			{
-				WriteTextToFile(_fakeTokenStateFileName, string.Empty);
+				WriteTextToFile(_discordOutputChannelFileName, _defaultDiscordChannelId_botCommands.ToString());
 			}
-			//----------------------
 		}
 
 		private void LoadFileContents()
 		{
-			ReadTextFromFile(_discordAuthTokenFileName, out DiscordBotToken);
+			string discordBotToken;
+			if (!ReadTextFromFile(_discordAuthTokenFileName, out discordBotToken))
+			{
+				_log?.Invoke($"Missing or invalid file {_discordAuthTokenFileName}", true);
+			}
+			DiscordBotToken = discordBotToken;
 
-			//-------DEBUG----------
-			string tokenStateRaw;
-			ReadTextFromFile(_fakeTokenStateFileName, out tokenStateRaw);
-			FakeTokenState = ((FakeTestingToken) Newtonsoft.Json.JsonConvert.DeserializeObject(tokenStateRaw)) ?? new FakeTestingToken();
-			//----------------------
+			string channelIdStr;
+			if (!ReadTextFromFile(_discordOutputChannelFileName, out channelIdStr))
+			{
+				_log?.Invoke($"Missing or invalid file {_discordOutputChannelFileName}", true);
+			}
+
+			ulong discordOutputChannelId;
+			if(!ulong.TryParse(channelIdStr, out discordOutputChannelId))
+			{
+				_log?.Invoke($"Invalid channel id in file {_discordOutputChannelFileName}", true);
+			}
+
+			DiscordOutputChannelId = discordOutputChannelId;
 		}
 
-		public void SaveFileContents ()
+		public void SaveFileContents()
 		{
-			//-------DEBUG----------
-			WriteTextToFile(_fakeTokenStateFileName, Newtonsoft.Json.JsonConvert.SerializeObject(FakeTokenState));
-			//----------------------
 		}
 
 		public RequiredInitalizations GetRequiredInitalizations()
@@ -71,6 +81,11 @@ namespace Apocryph.Dao.Bot.Discord
 			if (string.IsNullOrEmpty(DiscordBotToken))
 			{
 				output |= RequiredInitalizations.DiscordToken;
+			}
+
+			if (DiscordOutputChannelId == 0)
+			{
+				output |= RequiredInitalizations.OutputChannelId;
 			}
 
 			return output;

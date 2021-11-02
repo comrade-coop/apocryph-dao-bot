@@ -1,48 +1,33 @@
-﻿using Apocryph.Dao.Bot.Core.Message;
+﻿using Apocryph.Dao.Bot.Core.Data;
 using Apocryph.Dao.Bot.Core.Streams;
 using Perper.Model;
 using System;
-using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Apocryph.Dao.Bot.Core.Calls
 {
-    public class Init
-    {
-        private readonly string[] dialogs = new[]
-        {
-            nameof(IntroInquiryDialog),
-            nameof(IntroAttemptDialog)
-        };
+	public class Init
+	{
+		private readonly IContext context;
 
-        private readonly string[] events = new[]
-        {
-            nameof(TransferEvents)
-        };
+		public Init(IContext context) => this.context = context;
 
-        private readonly IContext context;
+		public async Task RunAsync()
+		{
+			//var address = await context.CallFunctionAsync<string>(nameof(Introduce), Array.Empty<object>());
+			var transferEvents = await context.StreamFunctionAsync<TransferEventDTO>(nameof(TransferEvents), Array.Empty<object>());
 
-        public Init(IContext context) => this.context = context;
+			var botCancellation = new CancellationToken();
+			var discordBotInstance = Apocryph.Dao.Bot.Discord.DiscordBot.CreateInstance(botCancellation);
+			await foreach (var transferEvent in transferEvents)
+			{
+				var message = $"Ingested: event Transfer(from: {transferEvent.From}, to: {transferEvent.To}, value: {transferEvent.Value})";
+				//Console.WriteLine();
+				discordBotInstance.Push(new Discord.DiscordBot.InboundCommunication() { plainTextMessage = message });
+			}
 
-        public async Task RunAsync()
-        {
-            var discordInput = await context.StreamFunctionAsync<IInboundMessage>(nameof(DiscordInput), Array.Empty<object>());
-            var outputs = await StreamBotFunctions(discordInput);
-            await context.StreamActionAsync(nameof(DiscordOutput), outputs);
-        }
-
-        private async Task<IStream<IOutboundMessage>[]> StreamBotFunctions(IStream<IInboundMessage> discordInput)
-        {
-            var result = new List<IStream<IOutboundMessage>>();
-            foreach (var d in dialogs)
-            {
-                result.Add(await context.StreamFunctionAsync<IOutboundMessage>(d, new object[] { discordInput }));
-            }
-            foreach (var e in events)
-            {
-                result.Add(await context.StreamFunctionAsync<IOutboundMessage>(e, Array.Empty<object>()));
-            }
-            return result.ToArray();
-        }
-    }
+			//TODO: cancellation and await discordBotInstance.Dispose();
+		}
+	}
 }
