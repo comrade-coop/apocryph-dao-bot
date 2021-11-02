@@ -25,7 +25,17 @@
       "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
       "DisplayName": "Miscellaneous Files",
       "ColorIndex": -1
+    },
+    "70b1542c-fcb2-48f3-b617-e4234a1e23fe": {
+      "ProjectGuid": "70b1542c-fcb2-48f3-b617-e4234a1e23fe",
+      "DisplayName": "Perper",
+      "ColorIndex": 4
+    },
+    "d8058d5f-2267-42d9-a0b0-a55193db0864": {
+      "ProjectGuid": "d8058d5f-2267-42d9-a0b0-a55193db0864",
+      "DisplayName": "Apocryph.Dao.Bot.Discord",
+      "ColorIndex": 5
     }
   },
-  "NextColorIndex": 4
+  "NextColorIndex": 6
 }

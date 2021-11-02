@@ -2,6 +2,7 @@
 using Perper.Model;
 using System;
 using System.Collections.Generic;
+using Apocryph.Dao.Bot.Core.Data.Message;
 
 namespace Apocryph.Dao.Bot.Core.Streams
 {
@@ -13,7 +14,7 @@ namespace Apocryph.Dao.Bot.Core.Streams
 
         public async IAsyncEnumerable<IInboundMessage> RunAsync()
         {
-            //TODO: Add implementation usign MessageListener service
+            yield return new IntroAttemptMessage();
             throw new NotImplementedException();
         }
     }

@@ -9,24 +9,27 @@ using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace Apocryph.Dao.Bot.Core.Streams
 {
     public class TransferEvents
     {
-        private readonly IContext context;
-        private readonly Web3Parity web3;
+        private readonly IContext _context;
+        private readonly Web3Parity _web3;
+        private readonly IConfiguration _configuration;
 
-        public TransferEvents(IContext context, Web3Parity web3)
+        public TransferEvents(IContext context, Web3Parity web3, IConfiguration configuration)
         {
-            this.context = context;
-            this.web3 = web3;
+            _context = context;
+            _web3 = web3;
+            _configuration = configuration;
         }
 
         public async IAsyncEnumerable<TransferEventMessage> RunAsync()
         {
-            var transferEventHandler = web3.Eth.GetEvent<TransferEventDTO>((string)config["contracts"]["bondingCurveToken"]["address"]);
-            var transferFilterInput = transferEventHandler.CreateFilterInput(new BlockParameter(ulong.Parse((string)config["startBlock"])), BlockParameter.CreateLatest());
+            var transferEventHandler = _web3.Eth.GetEvent<TransferEventDTO>(_configuration["contracts:bondingCurveToken:address"]);
+            var transferFilterInput = transferEventHandler.CreateFilterInput(new BlockParameter(ulong.Parse(_configuration["startBlock"])), BlockParameter.CreateLatest());
             var allChanges = await transferEventHandler.GetAllChangesAsync(transferFilterInput);
             foreach (var change in allChanges)
             {

@@ -5,6 +5,7 @@ using Nethereum.Web3;
 using Perper.Model;
 using System;
 using System.Collections.Generic;
+using Apocryph.Dao.Bot.Core.Message;
 
 namespace Apocryph.Dao.Bot.Core.Streams
 {
@@ -27,7 +28,7 @@ namespace Apocryph.Dao.Bot.Core.Streams
             var signer1 = new EthereumMessageSigner();
 
             var addressRec1 = signer1.EncodeUTF8AndEcRecover(message, signature1);
-
+            yield return new IntroConfirmationMessage();
             throw new NotImplementedException();
         }
     }

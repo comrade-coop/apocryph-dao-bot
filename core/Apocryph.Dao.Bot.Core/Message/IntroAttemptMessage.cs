@@ -1,7 +1,6 @@
-﻿using Apocryph.Dao.Bot.Core.Message;
-using System.Numerics;
+﻿using System;
 
-namespace Apocryph.Dao.Bot.Core.Data.Message
+namespace Apocryph.Dao.Bot.Core.Message
 {
     public class IntroAttemptMessage : IInboundMessage
     {
