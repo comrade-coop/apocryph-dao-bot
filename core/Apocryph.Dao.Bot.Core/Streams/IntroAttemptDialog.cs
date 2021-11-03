@@ -20,7 +20,7 @@ namespace Apocryph.Dao.Bot.Core.Streams
             this.web3 = web3;
         }
 
-        public async IAsyncEnumerable<IntroConfirmationMessage> RunAsync(IntroAttemptMessage attempt)
+        public async IAsyncEnumerable<IntroConfirmationMessage> RunAsync(IAsyncEnumerable<IntroAttemptMessage> attempt)
         {
             var message = "My email is john@doe.com - 1537836206101";
             var signature1 = "0x200db785c1b4f2bcf03250fc14b31b09299ed6801f43d64438b07ef38eb2b1ab370f110bc39ce27bd72fcc3cd39bb3812d4e2dbe47f55a46492fd5f2370df0bd1c";

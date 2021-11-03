@@ -3,8 +3,6 @@
     "Docker Compose": {
       "commandName": "DockerCompose",
       "serviceActions": {
-        "apocryph.dao.bot.core": "DoNotStart",
-        "ethereum.parity": "DoNotStart",
         "obecto.perper.fabric": "StartWithoutDebugging"
       },
       "composeLaunchAction": "None",

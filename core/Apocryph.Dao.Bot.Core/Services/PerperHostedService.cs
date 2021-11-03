@@ -10,23 +10,28 @@ namespace Apocryph.Dao.Bot.Core.Services
     {
         private readonly string _agentName;
         private readonly IServiceProvider _serviceProvider;
+        private readonly CancellationTokenSource _cancellationTokenSource;
+
+        private Task _task;
         
         public PerperHostedService(IServiceProvider serviceProvider, string agentName)
         {
             _agentName = agentName;
             _serviceProvider = serviceProvider;
+            _cancellationTokenSource = new CancellationTokenSource();
         }
         
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
             PerperStartup.ServiceProvider = _serviceProvider;
-            
-            await PerperStartup.RunAsync($"{_agentName}-{Guid.NewGuid()}", cancellationToken);
+            _task = PerperStartup.RunAsync($"{_agentName}-{Guid.NewGuid()}", _cancellationTokenSource.Token);
+            return Task.CompletedTask;
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            _cancellationTokenSource.Cancel();
+            await _task;
         }
     }
 }
