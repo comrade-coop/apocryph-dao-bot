@@ -31,7 +31,7 @@ namespace Apocryph.Dao.Bot.Core.Services
         public async Task StopAsync(CancellationToken cancellationToken)
         {
             _cancellationTokenSource.Cancel();
-            await _task;
+            await Task.WhenAny(_task, Task.Delay(Timeout.Infinite, cancellationToken));
         }
     }
 }
