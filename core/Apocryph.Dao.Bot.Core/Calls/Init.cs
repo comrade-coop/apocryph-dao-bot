@@ -9,40 +9,28 @@ namespace Apocryph.Dao.Bot.Core.Calls
 {
     public class Init
     {
-        private readonly string[] dialogs = new[]
-        {
-            nameof(IntroInquiryDialog),
-            nameof(IntroAttemptDialog)
-        };
+        private readonly IContext _context;
 
-        private readonly string[] events = new[]
-        {
-            nameof(TransferEvents)
-        };
-
-        private readonly IContext context;
-
-        public Init(IContext context) => this.context = context;
+        public Init(IContext context) => _context = context;
 
         public async Task RunAsync()
         {
-            var discordInput = await context.StreamFunctionAsync<IInboundMessage>(nameof(DiscordInput), Array.Empty<object>());
-            var outputs = await StreamBotFunctions(discordInput);
-            await context.StreamActionAsync(nameof(DiscordOutput), outputs);
-        }
+            // producer stream
+            var discordInputStream = await _context.StreamFunctionAsync<IInboundMessage>(nameof(DiscordInputStream), Array.Empty<object>());
+            
+            // dialog streams
+            var introInquiryDialogStream = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(IntroInquiryDialogStream), new object[] { discordInputStream });
+            var introAttemptDialogStream = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(IntroAttemptDialogStream), new object[] { discordInputStream });
+            
+            // event streams
+            var transferEventsStream = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(TransferEventsStream), Array.Empty<object>());
 
-        private async Task<IStream<IOutboundMessage>[]> StreamBotFunctions(IStream<IInboundMessage> discordInput)
-        {
-            var result = new List<IStream<IOutboundMessage>>();
-            foreach (var d in dialogs)
-            {
-                result.Add(await context.StreamFunctionAsync<IOutboundMessage>(d, new object[] { discordInput }));
-            }
-            foreach (var e in events)
-            {
-                result.Add(await context.StreamFunctionAsync<IOutboundMessage>(e, Array.Empty<object>()));
-            }
-            return result.ToArray();
+            // consumer?
+            await _context.StreamActionAsync(nameof(DiscordOutputStream),
+                new IStream[] { 
+                    introInquiryDialogStream, 
+                    introAttemptDialogStream,
+                    transferEventsStream });
         }
     }
 }

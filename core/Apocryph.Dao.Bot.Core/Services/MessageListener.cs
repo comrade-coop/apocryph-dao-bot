@@ -3,7 +3,9 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
+using Apocryph.Dao.Bot.Core.Message;
 using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
@@ -16,15 +18,17 @@ namespace Apocryph.Dao.Bot.Core.Services
     {
         private readonly IOptions<Configuration.Discord> _options;
         private readonly LocalTokenState _localTokenState;
+        private readonly Channel<IInboundMessage> _channel;
         private readonly DiscordSocketConfig _socketConfig;
         private DiscordSocketClient _client;
 
         private LocalToken _localToken;
 
-        public MessageListener(IOptions<Configuration.Discord> options, DiscordSocketConfig socketConfig, LocalTokenState localTokenState)
+        public MessageListener(IOptions<Configuration.Discord> options, DiscordSocketConfig socketConfig, LocalTokenState localTokenState, Channel<IInboundMessage> channel)
         {
             _options = options;
             _localTokenState = localTokenState;
+            _channel = channel;
             _socketConfig = socketConfig;
         }
 
@@ -66,6 +70,9 @@ namespace Apocryph.Dao.Bot.Core.Services
             if (message.Author.Id == _client?.CurrentUser.Id)
                 return;
 
+            await _channel.Writer.WriteAsync(new IntroAttemptMessage());
+            
+            return;
             // ---------------------- DEBUG --------------------------------
             // NOTE: THE FOLLOWING CODE IS FOR DEBUG PURPOSES ONLY!
 

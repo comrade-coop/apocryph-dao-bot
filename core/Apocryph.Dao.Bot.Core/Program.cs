@@ -3,6 +3,8 @@
 
 //await Perper.Application.PerperStartup.RunAsync($"apocryph-dao-bot-{System.Guid.NewGuid()}", new System.Threading.CancellationToken());
 
+using System.Threading.Channels;
+using Apocryph.Dao.Bot.Core.Message;
 using Apocryph.Dao.Bot.Core.Model;
 using Apocryph.Dao.Bot.Core.Services;
 using Discord.WebSocket;
@@ -28,6 +30,7 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddSingleton(new DiscordSocketConfig());
         services.AddHostedService<MessageListener>();
         services.AddSingleton(context.Configuration);
+        services.AddSingleton(Channel.CreateUnbounded<IInboundMessage>());
     })
     .ConfigureServices((context, services) =>
     {

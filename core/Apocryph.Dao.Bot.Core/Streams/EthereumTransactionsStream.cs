@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Apocryph.Dao.Bot.Core.Streams
 {
-    public class EthereumTransactions
+    public class EthereumTransactionsStream
     {
         private readonly IContext context;
 
-        public EthereumTransactions(IContext context) => this.context = context;
+        public EthereumTransactionsStream(IContext context) => this.context = context;
 
         public async IAsyncEnumerable<DaoTransaction> RunAsync()
         {
