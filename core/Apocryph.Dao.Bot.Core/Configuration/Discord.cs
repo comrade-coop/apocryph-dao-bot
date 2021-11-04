@@ -4,9 +4,4 @@
     {
         public string AuthToken { get; set; }
     }
-
-    public class Dao
-    {
-        public string MessageSignature { get; set; }
-    }
 }

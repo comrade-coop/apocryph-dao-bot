@@ -7,11 +7,6 @@ namespace Apocryph.Dao.Bot.Core.Message
     {
         public string Save()
         {
-            throw new NotImplementedException();
-        }
-
-        public override string ToString()
-        {
             if (IsValid())
             {
                 return $"Hello {UserName}, your signed message id {SignedMessage}";

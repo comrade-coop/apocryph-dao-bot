@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
-using System;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -16,10 +14,10 @@ namespace Apocryph.Dao.Bot.Core.Services
     public sealed class DiscordProxyHostedService : IHostedService
     {
         private readonly IOptions<Configuration.Discord> _options;
-        private readonly Channel<IInboundMessage> _inboundChannel;
         private readonly DiscordSocketConfig _socketConfig;
-        private readonly Channel<IOutboundMessage> _outboundChannel;
         private DiscordSocketClient _client;
+        private readonly Channel<IInboundMessage> _inboundChannel;
+        private readonly Channel<IOutboundMessage> _outboundChannel;
         private Task _messageSender;
 
         public DiscordProxyHostedService(IOptions<Configuration.Discord> options, DiscordSocketConfig socketConfig, Channel<IInboundMessage> inboundChannel, Channel<IOutboundMessage> outboundChannel)
@@ -33,40 +31,13 @@ namespace Apocryph.Dao.Bot.Core.Services
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             _client = new DiscordSocketClient(_socketConfig);
-            _client.Log += async message =>
-            {
-                if (message.Exception != null)
-                {
-                    Log.Error(message.Exception, "Failed to process discord message");
-                }
-                else
-                {
-                    Log.Information("MessageListener: {Message}", message.Message);
-                }
-            };
-
             _client.MessageReceived += MessageReceivedAsync;
+            _client.Log += OnClientOnLog;
 
             await _client.LoginAsync(TokenType.Bot, _options.Value.AuthToken);
             await _client.StartAsync();
 
-            _messageSender = Task.Factory.StartNew(async () =>
-                {
-                    while (await _outboundChannel.Reader.WaitToReadAsync(cancellationToken))
-                    {
-                        var message = await _outboundChannel.Reader.ReadAsync(cancellationToken);
-
-                        if (message is IntroChallengeMessage introChallengeMessage)
-                        {
-                            await _client
-                                .GetUser(introChallengeMessage.UserId)
-                                .SendMessageAsync(introChallengeMessage.ToString());
-                        }
-                    }
-                },
-                cancellationToken,
-                TaskCreationOptions.LongRunning,
-                TaskScheduler.Default);
+            InitializeMessageSender(cancellationToken);
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
@@ -186,6 +157,41 @@ namespace Apocryph.Dao.Bot.Core.Services
             // -----------------------------------------------------
 */
             //TODO: Add token trading commands here
+        }
+        
+        private void InitializeMessageSender(CancellationToken cancellationToken)
+        {
+            _messageSender = Task.Factory.StartNew(async () =>
+                {
+                    while (await _outboundChannel.Reader.WaitToReadAsync(cancellationToken))
+                    {
+                        var message = await _outboundChannel.Reader.ReadAsync(cancellationToken);
+
+                        if (message is IntroChallengeMessage introChallengeMessage)
+                        {
+                            await _client
+                                .GetUser(introChallengeMessage.UserId)
+                                .SendMessageAsync(introChallengeMessage.Save());
+                        }
+                    }
+                },
+                cancellationToken,
+                TaskCreationOptions.LongRunning,
+                TaskScheduler.Default);
+        }
+
+        private async Task OnClientOnLog(LogMessage message)
+        {
+            if (message.Exception != null)
+            {
+                Log.Error(message.Exception, "Failed to process discord message");
+            }
+            else
+            {
+                Log.Information("MessageListener: {Message}", message.Message);
+            }
+
+            await Task.CompletedTask;
         }
     }
 }
