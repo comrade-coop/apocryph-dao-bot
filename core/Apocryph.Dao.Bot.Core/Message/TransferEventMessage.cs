@@ -1,7 +1,7 @@
-﻿using Apocryph.Dao.Bot.Core.Message;
+﻿using System.Linq;
 using System.Numerics;
 
-namespace Apocryph.Dao.Bot.Core.Data.Message
+namespace Apocryph.Dao.Bot.Core.Message
 {
     public class TransferEventMessage : IOutboundMessage
     {
@@ -14,6 +14,13 @@ namespace Apocryph.Dao.Bot.Core.Data.Message
         public string Save()
         {
             return $"{Sender} has just transfered {Amount} CRYPH to {Receiver}";
+        }
+
+        public string[] Errors { get; }
+        
+        public bool IsValid()
+        {
+            return !Errors.Any();
         }
     }
 }

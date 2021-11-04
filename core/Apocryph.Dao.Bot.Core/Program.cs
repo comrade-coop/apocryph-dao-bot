@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Nethereum.Web3;
 using Serilog;
 
 var host = Host.CreateDefaultBuilder(args)
@@ -26,11 +27,21 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddOptions()
             .Configure<Apocryph.Dao.Bot.Core.Configuration.Discord>(context.Configuration.GetSection("Discord"));
 
-        services.AddTransient<LocalTokenState>();
-        services.AddSingleton(new DiscordSocketConfig());
-        services.AddHostedService<MessageListener>();
+        services.AddOptions()
+            .Configure<Apocryph.Dao.Bot.Core.Configuration.Dao>(context.Configuration.GetSection("Dao"));
+
+        services.AddSingleton(new Web3(context.Configuration["Ethereum:Web3Url"])
+        {
+            TransactionManager = { UseLegacyAsDefault = false }
+        });
+        
         services.AddSingleton(context.Configuration);
         services.AddSingleton(Channel.CreateUnbounded<IInboundMessage>());
+        services.AddSingleton(Channel.CreateUnbounded<IOutboundMessage>());
+        
+        services.AddTransient<LocalTokenState>();
+        services.AddSingleton(new DiscordSocketConfig());
+        services.AddHostedService<DiscordProxyHostedService>();
     })
     .ConfigureServices((context, services) =>
     {

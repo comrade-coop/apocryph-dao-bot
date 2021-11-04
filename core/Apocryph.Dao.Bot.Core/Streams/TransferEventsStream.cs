@@ -1,4 +1,3 @@
-using Apocryph.Dao.Bot.Core.Data.Message;
 using Nethereum.ABI.FunctionEncoding.Attributes;
 using Nethereum.Parity;
 using Nethereum.RPC.Eth.DTOs;
@@ -9,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 using System.Threading.Tasks;
+using Apocryph.Dao.Bot.Core.Message;
 using Microsoft.Extensions.Configuration;
 
 namespace Apocryph.Dao.Bot.Core.Streams

@@ -1,28 +1,26 @@
 ﻿using Apocryph.Dao.Bot.Core.Message;
-using Perper.Model;
-using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 
 namespace Apocryph.Dao.Bot.Core.Streams
 {
     public class DiscordOutputStream
     {
-        private readonly IContext _context;
-        private readonly IConfiguration _configuration;
+        private readonly Channel<IOutboundMessage> _channel;
 
-        public DiscordOutputStream(IContext context, IConfiguration configuration)
+        public DiscordOutputStream(Channel<IOutboundMessage> channel)
         {
-            _context = context;
-            _configuration = configuration;
+            _channel = channel;
         }
 
         public async Task RunAsync(IAsyncEnumerable<IOutboundMessage> messages)
         {
-            //TODO: Add respective implementation using some Discord Service
-            // send meg back to discord
-            await Task.CompletedTask;
+            await foreach (var message in messages)
+            {
+                await _channel.Writer.WriteAsync(message, CancellationToken.None);
+            }
         }
     }
 }

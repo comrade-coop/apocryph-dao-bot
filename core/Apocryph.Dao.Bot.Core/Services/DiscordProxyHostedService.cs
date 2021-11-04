@@ -10,32 +10,28 @@ using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using Serilog;
-using Apocryph.Dao.Bot.Core.Model;
 
 namespace Apocryph.Dao.Bot.Core.Services
 {
-    public sealed class MessageListener : IHostedService
+    public sealed class DiscordProxyHostedService : IHostedService
     {
         private readonly IOptions<Configuration.Discord> _options;
-        private readonly LocalTokenState _localTokenState;
-        private readonly Channel<IInboundMessage> _channel;
+        private readonly Channel<IInboundMessage> _inboundChannel;
         private readonly DiscordSocketConfig _socketConfig;
+        private readonly Channel<IOutboundMessage> _outboundChannel;
         private DiscordSocketClient _client;
+        private Task _messageSender;
 
-        private LocalToken _localToken;
-
-        public MessageListener(IOptions<Configuration.Discord> options, DiscordSocketConfig socketConfig, LocalTokenState localTokenState, Channel<IInboundMessage> channel)
+        public DiscordProxyHostedService(IOptions<Configuration.Discord> options, DiscordSocketConfig socketConfig, Channel<IInboundMessage> inboundChannel, Channel<IOutboundMessage> outboundChannel)
         {
             _options = options;
-            _localTokenState = localTokenState;
-            _channel = channel;
             _socketConfig = socketConfig;
+            _inboundChannel = inboundChannel;
+            _outboundChannel = outboundChannel;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            _localTokenState.Initialize(out _localToken);
-
             _client = new DiscordSocketClient(_socketConfig);
             _client.Log += async message =>
             {
@@ -45,22 +41,38 @@ namespace Apocryph.Dao.Bot.Core.Services
                 }
                 else
                 {
-                    Log.Information("{Message}", message.Message);
+                    Log.Information("MessageListener: {Message}", message.Message);
                 }
-
-                await Task.CompletedTask;
             };
 
             _client.MessageReceived += MessageReceivedAsync;
 
             await _client.LoginAsync(TokenType.Bot, _options.Value.AuthToken);
             await _client.StartAsync();
+
+            _messageSender = Task.Factory.StartNew(async () =>
+                {
+                    while (await _outboundChannel.Reader.WaitToReadAsync(cancellationToken))
+                    {
+                        var message = await _outboundChannel.Reader.ReadAsync(cancellationToken);
+
+                        if (message is IntroChallengeMessage introChallengeMessage)
+                        {
+                            await _client
+                                .GetUser(introChallengeMessage.UserId)
+                                .SendMessageAsync(introChallengeMessage.ToString());
+                        }
+                    }
+                },
+                cancellationToken,
+                TaskCreationOptions.LongRunning,
+                TaskScheduler.Default);
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-            _localTokenState.Store(_localToken);
-
+            _messageSender.Dispose();
+            
             await Task.CompletedTask;
         }
 
@@ -70,12 +82,20 @@ namespace Apocryph.Dao.Bot.Core.Services
             if (message.Author.Id == _client?.CurrentUser.Id)
                 return;
 
-            await _channel.Writer.WriteAsync(new IntroAttemptMessage());
+            var tokens = message.Content.Split(' ');
+            if(!tokens.Any())return;
+            
+            if (tokens[0] == "/introduce")
+            {
+                var address = tokens[1];
+                await _inboundChannel.Writer.WriteAsync(new IntroInquiryMessage(message.Author.Username,message.Author.Id, address));
+            }
             
             return;
+            
             // ---------------------- DEBUG --------------------------------
             // NOTE: THE FOLLOWING CODE IS FOR DEBUG PURPOSES ONLY!
-
+/*
             if (message.Content == ".HelloApocryph")
             {
                 var balance = 100m;
@@ -164,7 +184,7 @@ namespace Apocryph.Dao.Bot.Core.Services
                 }
             }
             // -----------------------------------------------------
-
+*/
             //TODO: Add token trading commands here
         }
     }

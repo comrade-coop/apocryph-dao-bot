@@ -2,7 +2,7 @@
 
 namespace Apocryph.Dao.Bot.Core.Message
 {
-    public class IntroAttemptMessage : IInboundMessage
+    public record IntroAttemptMessage(string Username, string EthereumAddress) : IInboundMessage
     {
         public void Load(string from, string message)
         {

@@ -1,33 +1,32 @@
-﻿using Apocryph.Dao.Bot.Core.Data.Message;
-using Nethereum.Parity;
+﻿using System;
 using Nethereum.Signer;
 using Nethereum.Web3;
 using Perper.Model;
-using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using Apocryph.Dao.Bot.Core.Message;
+using Apocryph.Dao.Bot.Core.Validators;
+using Microsoft.Extensions.Options;
 
 namespace Apocryph.Dao.Bot.Core.Streams
 {
     public class IntroAttemptDialogStream
     {
-        private readonly IContext _context;
-        private readonly IWeb3 _web3;
+        private readonly IOptions<Configuration.Dao> _options;
+        private readonly IntroInquiryMessageValidator _messageValidator;
+        private readonly EthereumMessageSigner _messageSigner;
 
-        public IntroAttemptDialogStream(IContext context, IWeb3 web3)
+        public IntroAttemptDialogStream(IOptions<Configuration.Dao> options, IState state, IWeb3 web3)
         {
-            this._context = context;
-            this._web3 = web3;
+            _options = options;
+            
+            _messageValidator = new IntroInquiryMessageValidator(state, web3);
+            _messageSigner = new EthereumMessageSigner();
         }
 
-        public async IAsyncEnumerable<IntroConfirmationMessage> RunAsync(IAsyncEnumerable<IntroAttemptMessage> attempt)
+        public async IAsyncEnumerable<IntroConfirmationMessage> RunAsync(IAsyncEnumerable<IInboundMessage> messages)
         {
-            var message = "My email is john@doe.com - 1537836206101";
-            var signature1 = "0x200db785c1b4f2bcf03250fc14b31b09299ed6801f43d64438b07ef38eb2b1ab370f110bc39ce27bd72fcc3cd39bb3812d4e2dbe47f55a46492fd5f2370df0bd1c";
-
-            var signer1 = new EthereumMessageSigner();
-
-            var addressRec1 = signer1.EncodeUTF8AndEcRecover(message, signature1);
             yield return new IntroConfirmationMessage();
             throw new NotImplementedException();
         }
