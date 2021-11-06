@@ -6,12 +6,13 @@
       <legend>Address introduction</legend>
       <div class="form-group">
         <label for="message">Message:</label>
-        <input id="message" name="message" type="text" value="{{msg}}" disabled>
+        <input id="message" name="message" type="text" 
+               v-model="message" disabled>
       </div>
-
        <div class="form-group">
         <label for="signedMessage">Signed message:</label>
-        <input id="signedMessage" name="signedMessage" type="text" value="{{signedMessage}}" disabled>
+        <input id="signedMessage" name="signedMessage" type="text"  
+               v-model="signedMessage" disabled>
       </div>
       
       <div class="form-group">
@@ -28,15 +29,22 @@
 </template>
 
 <script>
+
 export default {
   name: 'Introduction',
-  props: {
-    msg: String
+  data() {
+    return {
+      signedMessage: null
+    }
+  },
+  computed: {
+    message() {
+      return this.$route.params.message;
+    }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
  .button {
     background-color: #bbb;
