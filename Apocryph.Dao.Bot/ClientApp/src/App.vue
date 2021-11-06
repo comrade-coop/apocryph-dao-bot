@@ -1,26 +1,47 @@
 <template>
-  <nav-menu></nav-menu>
-  <router-view />
+  <div class="container">
+    <main>
+      <h1 class="terminal-prompt">APOCRYPH DAO</h1>
+      <Introduction msg="Welcome to Your Vue.js App"/>
+      <hr>
+    </main>
+  </div>
 </template>
 
 <script>
-    import NavMenu from './components/NavMenu.vue'
+import Introduction from './components/Introduction.vue'
 
 export default {
   name: 'App',
   components: {
-      NavMenu
+    Introduction
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.components-grid {
+  display: grid;
+  grid-column-gap: 1.4em;
+  grid-template-columns: auto;
+  grid-template-rows: auto;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-rows: auto;
+  display: grid;
+  grid-gap: 1em;
+  grid-template-rows: auto;
+  grid-template-columns: repeat(
+        auto-fit,
+        minmax(calc(var(--page-width) / 12), 1fr)
+      );
+}
+
+@media only screen and (min-width: 70em) {
+  .components-grid {
+    grid-template-columns: 3fr 9fr;
+  }
 }
 </style>

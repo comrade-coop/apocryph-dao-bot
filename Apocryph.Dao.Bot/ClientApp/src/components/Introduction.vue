@@ -18,7 +18,6 @@
       <div class="button-grid">
         <button class="btn btn-default btn-ghost" role="button" name="connectMetamask" id="connectMetamask">Connect MetaMask</button>
         <button class="btn btn-default btn-ghost" role="button" name="signMessage" id="signMessage">Sign Message</button>
-        <button class="btn btn-primary btn-ghost" role="button" name="copySignedMessage" id="copySignedMessage">Copy Signed Message</button>
       </div>
       
       </div>
