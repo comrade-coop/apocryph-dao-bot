@@ -38,11 +38,8 @@ const Web3Service = {
         }
     },
 
-    async sign() {
+    async sign(message) {
         console.log("Signing a message", this.web3Modal);
-
-        // test message
-        const message = "My email is john@doe.com - 1537836206101";
 
         // encode message (hex)
         const hexMsg = convertUtf8ToHex(message);
@@ -54,6 +51,7 @@ const Web3Service = {
             const result = await this.web3.eth.personal.sign(hexMsg, address);
 
             console.log("Signed message", result)
+            return result;
         } catch (error) {
             console.error(error); // tslint:disable-line
         }
