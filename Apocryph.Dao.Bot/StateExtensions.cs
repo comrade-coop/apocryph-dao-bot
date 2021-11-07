@@ -19,5 +19,11 @@ namespace Apocryph.Dao.Bot
             var result =  await state.TryGetAsync<bool>("user-confirmed");
             return result.Item1 && result.Item2;
         }
+
+        public static async Task<bool> IsValidSession(this IState state, string session)
+        {
+            var result = await state.TryGetAsync<bool>($"web-{session}");
+            return result.Item1 && result.Item2;
+        }
     }
 }

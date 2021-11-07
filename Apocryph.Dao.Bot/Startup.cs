@@ -1,14 +1,15 @@
+using Apocryph.Dao.Bot.Message;
+using Apocryph.Dao.Bot.Services;
+using Discord.WebSocket;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
+using Nethereum.Web3;
+using Serilog;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Threading.Channels;
 using VueCliMiddleware;
 
 namespace Apocryph.Dao.Bot
@@ -25,6 +26,36 @@ namespace Apocryph.Dao.Bot
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(Configuration)
+                .Enrich.FromLogContext()
+                .CreateLogger();
+
+            services.AddOptions()
+                .Configure<Configuration.Discord>(Configuration.GetSection("Discord"));
+
+            services.AddOptions()
+                .Configure<Configuration.Dao>(Configuration.GetSection("Dao"));
+
+            services.AddSingleton<IWeb3>(new Web3(Configuration["Ethereum:Web3Url"])
+            {
+                TransactionManager = { UseLegacyAsDefault = false }
+            });
+
+            services.AddSingleton(Configuration);
+            services.AddSingleton(new InboundMessageFactory(new Dictionary<string, IInboundMessage>()
+            {
+                ["confirm"] = new IntroAttemptMessage()
+            }));
+            services.AddSingleton(Channel.CreateUnbounded<(string, string)>());
+            services.AddSingleton(Channel.CreateUnbounded<IInboundMessage>());
+            services.AddSingleton(Channel.CreateUnbounded<IOutboundMessage>());
+
+            services.AddSingleton(new DiscordSocketConfig());
+            services.AddHostedService<DiscordProxyHostedService>();
+
+            services.AddHostedService(serviceProvider => new PerperHostedService(serviceProvider, "apocryph-dao-bot"));
+
             services.AddControllers();
             services.AddSpaStaticFiles(configuration =>
             {
