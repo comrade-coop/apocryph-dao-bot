@@ -1,29 +1,28 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using Apocryph.Dao.Bot.Inputs;
 
 namespace Apocryph.Dao.Bot.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class WebInputController : ControllerBase
+    [Route("api/webinput")]
+    [Produces("application/json")]
+    public class WebInputController : Controller
     {
-        private readonly ILogger<WebInputController> _logger;
         private readonly Channel<(string, string)> _channel;
 
-        public WebInputController(ILogger<WebInputController> logger, Channel<(string, string)> channel)
+        public WebInputController(Channel<(string, string)> channel)
         {
-            _logger = logger;
             _channel = channel;
         }
 
         [HttpPost]
-        public async Task<StatusCodeResult> Post([FromQuery] string session, [FromBody] string message)
+        public async Task<IActionResult> Post([FromBody] WebInput input)
         {
-            await _channel.Writer.WriteAsync((session, message));
-            return StatusCode(StatusCodes.Status202Accepted);
+            await _channel.Writer.WriteAsync((input.Session, input.Message));
+            
+            return Accepted(string.Empty);
         }
     }
 }

@@ -10,6 +10,8 @@ using Nethereum.Web3;
 using Serilog;
 using System.Collections.Generic;
 using System.Threading.Channels;
+using Apocryph.Dao.Bot.Inputs;
+using FluentValidation.AspNetCore;
 using VueCliMiddleware;
 
 namespace Apocryph.Dao.Bot
@@ -61,6 +63,8 @@ namespace Apocryph.Dao.Bot
             {
                 configuration.RootPath = "ClientApp";
             });
+            
+            services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<WebInput>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

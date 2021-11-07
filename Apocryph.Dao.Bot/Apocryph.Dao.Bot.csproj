@@ -13,6 +13,7 @@
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.4.0" />
     <PackageReference Include="FluentValidation" Version="10.3.4" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.4" />
     <PackageReference Include="Nethereum.Parity" Version="4.1.1" />
     <PackageReference Include="Nethereum.Web3" Version="4.1.1" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
@@ -39,6 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Apocryph.Dao.Bot.Inputs\Apocryph.Dao.Bot.Inputs.csproj" />
     <ProjectReference Include="..\perper\agent\dotnet\src\Perper\Perper.csproj" />
   </ItemGroup>
 
