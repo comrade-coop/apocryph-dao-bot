@@ -6,19 +6,27 @@
       <legend>Address introduction</legend>
       <div class="form-group">
         <label for="message">Message:</label>
-        <input id="message" name="message" type="text" 
+        <input id="message" name="message" type="text"
                v-model="message" disabled>
       </div>
        <div class="form-group">
         <label for="signedMessage">Signed message:</label>
-        <input id="signedMessage" name="signedMessage" type="text"  
+        <input id="signedMessage" name="signedMessage" type="text"
                v-model="signedMessage" disabled>
       </div>
       
       <div class="form-group">
       <div class="button-grid">
-        <button class="btn btn-default btn-ghost" role="button" name="connectMetamask" id="connectMetamask" @click="onConnect">Connect MetaMask</button>
-        <button class="btn btn-default btn-ghost" role="button" name="signMessage" id="signMessage" @click="onMessageSign">Sign Message</button>
+        <button class="btn btn-default" role="button" name="connectMetamask" id="connectMetamask" 
+                @click="onConnect"
+                v-if="showConnectMetamask">Connect MetaMask</button>
+        
+        <button class="btn btn-default" role="button" name="signMessage" id="signMessage"
+                @click="onMessageSign"
+                v-if="showSignMessage">Sign Message</button>
+
+        <div class="terminal-alert terminal-alert-primary"  v-if="!showSignMessage && !showConnectMetamask">Message signed, check private conversation with the bot</div>
+        
       </div>
       
       </div>
@@ -36,12 +44,14 @@ export default {
   name: 'Introduction',
   setup(){
     Web3Service.init();
+    axios.defaults.baseURL = process.env.VUE_APP_BASE_API_URL;
+    console.log(axios.defaults.baseURL);
   },
   data() {
     return {
-      signedMessage: null,
-      isConnected: false,
-      isMessageSigned: false
+      connected: false,
+      signed: false,
+      signedMessage: null
     }
   },
   computed: {
@@ -50,30 +60,37 @@ export default {
     },
     message() {
       return this.$route.params.message;
+    },
+    showConnectMetamask() {
+      return this.connected === false;
+    },
+    showSignMessage() {
+      return this.connected === true && this.signed === false;
     }
   },
   methods:{
     async onConnect(e) {
       if(e) e.preventDefault();
-      this.isConnected = await Web3Service.connect();
+      
+      this.connected = await Web3Service.connect();
     },
     async onMessageSign(e)  {
       if(e) e.preventDefault();
-      var vm = this;
+      
+      const vm = this;
       
       this.signedMessage = await Web3Service.sign(this.message);
       
-      if(this.signedMessage) {
-        this.isMessageSigned = true;
+      if (this.signedMessage) {
         axios.post('/api/webinput', {
           session: vm.session,
           message: `/connect ${vm.signedMessage}`
         })
         .then(() => {
-          this.isMessageSigned = true; 
+          this.signed = true; 
         })
         .catch(function (error) {
-          this.isMessageSigned = false;
+          this.signed = false;
           alert(error);
         });
       }
@@ -90,4 +107,9 @@ export default {
     padding: 10px;
     width: 100%;
 }
+
+ .button:active:hover:not([disabled]) {
+   /*your styles*/
+ }
+ 
 </style>

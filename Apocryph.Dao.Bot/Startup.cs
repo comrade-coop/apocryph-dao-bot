@@ -1,3 +1,4 @@
+using System;
 using Apocryph.Dao.Bot.Message;
 using Apocryph.Dao.Bot.Services;
 using Discord.WebSocket;
@@ -9,9 +10,14 @@ using Microsoft.Extensions.Hosting;
 using Nethereum.Web3;
 using Serilog;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Threading.Channels;
+using Apocryph.Dao.Bot.Infrastructure;
 using Apocryph.Dao.Bot.Inputs;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.OpenApi.Models;
 using VueCliMiddleware;
 
 namespace Apocryph.Dao.Bot
@@ -58,18 +64,26 @@ namespace Apocryph.Dao.Bot
 
             services.AddHostedService(serviceProvider => new PerperHostedService(serviceProvider, "apocryph-dao-bot"));
 
+            services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<WebInput>());
             services.AddControllers();
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp";
             });
             
-            services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<WebInput>());
+            ConfigureSwagger(services, new[] {new OpenApiInfo {Title = "Api", Version = "v1"}});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
+            app.UseCors(x => x.SetIsOriginAllowed(_ => true).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -77,6 +91,13 @@ namespace Apocryph.Dao.Bot
 
             app.UseRouting();
             app.UseSpaStaticFiles();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api v1");
+                c.RoutePrefix = string.Empty;
+            });
+            
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -86,16 +107,29 @@ namespace Apocryph.Dao.Bot
 
             app.UseSpa(spa =>
             {
-                if (env.IsDevelopment())
-                    spa.Options.SourcePath = "ClientApp/";
-                else
-                    spa.Options.SourcePath = "dist";
+                spa.Options.SourcePath = env.IsDevelopment() ? "ClientApp/" : "dist";
 
                 if (env.IsDevelopment())
                 {
                     spa.UseVueCli(npmScript: "serve");
                 }
+            });
+        }
+        
+        public void ConfigureSwagger(IServiceCollection services, OpenApiInfo[] apiVersions)
+        {
+            services.AddSwaggerGen(c =>
+            {
+                c.OperationFilter<SwaggerHeaderFilter>();
+                c.SchemaFilter<EnumSchemaFilter>();
 
+                foreach (var apiVersion in apiVersions)
+                    c.SwaggerDoc(apiVersion.Version,
+                        new OpenApiInfo {Title = apiVersion.Title, Version = apiVersion.Version});
+
+                var xmlFile = $"{Assembly.GetEntryAssembly()?.GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
         }
     }
