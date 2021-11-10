@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -15,9 +16,9 @@ namespace Apocryph.Dao.Bot.Streams
             _channel = channel;
         }
 
-        public async Task RunAsync(IAsyncEnumerable<IOutboundMessage> messages)
+        public async Task RunAsync(IAsyncEnumerable<IOutboundMessage> introInquiryDialogStream, IAsyncEnumerable<IOutboundMessage> introAttemptDialogStream)
         {
-            await foreach (var message in messages)
+            await foreach (var message in AsyncEnumerableEx.Merge(introInquiryDialogStream, introAttemptDialogStream))
             {
                 await _channel.Writer.WriteAsync(message, CancellationToken.None);
             }
