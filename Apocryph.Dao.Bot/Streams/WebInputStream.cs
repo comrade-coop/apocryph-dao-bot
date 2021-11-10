@@ -1,34 +1,35 @@
 ﻿using Apocryph.Dao.Bot.Message;
 using Perper.Model;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Channels;
 
 namespace Apocryph.Dao.Bot.Streams
 {
     public class WebInputStream
     {
-        private readonly Channel<(string, string)> _channel;
         private readonly IState _state;
-        private readonly InboundMessageFactory _messageFactory;
+        private readonly Channel<IWebInboundMessage> _channel;
 
-        public WebInputStream(Channel<(string, string)> channel, IState state, InboundMessageFactory messageFactory)
+        public WebInputStream(Channel<IWebInboundMessage> channel, IState state)
         {
             _channel = channel;
             _state = state;
-            _messageFactory = messageFactory;
         }
 
         public async IAsyncEnumerable<IInboundMessage> RunAsync()
         {
-            await foreach(var (session, message) in _channel.Reader.ReadAllAsync())
+            await foreach(var message in _channel.Reader.ReadAllAsync())
             {
-                if (await _state.IsValidSession(session))
+                if (await message.ValidateSession(_state))
                 {
-                    var result = _messageFactory.CreateInstance(message.GetSlashCommand());
-                    result.Load(string.Empty, message);
-                    yield return result;
+                    if (message is IntroAttemptMessage introAttemptMessage)
+                        yield return introAttemptMessage;
                 }
             }
         }
     }
 }
+
+// UserInput(Basic Validation) -> UserInputController(UserInputChannel) -> UserInputStream -> SignedAddressMessageProcessor ( Validation, Business Logic ) --> WebOutputStream --> SignalR Message
+//                                                                                                                    --> DiscordOutputStream --> Discord DM

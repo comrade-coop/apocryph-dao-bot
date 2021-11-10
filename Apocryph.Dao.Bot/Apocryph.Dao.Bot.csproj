@@ -51,8 +51,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Apocryph.Dao.Bot.Inputs\Apocryph.Dao.Bot.Inputs.csproj" />
+    <ProjectReference Include="..\Apocryph.Dao.Bot.Messages\Apocryph.Dao.Bot.Messages.csproj" />
     <ProjectReference Include="..\perper\agent\dotnet\src\Perper\Perper.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ClientApp\src\assets" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

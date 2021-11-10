@@ -25,7 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "web", "web", "{597B8DF0-DFC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apocryph.Dao.Bot", "Apocryph.Dao.Bot\Apocryph.Dao.Bot.csproj", "{64705656-F020-4BB9-BF4B-0DE49F96F351}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apocryph.Dao.Bot.Inputs", "Apocryph.Dao.Bot.Inputs\Apocryph.Dao.Bot.Inputs.csproj", "{D50DEC96-0385-432B-9394-BC2B1AFFC344}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apocryph.Dao.Bot.Messages", "Apocryph.Dao.Bot.Messages\Apocryph.Dao.Bot.Messages.csproj", "{D50DEC96-0385-432B-9394-BC2B1AFFC344}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

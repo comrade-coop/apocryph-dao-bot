@@ -1,20 +1,10 @@
-﻿using System;
-using System.Linq;
-
-namespace Apocryph.Dao.Bot.Message
+﻿namespace Apocryph.Dao.Bot.Message
 {
-    public record IntroConfirmationMessage() : IOutboundMessage
+    public record IntroConfirmationMessage(string Session, string UserName, ulong UserId, string UrlTemplate) : IOutboundMessage
     {
-        public string Save()
+        public string DisplayOutput()
         {
-            throw new NotImplementedException();
-        }
-
-        public string[] Errors { get; }
-        
-        public bool IsValid()
-        {
-            return !Errors.Any();
+            return "Confirmed";
         }
     }
 }

@@ -1,9 +1,8 @@
-using Apocryph.Dao.Bot.Message;
 using Apocryph.Dao.Bot.Streams;
 using Perper.Model;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
+using Apocryph.Dao.Bot.Message;
 
 namespace Apocryph.Dao.Bot.Calls
 {
@@ -15,34 +14,26 @@ namespace Apocryph.Dao.Bot.Calls
 
         public async Task RunAsync()
         {
-            // producer
+            // producers
             var discordInputStream = await _context.StreamFunctionAsync<IInboundMessage>(nameof(DiscordInputStream), Array.Empty<object>()).ConfigureAwait(false);
+            var webInputStream = await _context.StreamFunctionAsync<IInboundMessage>(nameof(WebInputStream), Array.Empty<object>()).ConfigureAwait(false);
             
             // processor
             var introInquiryDialogStream = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(IntroInquiryDialogStream), new object[] { discordInputStream }).ConfigureAwait(false);
+            var introAttemptDialogStream = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(IntroAttemptDialogStream), new object[] { webInputStream }).ConfigureAwait(false);
             
             await _context.StreamActionAsync(nameof(DiscordOutputStream), 
                 new IStream[]
                 {
-                    introInquiryDialogStream
+                    introInquiryDialogStream,
+                    introAttemptDialogStream
                 });
 
-            
-            // await _context.StreamActionAsync(nameof(DiscordOutputStream), new IStream[] { discordInputStream });
-
-            // dialog streams
-            //var introInquiryDialogStream = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(IntroInquiryDialogStream), new object[] { discordInputStream });
-
-            // event streams
-            //var transferEventsStream = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(TransferEventsStream), Array.Empty<object>());
-
-            // consumer?
-            //await _context.StreamActionAsync(nameof(DiscordOutputStream),
-//                new IStream[] { 
-//                    introInquiryDialogStream, 
-//                    introAttemptDialogStream,
-//                    transferEventsStream });
-            // discordInputStream.ToListAsync();
+            await _context.StreamActionAsync(nameof(WebOutputStream), 
+                new IStream[]
+                {
+                    introAttemptDialogStream
+                });
         }
     }
 }

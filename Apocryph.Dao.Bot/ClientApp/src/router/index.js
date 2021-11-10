@@ -1,11 +1,11 @@
 ﻿import { createWebHistory, createRouter } from "vue-router";
-import Introduction from "@/components/Introduction.vue";
+import SignAddress from "@/components/SignAddress.vue";
 
 const routes = [
     {
-        path: "/introduction/:session/:message",
-        name: "Introduction",
-        component: Introduction,
+        path: "/sign-address/:session/:message",
+        name: "SignAddress",
+        component: SignAddress,
     } 
 ];
 

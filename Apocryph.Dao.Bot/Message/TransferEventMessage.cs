@@ -11,7 +11,7 @@ namespace Apocryph.Dao.Bot.Message
 
         public BigInteger Amount { get; set; }
 
-        public string Save()
+        public string DisplayOutput()
         {
             return $"{Sender} has just transfered {Amount} CRYPH to {Receiver}";
         }

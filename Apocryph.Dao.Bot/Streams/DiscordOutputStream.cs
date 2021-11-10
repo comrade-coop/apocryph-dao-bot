@@ -1,8 +1,8 @@
-﻿using Apocryph.Dao.Bot.Message;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using Apocryph.Dao.Bot.Message;
 
 namespace Apocryph.Dao.Bot.Streams
 {

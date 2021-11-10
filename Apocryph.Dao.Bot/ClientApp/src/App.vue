@@ -2,19 +2,19 @@
   <div class="container">
     <main>
       <h1 class="terminal-prompt">APOCRYPH DAO</h1>
-      <Introduction msg="Welcome to Your Vue.js App"/>
+      <SignAddress />
       <hr>
     </main>
   </div>
 </template>
 
 <script>
-import Introduction from './components/Introduction.vue'
+import SignAddress from './components/SignAddress.vue'
 
 export default {
   name: 'App',
   components: {
-    Introduction
+    SignAddress
   }
 }
 </script>
@@ -30,9 +30,7 @@ export default {
 .button-grid {
   display: grid;
   grid-template-rows: auto;
-  display: grid;
   grid-gap: 1em;
-  grid-template-rows: auto;
   grid-template-columns: repeat(
         auto-fit,
         minmax(calc(var(--page-width) / 12), 1fr)

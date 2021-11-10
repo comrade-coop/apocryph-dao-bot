@@ -59,7 +59,7 @@ namespace Apocryph.Dao.Bot.Services
             if (tokens[0] == "/introduce")
             {
                 var address = tokens[1];
-                await _inboundChannel.Writer.WriteAsync(new IntroInquiryMessage(message.Author.Username,message.Author.Id, address));
+                await _inboundChannel.Writer.WriteAsync(new IntroInquiryMessage(message.Author.Username, message.Author.Id, address));
             }
             
             return;
@@ -171,7 +171,14 @@ namespace Apocryph.Dao.Bot.Services
                         {
                             await _client
                                 .GetUser(introChallengeMessage.UserId)
-                                .SendMessageAsync(introChallengeMessage.Save());
+                                .SendMessageAsync(introChallengeMessage.DisplayOutput());
+                        }
+                        
+                        if (message is IntroConfirmationMessage introConfirmationMessage)
+                        {
+                            await _client
+                                .GetUser(introConfirmationMessage.UserId)
+                                .SendMessageAsync(introConfirmationMessage.DisplayOutput());
                         }
                     }
                 },

@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using Apocryph.Dao.Bot.Inputs;
+using Apocryph.Dao.Bot.Message;
+using Serilog;
 
 namespace Apocryph.Dao.Bot.Controllers
 {
@@ -10,17 +11,21 @@ namespace Apocryph.Dao.Bot.Controllers
     [Produces("application/json")]
     public class WebInputController : Controller
     {
-        private readonly Channel<(string, string)> _channel;
+        private readonly Channel<IWebInboundMessage> _channel;
 
-        public WebInputController(Channel<(string, string)> channel)
+        public WebInputController(Channel<IWebInboundMessage> channel)
         {
             _channel = channel;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] WebInput input)
+        public async Task<IActionResult> Post([FromBody] IntroAttemptMessage input)
         {
-            await _channel.Writer.WriteAsync((input.Session, input.Message));
+            var sessionLog = Log.ForContext("Session", input.Session);
+            
+            await _channel.Writer.WriteAsync(input);
+            
+            sessionLog.Information("Accepted request {@Input}", input);
             
             return Accepted(string.Empty);
         }

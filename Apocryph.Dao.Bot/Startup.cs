@@ -14,7 +14,6 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Channels;
 using Apocryph.Dao.Bot.Infrastructure;
-using Apocryph.Dao.Bot.Inputs;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi.Models;
@@ -51,11 +50,7 @@ namespace Apocryph.Dao.Bot
             });
 
             services.AddSingleton(Configuration);
-            services.AddSingleton(new InboundMessageFactory(new Dictionary<string, IInboundMessage>()
-            {
-                ["confirm"] = new IntroAttemptMessage()
-            }));
-            services.AddSingleton(Channel.CreateUnbounded<(string, string)>());
+            services.AddSingleton(Channel.CreateUnbounded<IWebInboundMessage>());
             services.AddSingleton(Channel.CreateUnbounded<IInboundMessage>());
             services.AddSingleton(Channel.CreateUnbounded<IOutboundMessage>());
 
@@ -63,8 +58,6 @@ namespace Apocryph.Dao.Bot
             services.AddHostedService<DiscordProxyHostedService>();
 
             services.AddHostedService(serviceProvider => new PerperHostedService(serviceProvider, "apocryph-dao-bot"));
-
-            services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<WebInput>());
             services.AddControllers();
             services.AddSpaStaticFiles(configuration =>
             {
@@ -74,7 +67,6 @@ namespace Apocryph.Dao.Bot
             ConfigureSwagger(services, new[] {new OpenApiInfo {Title = "Api", Version = "v1"}});
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseForwardedHeaders(new ForwardedHeadersOptions

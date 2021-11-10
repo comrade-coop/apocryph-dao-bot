@@ -3,16 +3,16 @@
   
   <form>
     <fieldset>
-      <legend>Address introduction</legend>
+      <legend>Sign address</legend>
       <div class="form-group">
-        <label for="message">Message:</label>
-        <input id="message" name="message" type="text"
-               v-model="message" disabled>
+        <label for="address">Address:</label>
+        <input id="address" name="address" type="text"
+               v-model="address" disabled>
       </div>
        <div class="form-group">
-        <label for="signedMessage">Signed message:</label>
-        <input id="signedMessage" name="signedMessage" type="text"
-               v-model="signedMessage" disabled>
+        <label for="signedAddress">Signed address:</label>
+        <input id="signedAddress" name="signedAddress" type="text"
+               v-model="signedAddress" disabled>
       </div>
       
       <div class="form-group">
@@ -22,10 +22,10 @@
                 v-if="showConnectMetamask">Connect MetaMask</button>
         
         <button class="btn btn-default" role="button" name="signMessage" id="signMessage"
-                @click="onMessageSign"
-                v-if="showSignMessage">Sign Message</button>
+                @click="onAddressSign"
+                v-if="showSignAddress">Sign Address</button>
 
-        <div class="terminal-alert terminal-alert-primary"  v-if="!showSignMessage && !showConnectMetamask">Message signed, check private conversation with the bot</div>
+        <div class="terminal-alert terminal-alert-primary"  v-if="!showSignAddress && !showConnectMetamask">Address signed, check private conversation with the bot</div>
         
       </div>
       
@@ -41,7 +41,7 @@ import Web3Service from "../services/web3.service"
 import axios from 'axios'
 
 export default {
-  name: 'Introduction',
+  name: 'SignAddress',
   setup(){
     Web3Service.init();
     axios.defaults.baseURL = process.env.VUE_APP_BASE_API_URL;
@@ -51,20 +51,20 @@ export default {
     return {
       connected: false,
       signed: false,
-      signedMessage: null
+      signedAddress: null
     }
   },
   computed: {
     session() {
       return this.$route.params.session;
     },
-    message() {
-      return this.$route.params.message;
+    address() {
+      return this.$route.params.address;
     },
     showConnectMetamask() {
       return this.connected === false;
     },
-    showSignMessage() {
+    showSignAddress() {
       return this.connected === true && this.signed === false;
     }
   },
@@ -74,17 +74,17 @@ export default {
       
       this.connected = await Web3Service.connect();
     },
-    async onMessageSign(e)  {
+    async onAddressSign(e)  {
       if(e) e.preventDefault();
       
       const vm = this;
       
-      this.signedMessage = await Web3Service.sign(this.message);
+      this.signedAddress = await Web3Service.sign(this.message);
       
-      if (this.signedMessage) {
+      if (this.signedAddress) {
         axios.post('/api/webinput', {
           session: vm.session,
-          message: `/connect ${vm.signedMessage}`
+          message: `/connect ${vm.signedAddress}`
         })
         .then(() => {
           this.signed = true; 
@@ -98,18 +98,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
- .button {
-    background-color: #bbb;
-    display: block;
-    margin: 10px 0;
-    padding: 10px;
-    width: 100%;
-}
-
- .button:active:hover:not([disabled]) {
-   /*your styles*/
- }
- 
-</style>
