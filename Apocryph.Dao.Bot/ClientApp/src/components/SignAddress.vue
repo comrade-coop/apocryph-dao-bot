@@ -1,6 +1,5 @@
 <template>
  <section>
-  
   <form>
     <fieldset>
       <legend>Sign address</legend>
@@ -10,56 +9,40 @@
       </div>
        <div class="form-group">
         <label for="signedAddress">Signed address:</label>
-        <input id="signedAddress" name="signedAddress" type="text"
-               v-model="signedAddress" disabled>
+        <input id="signedAddress" name="signedAddress" type="text" v-model="signedAddress" disabled>
       </div>
-      
       <div class="form-group">
-      <div class="button-grid">
-        <button class="btn btn-default" role="button" name="connectMetamask" id="connectMetamask" 
-                @click="onConnect"
-                v-if="showConnectMetamask">Connect MetaMask</button>
-        
-        <button class="btn btn-default" role="button" name="signMessage" id="signMessage"
-                @click="onAddressSign"
-                v-if="showSignAddress">Sign Address</button>
-
-        <div class="terminal-alert terminal-alert-primary"  v-if="success">Address signed, check private conversation with the bot</div>
-        <div class="terminal-alert terminal-alert-error"  v-if="error">Failed to verify address</div>
-        
+        <div class="button-grid">
+          <button class="btn btn-default" role="button" name="connectMetamask" id="connectMetamask" 
+                  @click="onConnect"
+                  v-if="showConnectMetamask">Connect MetaMask</button>
+          
+          <button class="btn btn-default" role="button" name="signMessage" id="signMessage"
+                  @click="onAddressSign"
+                  v-if="showSignAddress">Sign Address</button>
+  
+          <div class="terminal-alert terminal-alert-primary"  v-if="success">Address signed, check private conversation with the bot</div>
+          <div class="terminal-alert terminal-alert-error"  v-if="error">Failed to verify address</div>
+        </div>
       </div>
-      
-      </div>
-
     </fieldset>
   </form>
 </section>
 </template>
-
  
 <script>
-import Web3Service from "../services/web3.service"
-//import SignalRService from "../services/signalr.service"
-import axios from 'axios'
-//import { useRoute } from 'vue-router'
 import {onMounted} from "vue";
-import SignalRService from "@/services/signalr.service";
-
-//const route = useRoute();
-//const session = route.params.session;
-axios.defaults.baseURL = process.env.VUE_APP_BASE_API_URL;
-//SignalRService.connect(process.env.VUE_APP_BASE_API_URL, session);
-// general problem, i need session and vue instance to start singlarR
+import Web3Service from "../services/web3.service"
+import signalR from "@/services/signalr";
+import axios from 'axios'
 
 export default {
   name: 'SignAddress',
   setup() {
-    
-    
+    axios.defaults.baseURL = process.env.VUE_APP_BASE_API_URL;
     onMounted(() => {
       Web3Service.init();
     });
-    
   },
   data() {
     return {
@@ -112,20 +95,16 @@ export default {
         });
       }
     },
-    onError() {
-      this.error = true;
-      this.success = false;
-    },
-    onSuccess() {
-      this.error = false;
-      this.success = true;
-    },
     initialize() {
-      console.log("initialize: " + this.$route.params.session);
-     
-      SignalRService.connect(process.env.VUE_APP_BASE_API_URL, this.$route.params.session);
-      SignalRService.subscribe(this, "onError");
-      SignalRService.subscribe(this, "onSuccess");
+      const vm = this;
+      signalR.connect(process.env.VUE_APP_BASE_API_URL, this.$route.params.session);
+      signalR.connection.on("onError", () => {
+        vm.error = true;
+      });
+
+      signalR.connection.on("onSuccess", () => {
+       vm.success = true;
+      });
     }
   },
   watch: {
@@ -133,6 +112,6 @@ export default {
   },
   created() {
     this.initialize();
-  },
+  }
 }
 </script>
