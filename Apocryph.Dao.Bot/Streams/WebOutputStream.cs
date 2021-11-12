@@ -22,12 +22,12 @@ namespace Apocryph.Dao.Bot.Streams
                 if (message is ErrorMessage error)
                     await _hubContext
                         .Clients.Group(error.Session)
-                        .SendAsync("OnError", error);
+                        .SendAsync("onError", error);
                 
                 else if(message is IntroConfirmationMessage confirmationMessage)
                     await _hubContext
                         .Clients.Group(confirmationMessage.Session)
-                        .SendAsync("OnSuccess", confirmationMessage);
+                        .SendAsync("onSuccess", confirmationMessage);
             }
         }
     }

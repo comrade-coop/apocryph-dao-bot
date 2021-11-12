@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading.Channels;
+using Apocryph.Dao.Bot.Hubs;
 using Apocryph.Dao.Bot.Infrastructure;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -99,8 +100,9 @@ namespace Apocryph.Dao.Bot
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<WebOutputHub>("/ws");
             });
-
+            
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = env.IsDevelopment() ? "ClientApp/" : "dist";
@@ -110,6 +112,7 @@ namespace Apocryph.Dao.Bot
                     spa.UseVueCli(npmScript: "serve");
                 }
             });
+             
         }
         
         public void ConfigureSwagger(IServiceCollection services, OpenApiInfo[] apiVersions)

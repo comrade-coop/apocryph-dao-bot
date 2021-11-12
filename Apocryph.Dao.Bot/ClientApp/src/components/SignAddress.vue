@@ -6,8 +6,7 @@
       <legend>Sign address</legend>
       <div class="form-group">
         <label for="address">Address:</label>
-        <input id="address" name="address" type="text"
-               v-model="address" disabled>
+        <input id="address" name="address" type="text" v-model="address" disabled>
       </div>
        <div class="form-group">
         <label for="signedAddress">Signed address:</label>
@@ -25,7 +24,8 @@
                 @click="onAddressSign"
                 v-if="showSignAddress">Sign Address</button>
 
-        <div class="terminal-alert terminal-alert-primary"  v-if="!showSignAddress && !showConnectMetamask">Address signed, check private conversation with the bot</div>
+        <div class="terminal-alert terminal-alert-primary"  v-if="success">Address signed, check private conversation with the bot</div>
+        <div class="terminal-alert terminal-alert-error"  v-if="error">Failed to verify address</div>
         
       </div>
       
@@ -36,22 +36,38 @@
 </section>
 </template>
 
+ 
 <script>
 import Web3Service from "../services/web3.service"
+//import SignalRService from "../services/signalr.service"
 import axios from 'axios'
+//import { useRoute } from 'vue-router'
+import {onMounted} from "vue";
+import SignalRService from "@/services/signalr.service";
+
+//const route = useRoute();
+//const session = route.params.session;
+axios.defaults.baseURL = process.env.VUE_APP_BASE_API_URL;
+//SignalRService.connect(process.env.VUE_APP_BASE_API_URL, session);
+// general problem, i need session and vue instance to start singlarR
 
 export default {
   name: 'SignAddress',
-  setup(){
-    Web3Service.init();
-    axios.defaults.baseURL = process.env.VUE_APP_BASE_API_URL;
-    console.log(axios.defaults.baseURL);
+  setup() {
+    
+    
+    onMounted(() => {
+      Web3Service.init();
+    });
+    
   },
   data() {
     return {
       connected: false,
       signed: false,
-      signedAddress: null
+      signedAddress: null,
+      success: false,
+      error: false
     }
   },
   computed: {
@@ -95,7 +111,28 @@ export default {
           alert(error);
         });
       }
+    },
+    onError() {
+      this.error = true;
+      this.success = false;
+    },
+    onSuccess() {
+      this.error = false;
+      this.success = true;
+    },
+    initialize() {
+      console.log("initialize: " + this.$route.params.session);
+     
+      SignalRService.connect(process.env.VUE_APP_BASE_API_URL, this.$route.params.session);
+      SignalRService.subscribe(this, "onError");
+      SignalRService.subscribe(this, "onSuccess");
     }
-  }
+  },
+  watch: {
+    '$route': 'initialize'
+  },
+  created() {
+    this.initialize();
+  },
 }
 </script>

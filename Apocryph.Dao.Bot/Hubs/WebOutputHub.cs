@@ -9,10 +9,7 @@ namespace Apocryph.Dao.Bot.Hubs
         {
             var httpContext = Context.GetHttpContext();
             var session = httpContext.Request.Query["session"];
-            if (Context.User.Identity.IsAuthenticated)
-            {
-                await Groups.AddToGroupAsync(Context.ConnectionId, session);
-            }
+            await Groups.AddToGroupAsync(Context.ConnectionId, session);
             
             await base.OnConnectedAsync();
         }
