@@ -19,7 +19,7 @@ namespace Apocryph.Dao.Bot.Streams
         {
             await foreach (var message in messages)
             {
-                if (message is IWebErrorOutboundMessage error)
+                if (message is ErrorMessage error)
                     await _hubContext
                         .Clients.Group(error.Session)
                         .SendAsync("OnError", error);

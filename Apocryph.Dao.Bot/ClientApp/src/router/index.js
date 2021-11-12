@@ -3,7 +3,7 @@ import SignAddress from "@/components/SignAddress.vue";
 
 const routes = [
     {
-        path: "/sign-address/:session/:message",
+        path: "/sign-address/:session/:address",
         name: "SignAddress",
         component: SignAddress,
     } 

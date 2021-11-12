@@ -79,12 +79,13 @@ export default {
       
       const vm = this;
       
-      this.signedAddress = await Web3Service.sign(this.message);
+      this.signedAddress = await Web3Service.sign(this.address);
       
       if (this.signedAddress) {
         axios.post('/api/webinput', {
           session: vm.session,
-          message: `/connect ${vm.signedAddress}`
+          signedAddress: vm.signedAddress,
+          address: vm.address
         })
         .then(() => {
           this.signed = true; 

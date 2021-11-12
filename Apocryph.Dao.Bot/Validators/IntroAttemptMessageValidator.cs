@@ -19,8 +19,8 @@ namespace Apocryph.Dao.Bot.Validators
                     {
                         context.AddFailure("Session", "Does not exist");
                     }
-                    
-                    var address = messageSigner.EncodeUTF8AndEcRecover(context.InstanceToValidate.Address, options.Value.MessageSignature);
+
+                    var address = messageSigner.EncodeUTF8AndEcRecover(context.InstanceToValidate.Address, context.InstanceToValidate.SignedAddress);
                     if(!address.Equals(context.InstanceToValidate.Address, StringComparison.InvariantCultureIgnoreCase))
                     {
                         context.AddFailure("Address", "Provided address is not valid");

@@ -17,6 +17,7 @@ using Apocryph.Dao.Bot.Infrastructure;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi.Models;
+using Nethereum.Signer;
 using VueCliMiddleware;
 
 namespace Apocryph.Dao.Bot
@@ -53,7 +54,8 @@ namespace Apocryph.Dao.Bot
             services.AddSingleton(Channel.CreateUnbounded<IWebInboundMessage>());
             services.AddSingleton(Channel.CreateUnbounded<IInboundMessage>());
             services.AddSingleton(Channel.CreateUnbounded<IOutboundMessage>());
-
+            services.AddSingleton<EthereumMessageSigner>();
+            
             services.AddSingleton(new DiscordSocketConfig());
             services.AddHostedService<DiscordProxyHostedService>();
 
@@ -63,6 +65,8 @@ namespace Apocryph.Dao.Bot
             {
                 configuration.RootPath = "ClientApp";
             });
+
+            services.AddSignalR();
             
             ConfigureSwagger(services, new[] {new OpenApiInfo {Title = "Api", Version = "v1"}});
         }
