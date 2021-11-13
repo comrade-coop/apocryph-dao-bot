@@ -20,13 +20,14 @@ namespace Apocryph.Dao.Bot.Calls
             var webInputStream = await _context.StreamFunctionAsync<IWebInboundMessage>(nameof(WebInputStream), Array.Empty<object>()).ConfigureAwait(false);
             
             // processor (returns IOutboundMessage)
-            //var introInquiryDialogStream = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(IntroInquiryDialogStream), new object[] { discordInputStream }).ConfigureAwait(false);
+            var introInquiryDialogStream = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(IntroInquiryDialogStream), new object[] { discordInputStream }).ConfigureAwait(false);
             var introAttemptDialogStream = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(IntroAttemptDialogStream), new object[] { webInputStream }).ConfigureAwait(false);
 
             await _context.StreamActionAsync(nameof(DiscordOutputStream),
                 new IStream[]
                 {
-                    introAttemptDialogStream
+                    introAttemptDialogStream,
+                    introInquiryDialogStream
                 });
 
             await _context.StreamActionAsync(nameof(WebOutputStream), 

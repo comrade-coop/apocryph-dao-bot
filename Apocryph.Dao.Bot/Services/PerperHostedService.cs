@@ -24,7 +24,7 @@ namespace Apocryph.Dao.Bot.Services
         public Task StartAsync(CancellationToken cancellationToken)
         {
             PerperStartup.ServiceProvider = _serviceProvider;
-            _task = PerperStartup.RunAsync($"{_agentName}-{Guid.NewGuid()}", _cancellationTokenSource.Token);
+            _task = PerperStartup.RunAsync($"{_agentName}", _cancellationTokenSource.Token);
             return Task.CompletedTask;
         }
 

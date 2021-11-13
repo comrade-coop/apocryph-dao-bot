@@ -18,9 +18,9 @@ namespace Apocryph.Dao.Bot.Streams
 
         public IntroInquiryDialogStream(IOptions<Configuration.Dao> options, IState state, IWeb3 web3)
         {
+            _messageValidator = new IntroInquiryMessageValidator(state, web3);
             _options = options;
             _state = state;
-            _messageValidator = new IntroInquiryMessageValidator(state, web3);
         }
 
         public async IAsyncEnumerable<IntroChallengeMessage> RunAsync(IAsyncEnumerable<IInboundMessage> messages)
@@ -30,7 +30,11 @@ namespace Apocryph.Dao.Bot.Streams
                 if (attempt is IntroInquiryMessage attemptMessage)
                 {
                     var result = await _messageValidator.ValidateAsync(attemptMessage, CancellationToken.None);
-                    var session = await _state.CreateSession(Guid.NewGuid().ToString("N"), attemptMessage.UserName, attemptMessage.UserId);
+                    
+                    var session = Guid.NewGuid().ToString("N");
+                    
+                    await _state.RegisterAddress(attemptMessage.UserName, attemptMessage.Address);
+                    await _state.CreateSession(session, attemptMessage.UserName, attemptMessage.UserId);
                     
                     if (result.IsValid)
                     {

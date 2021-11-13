@@ -163,10 +163,8 @@ namespace Apocryph.Dao.Bot.Services
         {
             _messageSender = Task.Factory.StartNew(async () =>
                 {
-                    while (await _outboundChannel.Reader.WaitToReadAsync(cancellationToken))
+                    await foreach (var message in _outboundChannel.Reader.ReadAllAsync(cancellationToken))
                     {
-                        var message = await _outboundChannel.Reader.ReadAsync(cancellationToken);
-
                         if (message is IntroChallengeMessage introChallengeMessage)
                         {
                             await _client

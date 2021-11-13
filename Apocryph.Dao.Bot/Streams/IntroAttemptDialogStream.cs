@@ -36,12 +36,14 @@ namespace Apocryph.Dao.Bot.Streams
                     
                     if (result.IsValid)
                     {
-                        var webSessionData = await _state.TryGetAsync<WebSessionData>(message.Session);
+                        var webSessionData = await _state.GetSession(message.Session);
                         
+                        await _state.SignAddress(webSessionData.UserName, introAttemptMessage.Address);
+                            
                         yield return new IntroConfirmationMessage(
                             Session: message.Session,
-                            UserName: webSessionData.Item2.UserName,
-                            UserId: webSessionData.Item2.UserId,
+                            UserName: webSessionData.UserName,
+                            UserId: webSessionData.UserId,
                             UrlTemplate: _options.Value.SignAddressUrlTemplate); 
                     
                         sessionLog.Information("Processed {@Message}", message);

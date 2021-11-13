@@ -21,11 +21,16 @@ namespace Apocryph.Dao.Bot.Validators
                     {
                         context.AddFailure("Address", "Address is invalid");
                     }
-                }).CustomAsync(async (userName, context, _) =>
+                }).CustomAsync(async (_, context, _) =>
                 {
-                    if (await state.IsUserConfirmed(userName))
+                    if (!await state.IsAddressAvailable(context.InstanceToValidate.UserName, context.InstanceToValidate.Address))
                     {
-                        context.AddFailure("UserName", "Username is confirmed already");
+                        context.AddFailure("Address", "Address already taken");
+                    }
+                    
+                    if (await state.IsAddressSigned(context.InstanceToValidate.UserName, context.InstanceToValidate.Address))
+                    {
+                        context.AddFailure("Address", "Address is confirmed already");
                     }
                 });
         }
