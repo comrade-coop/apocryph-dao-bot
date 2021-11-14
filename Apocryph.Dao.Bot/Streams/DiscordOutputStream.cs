@@ -16,9 +16,9 @@ namespace Apocryph.Dao.Bot.Streams
             _channel = channel;
         }
 
-        public async Task RunAsync(IAsyncEnumerable<IOutboundMessage> introInquiryDialogStream, IAsyncEnumerable<IOutboundMessage> introAttemptDialogStream)
+        public async Task RunAsync(IAsyncEnumerable<IOutboundMessage> introInquiryDialogStream, IAsyncEnumerable<IOutboundMessage> introAttemptDialogStream, IAsyncEnumerable<IOutboundMessage> getBalanceDialogStream)
         {
-            await foreach (var message in AsyncEnumerableEx.Merge(introInquiryDialogStream, introAttemptDialogStream))
+            await foreach (var message in AsyncEnumerableEx.Merge(introInquiryDialogStream, introAttemptDialogStream, getBalanceDialogStream))
             {
                 await _channel.Writer.WriteAsync(message, CancellationToken.None);
             }

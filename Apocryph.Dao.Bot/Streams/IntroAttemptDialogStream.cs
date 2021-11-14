@@ -38,7 +38,7 @@ namespace Apocryph.Dao.Bot.Streams
                     {
                         var webSessionData = await _state.GetSession(message.Session);
                         
-                        await _state.SignAddress(webSessionData.UserName, introAttemptMessage.Address);
+                        await _state.SignAddress(webSessionData.UserId, introAttemptMessage.Address);
                             
                         yield return new IntroConfirmationMessage(
                             Session: message.Session,
@@ -50,7 +50,7 @@ namespace Apocryph.Dao.Bot.Streams
                     }
                     else
                     {
-                        var errorMessage = new ErrorMessage(message.Session, result.Errors.Select(x => x.ErrorMessage).ToArray()); 
+                        var errorMessage = new ErrorMessage(message.Session, default, result.Errors.Select(x => x.ErrorMessage).ToArray()); 
                         yield return errorMessage;
                     
                         sessionLog.Information("Processed {@ErrorMessage}", errorMessage);

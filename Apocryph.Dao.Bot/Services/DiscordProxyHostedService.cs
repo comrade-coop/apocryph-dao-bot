@@ -60,6 +60,12 @@ namespace Apocryph.Dao.Bot.Services
             {
                 var address = tokens[1];
                 await _inboundChannel.Writer.WriteAsync(new IntroInquiryMessage(message.Author.Username, message.Author.Id, address));
+                return;
+            }
+            
+            if (tokens[0] == "/balance")
+            {
+                await _inboundChannel.Writer.WriteAsync(new GetBalanceMessage(message.Author.Id));
             }
             
             return;
@@ -165,19 +171,9 @@ namespace Apocryph.Dao.Bot.Services
                 {
                     await foreach (var message in _outboundChannel.Reader.ReadAllAsync(cancellationToken))
                     {
-                        if (message is IntroChallengeMessage introChallengeMessage)
-                        {
-                            await _client
-                                .GetUser(introChallengeMessage.UserId)
-                                .SendMessageAsync(introChallengeMessage.DisplayOutput());
-                        }
-                        
-                        if (message is IntroConfirmationMessage introConfirmationMessage)
-                        {
-                            await _client
-                                .GetUser(introConfirmationMessage.UserId)
-                                .SendMessageAsync(introConfirmationMessage.DisplayOutput());
-                        }
+                        await _client
+                            .GetUser(message.UserId)
+                            .SendMessageAsync(message.DisplayOutput());
                     }
                 },
                 cancellationToken,

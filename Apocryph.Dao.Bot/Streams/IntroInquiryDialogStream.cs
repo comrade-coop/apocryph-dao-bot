@@ -25,15 +25,15 @@ namespace Apocryph.Dao.Bot.Streams
 
         public async IAsyncEnumerable<IntroChallengeMessage> RunAsync(IAsyncEnumerable<IInboundMessage> messages)
         {
-            await foreach (var attempt in messages)
+            await foreach (var message in messages)
             {
-                if (attempt is IntroInquiryMessage attemptMessage)
+                if (message is IntroInquiryMessage attemptMessage)
                 {
                     var result = await _messageValidator.ValidateAsync(attemptMessage, CancellationToken.None);
                     
                     var session = Guid.NewGuid().ToString("N");
                     
-                    await _state.RegisterAddress(attemptMessage.UserName, attemptMessage.Address);
+                    await _state.RegisterAddress(attemptMessage.UserId, attemptMessage.Address);
                     await _state.CreateSession(session, attemptMessage.UserName, attemptMessage.UserId);
                     
                     if (result.IsValid)

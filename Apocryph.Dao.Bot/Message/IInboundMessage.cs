@@ -2,6 +2,5 @@
 {
     public interface IInboundMessage
     {
-        void Load(string from, string message);
     }
 }

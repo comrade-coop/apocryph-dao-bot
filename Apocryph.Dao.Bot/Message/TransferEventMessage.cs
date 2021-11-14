@@ -11,9 +11,11 @@ namespace Apocryph.Dao.Bot.Message
 
         public BigInteger Amount { get; set; }
 
+        public ulong UserId { get; init; }
+
         public string DisplayOutput()
         {
-            return $"{Sender} has just transfered {Amount} CRYPH to {Receiver}";
+            return $"{Sender} has just transfer {Amount} CRYPH to {Receiver}";
         }
 
         public string[] Errors { get; }

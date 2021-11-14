@@ -2,6 +2,7 @@
 {
     public interface IOutboundMessage
     {
+        ulong UserId { get; init; }
         string DisplayOutput(); 
     }
 }

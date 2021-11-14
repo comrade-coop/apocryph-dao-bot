@@ -19,6 +19,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi.Models;
 using Nethereum.Signer;
+using Nethereum.StandardTokenEIP20;
 using VueCliMiddleware;
 
 namespace Apocryph.Dao.Bot
@@ -51,6 +52,12 @@ namespace Apocryph.Dao.Bot
                 TransactionManager = { UseLegacyAsDefault = false }
             });
 
+            
+            services.AddSingleton(new StandardTokenService(new Web3(Configuration["Ethereum:Web3Url"])
+            {
+                TransactionManager = { UseLegacyAsDefault = false }
+            }, Configuration["Ethereum:TokenAddress"]));
+            
             services.AddSingleton(Configuration);
             services.AddSingleton(Channel.CreateUnbounded<IWebInboundMessage>());
             services.AddSingleton(Channel.CreateUnbounded<IInboundMessage>());
