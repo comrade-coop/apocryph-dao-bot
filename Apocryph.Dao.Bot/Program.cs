@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace Apocryph.Dao.Bot
 {
@@ -21,6 +22,11 @@ namespace Apocryph.Dao.Bot
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureLogging((_, logging) =>
+                {
+                    logging.ClearProviders();
+                    logging.AddSerilog();
                 });
     }
 }

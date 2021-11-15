@@ -119,7 +119,6 @@ namespace Apocryph.Dao.Bot
                     spa.UseVueCli(npmScript: "serve");
                 }
             });
-             
         }
         
         public void ConfigureSwagger(IServiceCollection services, OpenApiInfo[] apiVersions)

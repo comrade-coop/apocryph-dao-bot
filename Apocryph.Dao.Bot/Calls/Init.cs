@@ -1,7 +1,6 @@
 using Apocryph.Dao.Bot.Streams;
 using Perper.Model;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Apocryph.Dao.Bot.Message;
 

@@ -10,7 +10,6 @@ namespace Apocryph.Dao.Bot.Services
     {
         private readonly string _agentName;
         private readonly IServiceProvider _serviceProvider;
-        private readonly CancellationTokenSource _cancellationTokenSource;
 
         private Task _task;
         
@@ -18,20 +17,19 @@ namespace Apocryph.Dao.Bot.Services
         {
             _agentName = agentName;
             _serviceProvider = serviceProvider;
-            _cancellationTokenSource = new CancellationTokenSource();
         }
         
         public Task StartAsync(CancellationToken cancellationToken)
         {
             PerperStartup.ServiceProvider = _serviceProvider;
-            _task = PerperStartup.RunAsync($"{_agentName}", _cancellationTokenSource.Token);
+            //_task = PerperStartup.RunAsync($"{_agentName}", cancellationToken);
             return Task.CompletedTask;
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-            _cancellationTokenSource.Cancel();
-            await Task.WhenAny(_task, Task.Delay(Timeout.Infinite, cancellationToken));
+            //_task.Dispose();
+            await Task.CompletedTask;
         }
     }
 }
