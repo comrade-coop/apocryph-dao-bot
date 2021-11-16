@@ -18,7 +18,7 @@ namespace Apocryph.Dao.Bot.Message
             return $"{Sender} has just transfer {Amount} CRYPH to {Receiver}";
         }
 
-        public string[] Errors { get; }
+        public string[] Errors { get; init; }
         
         public bool IsValid()
         {

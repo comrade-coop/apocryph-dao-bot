@@ -35,7 +35,12 @@
       "ProjectGuid": "d8058d5f-2267-42d9-a0b0-a55193db0864",
       "DisplayName": "Apocryph.Dao.Bot.Discord",
       "ColorIndex": 5
+    },
+    "ab5086a7-464d-4910-a88e-60c2f07f824f": {
+      "ProjectGuid": "ab5086a7-464d-4910-a88e-60c2f07f824f",
+      "DisplayName": "Apocryph.Dao.Bot.Tests",
+      "ColorIndex": 6
     }
   },
-  "NextColorIndex": 6
+  "NextColorIndex": 7
 }

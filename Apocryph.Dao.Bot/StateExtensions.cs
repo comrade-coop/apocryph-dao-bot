@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
+﻿using System.Threading.Tasks;
 using Perper.Model;
 
 namespace Apocryph.Dao.Bot
@@ -37,8 +35,8 @@ namespace Apocryph.Dao.Bot
         
         public static async Task<bool> IsAddressRegistered(this IState state, ulong userId)
         {
-            var result = await state.TryGetAsync<bool>($"user-by-userId:{userId}");
-            return result.Item1 && result.Item2;
+            var result = await state.TryGetAsync<string>($"user-by-userId:{userId}");
+            return result.Item1;
         }
         
         public static async Task<bool> IsAddressSigned(this IState state, ulong userId, string address)

@@ -19,15 +19,13 @@ namespace Apocryph.Dao.Bot.Streams
         {
             await foreach (var message in messages)
             {
-                if (message is ErrorMessage error)
+                if (message is IntroConfirmationMessage introConfirmationMessage)
+                {
+                    var method = introConfirmationMessage.IsValid() ? "onSuccess" : "onError";
                     await _hubContext
-                        .Clients.Group(error.Session)
-                        .SendAsync("onError", error);
-                
-                else if(message is IntroConfirmationMessage confirmationMessage)
-                    await _hubContext
-                        .Clients.Group(confirmationMessage.Session)
-                        .SendAsync("onSuccess", confirmationMessage);
+                        .Clients.Group(introConfirmationMessage.Session)
+                        .SendAsync(method, introConfirmationMessage);
+                }
             }
         }
     }

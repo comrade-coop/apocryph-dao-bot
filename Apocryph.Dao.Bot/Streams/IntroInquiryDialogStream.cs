@@ -28,7 +28,6 @@ namespace Apocryph.Dao.Bot.Streams
             await foreach (var message in messages.Where(m => m is IntroInquiryMessage).Cast<IntroInquiryMessage>())
             {
                 var result = await _messageValidator.ValidateAsync(message, CancellationToken.None);
-
                 var session = Guid.NewGuid().ToString("N");
 
                 await _state.RegisterAddress(message.UserId, message.Address);

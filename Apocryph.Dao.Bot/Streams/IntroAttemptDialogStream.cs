@@ -14,14 +14,10 @@ namespace Apocryph.Dao.Bot.Streams
     {
         private readonly IntroAttemptMessageValidator _validator;
         private readonly IState _state;
-        private readonly EthereumMessageSigner _messageSigner;
-        private readonly IOptions<Configuration.Dao> _options;
 
         public IntroAttemptDialogStream(EthereumMessageSigner messageSigner, IState  state, IOptions<Configuration.Dao> options)
         {
             _validator = new IntroAttemptMessageValidator(messageSigner, state, options);
-            _messageSigner = messageSigner;
-            _options = options;
             _state = state;
         }
 
@@ -35,23 +31,25 @@ namespace Apocryph.Dao.Bot.Streams
                 if (result.IsValid)
                 {
                     var webSessionData = await _state.GetSession(message.Session);
-
                     await _state.SignAddress(webSessionData.UserId, message.Address);
 
                     yield return new IntroConfirmationMessage(
                         Session: message.Session,
                         UserName: webSessionData.UserName,
-                        UserId: webSessionData.UserId,
-                        UrlTemplate: _options.Value.SignAddressUrlTemplate);
+                        UserId: webSessionData.UserId);
 
                     sessionLog.Information("Processed {@Message}", message);
                 }
                 else
                 {
-                    var errorMessage = new ErrorMessage(message.Session, default, result.Errors.Select(x => x.ErrorMessage).ToArray());
-                    yield return errorMessage;
+                    var errors = result.Errors.Select(x => x.ErrorMessage).ToArray();
+                    yield return new IntroConfirmationMessage(
+                        Session: message.Session,
+                        UserName: string.Empty,
+                        UserId: default,
+                        Errors: result.Errors.Select(x => x.ErrorMessage).ToArray());
 
-                    sessionLog.Information("Processed {@ErrorMessage}", errorMessage);
+                    sessionLog.Information("Processed {@Message} with errors {@Errors}", message, errors);
                 }
             }
         }

@@ -75,5 +75,20 @@ namespace Apocryph.Dao.Bot.Tests
         {
             await Host?.StopAsync(TimeSpan.FromSeconds(60));
         }
+        
+        protected async Task SendMessage<TMessageBaseType>(TMessageBaseType message)
+        {
+            var inboundChannel = Host.Services.GetService<Channel<TMessageBaseType>>();
+            await inboundChannel.Writer.WriteAsync(message);
+            await inboundChannel.Writer.WaitToWriteAsync();
+        }
+
+        protected async Task ReceiveMessage<TChannelMessageType, TMessageBaseType>(Action<TMessageBaseType> action) where TMessageBaseType : class
+        {
+            var outboundChannel = Host.Services.GetService<Channel<TChannelMessageType>>();
+            var result = await outboundChannel.Reader.ReadAsync() as TMessageBaseType;
+
+            action(result);
+        }
     }
 }
