@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using Apocryph.Dao.Bot.Calls;
 using Apocryph.Dao.Bot.Message;
 using Apocryph.Dao.Bot.Services;
 using Microsoft.Extensions.Configuration;
@@ -56,7 +58,7 @@ namespace Apocryph.Dao.Bot.Tests
                     services.AddSingleton(Channel.CreateUnbounded<IInboundMessage>());
                     services.AddSingleton(Channel.CreateUnbounded<IOutboundMessage>());
                     services.AddSingleton<EthereumMessageSigner>();
-                    services.AddHostedService(serviceProvider => new PerperHostedService(serviceProvider, $"apocryph-dao-bot-testing-{Guid.NewGuid()}"));
+                    services.AddHostedService(serviceProvider => new PerperHostedService(serviceProvider, $"apocryph-dao-bot-testing-{Guid.NewGuid()}", typeof(Init).Assembly));
                 })
                 .ConfigureLogging((_, logging) =>
                 {

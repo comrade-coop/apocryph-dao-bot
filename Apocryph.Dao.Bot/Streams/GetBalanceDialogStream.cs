@@ -28,41 +28,37 @@ namespace Apocryph.Dao.Bot.Streams
 
         public async IAsyncEnumerable<IOutboundMessage> RunAsync(IAsyncEnumerable<IInboundMessage> messages)
         {
-            await foreach (var message in messages)
+            await foreach (var message in messages.Where(m => m is GetBalanceMessage).Cast<GetBalanceMessage>())
             {
-                IOutboundMessage outputMessage = new ErrorMessage(default, default, default); 
-
+                IOutboundMessage outputMessage = new ErrorMessage(default, default, default);
                 try
                 {
-                    if (message is GetBalanceMessage getBalanceMessage)
+                    var balanceLog = Log.ForContext("Session", message.UserId);
+
+                    var result = await _validator.ValidateAsync(message);
+                    if (result.IsValid)
                     {
-                        var balanceLog = Log.ForContext("Session", getBalanceMessage.UserId);
-                    
-                        var result = await _validator.ValidateAsync(getBalanceMessage);
-                        if (result.IsValid)
-                        {
-                            var address = await _state.GetAddress(getBalanceMessage.UserId);
-                            var senderBalance = await _tokenService.BalanceOfQueryAsync(address);
-                            outputMessage = new BalanceMessage(
-                                UserId: getBalanceMessage.UserId,
-                                Amount: UnitConversion.Convert.FromWei(senderBalance)); 
-                        
-                            balanceLog.Information("Processed {@Message}", getBalanceMessage);
-                        }
-                        else
-                        {
-                            var errorMessage = new ErrorMessage(default, getBalanceMessage.UserId, result.Errors.Select(x => x.ErrorMessage).ToArray()); 
-                            outputMessage = errorMessage;
-                        
-                            balanceLog.Information("Processed {@ErrorMessage}", errorMessage);
-                        }
+                        var address = await _state.GetAddress(message.UserId);
+                        var senderBalance = await _tokenService.BalanceOfQueryAsync(address);
+                        outputMessage = new BalanceMessage(
+                            UserId: message.UserId,
+                            Amount: UnitConversion.Convert.FromWei(senderBalance));
+
+                        balanceLog.Information("Processed {@Message}", message);
+                    }
+                    else
+                    {
+                        var errorMessage = new ErrorMessage(default, message.UserId, result.Errors.Select(x => x.ErrorMessage).ToArray());
+                        outputMessage = errorMessage;
+
+                        balanceLog.Information("Processed {@ErrorMessage}", errorMessage);
                     }
                 }
                 catch (Exception ex)
                 {
-                   Log.Error(ex, "Failed to process {@Message}", message);
+                    Log.Error(ex, "Failed to process {@Message}", message);
                 }
-              
+
                 yield return outputMessage;
             }
         }

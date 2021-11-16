@@ -25,37 +25,34 @@ namespace Apocryph.Dao.Bot.Streams
 
         public async IAsyncEnumerable<IntroChallengeMessage> RunAsync(IAsyncEnumerable<IInboundMessage> messages)
         {
-            await foreach (var message in messages)
+            await foreach (var message in messages.Where(m => m is IntroInquiryMessage).Cast<IntroInquiryMessage>())
             {
-                if (message is IntroInquiryMessage attemptMessage)
+                var result = await _messageValidator.ValidateAsync(message, CancellationToken.None);
+
+                var session = Guid.NewGuid().ToString("N");
+
+                await _state.RegisterAddress(message.UserId, message.Address);
+                await _state.CreateSession(session, message.UserName, message.UserId);
+
+                if (result.IsValid)
                 {
-                    var result = await _messageValidator.ValidateAsync(attemptMessage, CancellationToken.None);
-                    
-                    var session = Guid.NewGuid().ToString("N");
-                    
-                    await _state.RegisterAddress(attemptMessage.UserId, attemptMessage.Address);
-                    await _state.CreateSession(session, attemptMessage.UserName, attemptMessage.UserId);
-                    
-                    if (result.IsValid)
-                    {
-                        yield return new IntroChallengeMessage(
-                            Session: session,
-                            UserName: attemptMessage.UserName,
-                            UserId: attemptMessage.UserId,
-                            Address: attemptMessage.Address, 
-                            UrlTemplate: _options.Value.SignAddressUrlTemplate,
-                            Errors: result.Errors.Select(x => x.ErrorMessage).ToArray()); 
-                    }
-                    else
-                    {
-                        yield return new IntroChallengeMessage(
-                            Session: session,
-                            UserName: attemptMessage.UserName,
-                            UserId: attemptMessage.UserId,
-                            Address: attemptMessage.Address,
-                            UrlTemplate: _options.Value.SignAddressUrlTemplate,
-                            Errors: result.Errors.Select(x => x.ErrorMessage).ToArray());
-                    }
+                    yield return new IntroChallengeMessage(
+                        Session: session,
+                        UserName: message.UserName,
+                        UserId: message.UserId,
+                        Address: message.Address,
+                        UrlTemplate: _options.Value.SignAddressUrlTemplate,
+                        Errors: result.Errors.Select(x => x.ErrorMessage).ToArray());
+                }
+                else
+                {
+                    yield return new IntroChallengeMessage(
+                        Session: session,
+                        UserName: message.UserName,
+                        UserId: message.UserId,
+                        Address: message.Address,
+                        UrlTemplate: _options.Value.SignAddressUrlTemplate,
+                        Errors: result.Errors.Select(x => x.ErrorMessage).ToArray());
                 }
             }
         }

@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   obecto.perper.fabric:
-    image: obecto/perper-fabric:alpha
+    image: obecto/perper-fabric:0.7.0
     ports:
     - "10800:10800"
     - "40400:40400"

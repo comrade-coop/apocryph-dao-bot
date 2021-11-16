@@ -27,34 +27,31 @@ namespace Apocryph.Dao.Bot.Streams
 
         public async IAsyncEnumerable<IOutboundMessage> RunAsync(IAsyncEnumerable<IWebInboundMessage> messages)
         {
-            await foreach (var message in messages)
+            await foreach (var message in messages.Where(m => m is IntroAttemptMessage).Cast<IntroAttemptMessage>())
             {
-                if (message is IntroAttemptMessage introAttemptMessage)
+                var sessionLog = Log.ForContext("Session", message.Session);
+                var result = await _validator.ValidateAsync(message, CancellationToken.None);
+
+                if (result.IsValid)
                 {
-                    var sessionLog = Log.ForContext("Session", message.Session);
-                    var result = await _validator.ValidateAsync(introAttemptMessage, CancellationToken.None);
-                    
-                    if (result.IsValid)
-                    {
-                        var webSessionData = await _state.GetSession(message.Session);
-                        
-                        await _state.SignAddress(webSessionData.UserId, introAttemptMessage.Address);
-                            
-                        yield return new IntroConfirmationMessage(
-                            Session: message.Session,
-                            UserName: webSessionData.UserName,
-                            UserId: webSessionData.UserId,
-                            UrlTemplate: _options.Value.SignAddressUrlTemplate); 
-                    
-                        sessionLog.Information("Processed {@Message}", message);
-                    }
-                    else
-                    {
-                        var errorMessage = new ErrorMessage(message.Session, default, result.Errors.Select(x => x.ErrorMessage).ToArray()); 
-                        yield return errorMessage;
-                    
-                        sessionLog.Information("Processed {@ErrorMessage}", errorMessage);
-                    }
+                    var webSessionData = await _state.GetSession(message.Session);
+
+                    await _state.SignAddress(webSessionData.UserId, message.Address);
+
+                    yield return new IntroConfirmationMessage(
+                        Session: message.Session,
+                        UserName: webSessionData.UserName,
+                        UserId: webSessionData.UserId,
+                        UrlTemplate: _options.Value.SignAddressUrlTemplate);
+
+                    sessionLog.Information("Processed {@Message}", message);
+                }
+                else
+                {
+                    var errorMessage = new ErrorMessage(message.Session, default, result.Errors.Select(x => x.ErrorMessage).ToArray());
+                    yield return errorMessage;
+
+                    sessionLog.Information("Processed {@ErrorMessage}", errorMessage);
                 }
             }
         }
