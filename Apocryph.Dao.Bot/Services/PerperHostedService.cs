@@ -22,13 +22,17 @@ namespace Apocryph.Dao.Bot.Services
         public Task StartAsync(CancellationToken cancellationToken)
         {
             PerperStartup.ServiceProvider = _serviceProvider;
-            //_task = PerperStartup.RunAsync($"{_agentName}", cancellationToken);
+            _task = PerperStartup.RunAsync($"{_agentName}", cancellationToken);
             return Task.CompletedTask;
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-            //_task.Dispose();
+            if (_task.Status == TaskStatus.Running)
+            {
+                _task.Dispose();    
+            }
+            
             await Task.CompletedTask;
         }
     }
