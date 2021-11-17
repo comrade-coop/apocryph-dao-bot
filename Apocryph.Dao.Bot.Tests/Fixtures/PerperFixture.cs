@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using Apocryph.Dao.Bot.Calls;
@@ -15,7 +14,7 @@ using Nethereum.Web3;
 using NUnit.Framework;
 using Serilog;
 
-namespace Apocryph.Dao.Bot.Tests
+namespace Apocryph.Dao.Bot.Tests.Fixtures
 {
     public class PerperFixture
     {

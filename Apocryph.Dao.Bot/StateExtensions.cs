@@ -5,22 +5,26 @@ namespace Apocryph.Dao.Bot
 {
     public static class StateExtensions
     {
+        public static string AddressToUser(string address) => $"address-to-user:{address.ToLower()}";
+        public static string UserByUserId(ulong userId) => $"user-by-userId:{userId}";
+        public static string UserByUserIdAddress(ulong userId, string address) => $"user-by-userId-address:{userId}:{address.ToLower()}";
+        
         public static async Task RegisterAddress(this IState state, ulong userId, string address)
         {
-            await state.SetAsync($"address-to-user:{address.ToLower()}", userId);
-            await state.SetAsync($"user-by-userId:{userId}", address.ToLower());
-            await state.SetAsync($"user-by-userId-address:{userId}:{address.ToLower()}",   false);
+            await state.SetAsync(AddressToUser(address), userId);
+            await state.SetAsync(UserByUserId(userId), address.ToLower());
+            await state.SetAsync(UserByUserIdAddress(userId, address), false);
         }
         
         public static async Task<string> GetAddress(this IState state, ulong userId)
         {
-            var result = await state.TryGetAsync<string>($"user-by-userId:{userId}");
+            var result = await state.TryGetAsync<string>(UserByUserId(userId));
             return result.Item2;
         }
         
         public static async Task<bool> IsAddressAvailable(this IState state, ulong userId, string address)
         {
-            var user = await state.TryGetAsync<ulong>($"address-to-user:{address.ToLower()}");
+            var user = await state.TryGetAsync<ulong>(AddressToUser(address));
             
             if (user.Item1)
             {
@@ -35,19 +39,19 @@ namespace Apocryph.Dao.Bot
         
         public static async Task<bool> IsAddressRegistered(this IState state, ulong userId)
         {
-            var result = await state.TryGetAsync<string>($"user-by-userId:{userId}");
+            var result = await state.TryGetAsync<string>(UserByUserId(userId));
             return result.Item1;
         }
         
         public static async Task<bool> IsAddressSigned(this IState state, ulong userId, string address)
         {
-            var result = await state.TryGetAsync<bool>($"user-by-userId-address:{userId}:{address.ToLower()}");
+            var result = await state.TryGetAsync<bool>(UserByUserIdAddress(userId, address));
             return result.Item1 && result.Item2;
         }
         
         public static async Task SignAddress(this IState state, ulong userId, string address)
         {
-            await state.SetAsync($"user-by-userId-address:{userId}:{address.ToLower()}", true);
+            await state.SetAsync(UserByUserIdAddress(userId, address), true);
         }
 
         public static async Task CreateSession(this IState state, string session, string userName, ulong userId)
@@ -69,6 +73,4 @@ namespace Apocryph.Dao.Bot
     }
     
     public record WebSessionData(string UserName, ulong UserId);
-
-    public record UserAddress(string Address, string UserName, bool IsConfirmed);
 }

@@ -10,9 +10,18 @@ namespace Apocryph.Dao.Bot.Validators
         {
             RuleFor(x => x.UserId).CustomAsync(async (_, context, _) =>
             {
-                if (!await state.IsAddressRegistered(context.InstanceToValidate.UserId))
+                var result = await state.TryGetAsync<string>(StateExtensions.UserByUserId(context.InstanceToValidate.UserId));
+
+                if (!result.Item1)
                 {
                     context.AddFailure("UserId", "Address has not been registered");
+                }
+                else
+                {
+                    if (!await state.IsAddressSigned(context.InstanceToValidate.UserId, result.Item2))
+                    {
+                        context.AddFailure("UserId", "Address has not been confirmed");
+                    }
                 }
             });
         }
