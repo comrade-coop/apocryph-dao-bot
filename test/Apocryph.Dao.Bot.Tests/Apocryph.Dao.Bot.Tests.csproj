@@ -13,10 +13,6 @@
         <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
         <PackageReference Include="coverlet.collector" Version="3.0.2" />
     </ItemGroup>
-    
-    <ItemGroup>
-      <ProjectReference Include="..\Apocryph.Dao.Bot\Apocryph.Dao.Bot.csproj" />
-    </ItemGroup>
 
     <ItemGroup>
       <Content Include="appsettings.Development.json">
@@ -29,6 +25,10 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Apocryph.Dao.Bot\Apocryph.Dao.Bot.csproj" />
     </ItemGroup>
 
 </Project>

@@ -52,11 +52,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\perper\agent\dotnet\src\Perper\Perper.csproj" />
+    <Folder Include="ClientApp\src\assets" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ClientApp\src\assets" />
+    <ProjectReference Include="..\..\perper\agent\dotnet\src\Perper\Perper.csproj" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
