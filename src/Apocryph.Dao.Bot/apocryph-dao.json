@@ -1,0 +1,72 @@
+{
+  "network": "rinkeby",
+  "networkUrl": "https://eth-rinkeby.alchemyapi.io/v2/Zma90mOZeCCU43EM6tXGqtBNI5qTZ7Ct",
+  "startBlock": 9261147,
+  "contracts": {
+    "deployer": {
+      "type": "Fixed",
+      "name": "Deployer",
+      "address": "0xC498341E8568aCeec2CAD95e326A2f72572FBB05"
+    },
+    "comrade": {
+      "type": "Fixed",
+      "name": "Comrade",
+      "address": "0xAE8687d444511a595Cc1EAdbFc1dFe58eB639C5f"
+    },
+    "coreTeam_TK": {
+      "type": "Fixed",
+      "name": "@todorkolev",
+      "address": "0xa9b4503992c2baFc8126de2F06B17D0De4495927"
+    },
+    "coreTeam_BA": {
+      "type": "Fixed",
+      "name": "@branimirangelov",
+      "address": "0xC498341E8568aCeec2CAD95e326A2f72572FBB05"
+    },
+    "coreTeam_BM": {
+      "type": "Fixed",
+      "name": "@bojidar-bg",
+      "address": "0x4019cC8D534BC620e022e9C5002770e068F32871"
+    },
+    "bondingCurveToken": {
+      "type": "FixedERC20",
+      "name": "Bonding Curve Buy Token",
+      "address": "0x4aC0f506beA54cE63D60839C09Bed20bb8c82636"
+    },
+    "coreTeamGroup": {
+      "type": "DelegatedGroup",
+      "name": "Core Team",
+      "address": "0xc53C229e70DD11A3aa1E75f0d42116F73a012C94"
+    },
+    "coreTeam": {
+      "type": "Voting",
+      "name": "Core Team",
+      "address": "0x38Ba6a12Ab9537e718d3214beA6643FFDA7D3E69"
+    },
+    "apocryphToken": {
+      "type": "TokenAgeToken",
+      "name": "Apocryph Token",
+      "address": "0x9dD91B7aD73B5219F3859E4Ef63B749709FB8e92"
+    },
+    "vesting": {
+      "type": "Vesting",
+      "name": "Apocryph Token",
+      "address": "0x14591Fff0d3Bb150Bd27360180900f3CDE81e685"
+    },
+    "apocryph": {
+      "type": "Voting",
+      "name": "Apocryph DAO",
+      "address": "0xF1eBacf9656fB06B837C1D1a9cE9E06E2897Bcf8"
+    },
+    "apocryphAllocations": {
+      "type": "Allocations",
+      "name": "Apocryph DAO",
+      "address": "0x9dEF5e7D112f861B89ce942B07624740ce304b18"
+    },
+    "bondingCurve": {
+      "type": "BondingCurve",
+      "name": "Apocryph Bonding Curve",
+      "address": "0x9cF5633D9C18A6F113F7138B36Ca2647d7b61491"
+    }
+  }
+}
