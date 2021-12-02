@@ -11,6 +11,7 @@ using Nethereum.Web3;
 using Serilog;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Channels;
 using Apocryph.Dao.Bot.Hubs;
@@ -18,8 +19,11 @@ using Apocryph.Dao.Bot.Infrastructure;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi.Models;
+using Nethereum.HdWallet;
 using Nethereum.Signer;
 using Nethereum.StandardTokenEIP20;
+using Nethereum.Web3.Accounts;
+using Nethereum.Web3.Accounts.Managed;
 using VueCliMiddleware;
 
 namespace Apocryph.Dao.Bot
@@ -47,16 +51,28 @@ namespace Apocryph.Dao.Bot
             services.AddOptions()
                 .Configure<Configuration.Dao>(Configuration.GetSection("Dao"));
 
-            services.AddSingleton<IWeb3>(new Web3(Configuration["Ethereum:Web3Url"])
-            {
-                TransactionManager = { UseLegacyAsDefault = false }
-            });
-
+            services.AddOptions()
+                .Configure<Configuration.Airdrop>(Configuration.GetSection("Airdrop"));
             
-            services.AddSingleton(new StandardTokenService(new Web3(Configuration["Ethereum:Web3Url"])
+            var managedAccount = new ManagedAccount(
+                Configuration["Airdrop:Wallet:Address"], 
+                Configuration["Airdrop:Wallet:PrivateKey"]);
+            
+            var web3 = new Web3(managedAccount, Configuration["Ethereum:Web3Url"])
             {
                 TransactionManager = { UseLegacyAsDefault = false }
-            }, Configuration["Ethereum:TokenAddress"]));
+            };
+            
+            services.AddSingleton<IWeb3>(web3);
+            
+            var tokenService = new StandardTokenService(web3, Configuration["Ethereum:TokenAddress"]);
+            var currentAllowance = tokenService.AllowanceQueryAsync(
+                    Configuration["Airdrop:Tent:SourceAddress"],
+                    Configuration["Ethereum:TokenAddress"])
+                .GetAwaiter()
+                .GetResult();
+                    
+            services.AddSingleton(tokenService);
             
             services.AddSingleton(Configuration);
             services.AddSingleton(Channel.CreateUnbounded<IWebInboundMessage>());

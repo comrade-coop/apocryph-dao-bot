@@ -2,13 +2,13 @@
 
 namespace Apocryph.Dao.Bot.Message
 {
-    public record IntroConfirmationMessage(string Session, string UserName, ulong UserId, params string[] Errors) : IOutboundMessage
+    public record AirdropConfirmationMessage(ulong UserId, decimal Amount, string TxHash, params string[] Errors) : IOutboundMessage
     {
         public string DisplayOutput()
         {
             if (!Errors.Any())
             {
-                return MessageResources.IntroConfirmationMessage_OnSuccess;
+                return string.Format(MessageResources.AirdropConfirmationMessage_OnSuccess, Amount, TxHash);
             }
 
             return string.Format(MessageResources.GenericMessage_OnFailure, ((IOutboundMessage)this).ErrorsStr);

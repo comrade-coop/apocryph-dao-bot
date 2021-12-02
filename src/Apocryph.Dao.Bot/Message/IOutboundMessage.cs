@@ -6,7 +6,7 @@ namespace Apocryph.Dao.Bot.Message
     {
         ulong UserId { get; init; }
         string[] Errors { get; init; }
-        bool IsValid();
-        string DisplayOutput(); 
+        string DisplayOutput();
+        public string ErrorsStr => string.Join(", ", Errors);
     }
 }

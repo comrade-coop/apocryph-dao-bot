@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Apocryph.Dao.Bot.Hubs;
 using Apocryph.Dao.Bot.Message;
@@ -21,7 +22,7 @@ namespace Apocryph.Dao.Bot.Streams
             {
                 if (message is IntroConfirmationMessage introConfirmationMessage)
                 {
-                    var method = introConfirmationMessage.IsValid() ? "onSuccess" : "onError";
+                    var method = !introConfirmationMessage.Errors.Any() ? "onSuccess" : "onError";
                     await _hubContext
                         .Clients.Group(introConfirmationMessage.Session)
                         .SendAsync(method, introConfirmationMessage);

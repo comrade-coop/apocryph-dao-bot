@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Apocryph.Dao.Bot.Message
 {
@@ -7,18 +6,13 @@ namespace Apocryph.Dao.Bot.Message
     {
         public string DisplayOutput()
         {
-            if (IsValid())
+            if (!Errors.Any())
             {
                 var url = string.Format(UrlTemplate, Session, Address);
-                return $"Hello {UserName}, please visit {url} to confirm your address";
+                return string.Format(MessageResources.IntroChallengeMessage_OnSuccess, UserName, url);
             }
-            
-            return $"Hello {UserName}, We can not process your message: {String.Join(", ", Errors)}";
-        }
 
-        public bool IsValid()
-        {
-            return !Errors.Any();
+            return string.Format(MessageResources.GenericMessage_OnFailure, ((IOutboundMessage)this).ErrorsStr);
         }
     }
 }
