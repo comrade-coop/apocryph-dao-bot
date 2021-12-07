@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Perper.Model;
 
 namespace Apocryph.Dao.Bot
@@ -79,7 +80,44 @@ namespace Apocryph.Dao.Bot
             var result = await state.TryGetAsync<bool>(UserAirdrop(userId, airdropType));
             return result.Item1 && result.Item2;
         }
+
+        public static async Task<BlockData<TEvent>> GetLatestBlockData<TEvent>(this IState state)
+        {
+            var result = await state.TryGetAsync<BlockData<TEvent>>($"{typeof(TEvent).Name.ToLower()}-block-data");
+            return result.Item2;
+        }
+        
+        public static async Task AppendDataToLatestBlock<TEvent>(this IState state, ulong blockNumber, TEvent item)
+        {
+            var key = $"{typeof(TEvent).Name.ToLower()}-block-data";
+            
+            var result = await state.TryGetAsync<BlockData<TEvent>>(key);
+            
+            if (result.Item1)
+            {
+                var blockState = result.Item2;
+                if (blockState.BlockNumber == blockNumber)
+                {
+                    if (!blockState.Items.Contains(item))
+                    {
+                        blockState.Items.Add(item);
+                        await state.SetAsync(key, blockState);
+                    }
+                }
+                else
+                {
+                    await state.SetAsync(key, new BlockData<TEvent>(blockNumber, new List<TEvent> { item }));
+                }
+            }
+            else
+            {
+                await state.SetAsync(key, new BlockData<TEvent>(blockNumber, new List<TEvent> { item }));
+            }
+        }
     }
     
     public record WebSessionData(string UserName, ulong UserId);
+    
+    // public record ProposalBlockData(long BlockNumber, List<ulong> VoteIds);
+    public record BlockData<TData>(ulong BlockNumber, List<TData> Items);
 }
