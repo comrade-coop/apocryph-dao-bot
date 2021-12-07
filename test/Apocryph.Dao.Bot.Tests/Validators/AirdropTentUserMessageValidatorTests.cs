@@ -58,14 +58,15 @@ namespace Apocryph.Dao.Bot.Tests.Validators
         }
         
         [Test]
-        public void Returns_Error_When_Airdrop_Account_Is_Empty()
+        public async Task Returns_Error_When_Airdrop_Account_Is_Empty()
         {
             // arrange & act
+            await _state.SignAddress(100L, "address");
             var result = _validator.TestValidate(new AirdropTentUserMessage(100L, true));
             
             // assert
             result.ShouldNotHaveValidationErrorFor(person => person.UserId);
-            result.ShouldHaveValidationErrorFor(person => person);
+            result.ShouldHaveValidationErrorFor("Balance");
         }
     }
 }
