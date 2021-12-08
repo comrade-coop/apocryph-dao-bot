@@ -17,13 +17,13 @@ namespace Apocryph.Dao.Bot.Validators
                 {
                     if(!await state.IsValidSession(session))
                     {
-                        context.AddFailure("Session", "Does not exist");
+                        context.AddFailure("Session", ValidationResources.IntroAttemptMessageValidator_Session_NotFound);
                     }
 
                     var address = messageSigner.EncodeUTF8AndEcRecover(context.InstanceToValidate.Address, context.InstanceToValidate.SignedAddress);
                     if(!address.Equals(context.InstanceToValidate.Address, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        context.AddFailure("Address", "Provided address is not valid");
+                        context.AddFailure("Address", ValidationResources.IntroAttemptMessageValidator_Address_NotValid);
                     }
                 });
         }

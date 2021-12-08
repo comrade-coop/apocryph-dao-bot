@@ -63,6 +63,17 @@ namespace Apocryph.Dao.Bot.Services
                 return;
             }
             
+            if (tokens[0] == "/airdrop" && tokens[1] == "tent")
+            {
+                var userExistInTentServer = message.Author.MutualGuilds
+                    .Where(x => x.Name == "TENT")
+                    .SelectMany(x => x.Users)
+                    .Any(x => x.Id == message.Author.Id);
+                
+                await _inboundChannel.Writer.WriteAsync(new AirdropTentUserMessage(message.Author.Id, userExistInTentServer));
+                return;
+            }
+            
             if (tokens[0] == "/balance")
             {
                 await _inboundChannel.Writer.WriteAsync(new GetBalanceMessage(message.Author.Id));

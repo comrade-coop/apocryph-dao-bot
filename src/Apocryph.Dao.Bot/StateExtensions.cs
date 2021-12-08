@@ -9,6 +9,8 @@ namespace Apocryph.Dao.Bot
         public static string UserByUserId(ulong userId) => $"user-by-userId:{userId}";
         public static string UserByUserIdAddress(ulong userId, string address) => $"user-by-userId-address:{userId}:{address.ToLower()}";
         
+        public static string UserAirdrop(ulong userId, string airdropType) => $"user-airdrop-{userId}:{airdropType}";
+        
         public static async Task RegisterAddress(this IState state, ulong userId, string address)
         {
             await state.SetAsync(AddressToUser(address), userId);
@@ -37,12 +39,6 @@ namespace Apocryph.Dao.Bot
             return true;
         }
         
-        public static async Task<bool> IsAddressRegistered(this IState state, ulong userId)
-        {
-            var result = await state.TryGetAsync<string>(UserByUserId(userId));
-            return result.Item1;
-        }
-        
         public static async Task<bool> IsAddressSigned(this IState state, ulong userId, string address)
         {
             var result = await state.TryGetAsync<bool>(UserByUserIdAddress(userId, address));
@@ -69,6 +65,19 @@ namespace Apocryph.Dao.Bot
         {
             var result = await state.TryGetAsync<WebSessionData>($"web-{session}");
             return result.Item1;
+        }
+        
+        
+        // UserAirdrop
+        public static async Task AirdropUser(this IState state, ulong userId, string airdropType)
+        {
+            await state.SetAsync(UserAirdrop(userId, airdropType), true);
+        }
+        
+        public static async Task<bool> GetUserAirdrop(this IState state, ulong userId, string airdropType)
+        {
+            var result = await state.TryGetAsync<bool>(UserAirdrop(userId, airdropType));
+            return result.Item1 && result.Item2;
         }
     }
     

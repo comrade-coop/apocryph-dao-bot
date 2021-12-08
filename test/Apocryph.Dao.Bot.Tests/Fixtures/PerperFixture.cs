@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Nethereum.Signer;
 using Nethereum.StandardTokenEIP20;
 using Nethereum.Web3;
+using Nethereum.Web3.Accounts.Managed;
 using NUnit.Framework;
 using Serilog;
 
@@ -42,16 +43,29 @@ namespace Apocryph.Dao.Bot.Tests.Fixtures
                     services.AddOptions()
                         .Configure<Configuration.Dao>(configuration.GetSection("Dao"));
 
-                    services.AddSingleton<IWeb3>(new Web3(configuration["Ethereum:Web3Url"])
+                    services.AddOptions()
+                        .Configure<Configuration.Airdrop>(configuration.GetSection("Airdrop"));
+                    
+                    var managedAccount = new ManagedAccount(
+                        configuration["Airdrop:Wallet:Address"], 
+                        configuration["Airdrop:Wallet:PrivateKey"]);
+            
+                    var web3 = new Web3(managedAccount, configuration["Ethereum:Web3Url"])
                     {
                         TransactionManager = { UseLegacyAsDefault = false }
-                    });
+                    };
             
-                    services.AddSingleton(new StandardTokenService(new Web3(configuration["Ethereum:Web3Url"])
-                    {
-                        TransactionManager = { UseLegacyAsDefault = false }
-                    }, configuration["Ethereum:TokenAddress"]));
-            
+                    services.AddSingleton<IWeb3>(web3);
+                    
+                    var tokenService = new StandardTokenService(web3, configuration["Ethereum:TokenAddress"]);
+                    var currentAllowance = tokenService.AllowanceQueryAsync(
+                            configuration["Airdrop:Tent:SourceAddress"],
+                            configuration["Ethereum:TokenAddress"])
+                        .GetAwaiter()
+                        .GetResult();
+                    
+                    services.AddSingleton(tokenService);
+                    
                     services.AddSingleton(configuration);
                     services.AddSingleton(Channel.CreateUnbounded<IWebInboundMessage>());
                     services.AddSingleton(Channel.CreateUnbounded<IInboundMessage>());
@@ -89,5 +103,8 @@ namespace Apocryph.Dao.Bot.Tests.Fixtures
 
             action(result);
         }
+
+        public Configuration.Discord GetDiscordConfiguration => Host.Services.GetService<Configuration.Discord>();
+    
     }
 }
