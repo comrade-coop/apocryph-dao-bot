@@ -3,6 +3,7 @@ using Apocryph.Dao.Bot.Message;
 using Apocryph.Dao.Bot.Tests.Fixtures;
 using FluentAssertions;
 using NUnit.Framework;
+using Org.BouncyCastle.Utilities.IO.Pem;
 
 namespace Apocryph.Dao.Bot.Tests.Streams
 {
