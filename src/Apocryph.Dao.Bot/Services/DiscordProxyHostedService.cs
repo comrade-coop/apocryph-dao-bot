@@ -83,7 +83,7 @@ namespace Apocryph.Dao.Bot.Services
             
             // ---------------------- DEBUG --------------------------------
             // NOTE: THE FOLLOWING CODE IS FOR DEBUG PURPOSES ONLY!
-/*
+            /*
             if (message.Content == ".HelloApocryph")
             {
                 var balance = 100m;
@@ -173,6 +173,7 @@ namespace Apocryph.Dao.Bot.Services
             }
             // -----------------------------------------------------
 */
+            
             //TODO: Add token trading commands here
         }
         
@@ -182,9 +183,22 @@ namespace Apocryph.Dao.Bot.Services
                 {
                     await foreach (var message in _outboundChannel.Reader.ReadAllAsync(cancellationToken))
                     {
-                        await _client
-                            .GetUser(message.UserId)
-                            .SendMessageAsync(message.DisplayOutput());
+                        if (message is ProposalEventMessage proposalEventMessage)
+                        {
+                            var votingChannel = _client.GroupChannels.FirstOrDefault(x => x.Name.ToLower().Equals("voting"));
+                            if (votingChannel != null)
+                            {
+                                var channelGroup = _client.GroupChannels.FirstOrDefault(x => x.Name.Equals("voting"));
+                                var channel = await _client.GetGroupChannelAsync(channelGroup.Id);
+                                await channel.SendMessageAsync(proposalEventMessage.DisplayOutput());
+                            }
+                        }
+                        else
+                        {
+                            await _client
+                                .GetUser(message.UserId)
+                                .SendMessageAsync(message.DisplayOutput());    
+                        }
                     }
                 },
                 cancellationToken,
