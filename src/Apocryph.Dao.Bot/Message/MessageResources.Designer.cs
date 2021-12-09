@@ -104,5 +104,14 @@ namespace Apocryph.Dao.Bot.Message {
                 return ResourceManager.GetString("IntroConfirmationMessage_OnSuccess", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}.
+        /// </summary>
+        internal static string ProposalEventMessage_OnSuccess {
+            get {
+                return ResourceManager.GetString("ProposalEventMessage_OnSuccess", resourceCulture);
+            }
+        }
     }
 }

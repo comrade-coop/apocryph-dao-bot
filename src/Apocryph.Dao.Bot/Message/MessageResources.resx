@@ -33,4 +33,7 @@
     <data name="IntroConfirmationMessage_OnSuccess" xml:space="preserve">
         <value>Address confirmed</value>
     </data>
+    <data name="ProposalEventMessage_OnSuccess" xml:space="preserve">
+        <value>{0}</value>
+    </data>
 </root>
