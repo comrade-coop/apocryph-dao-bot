@@ -11,20 +11,20 @@ namespace Apocryph.Dao.Bot.Services
     {
         private readonly string _agentName;
         private readonly IServiceProvider _serviceProvider;
-        private readonly Assembly _assmebly;
+        private readonly Assembly _assembly;
         private Task _task;
         
         public PerperHostedService(IServiceProvider serviceProvider, string agentName, Assembly assembly)
         {
             _agentName = agentName;
             _serviceProvider = serviceProvider;
-            _assmebly = assembly;
+            _assembly = assembly;
         }
         
         public Task StartAsync(CancellationToken cancellationToken)
         {
             PerperStartup.ServiceProvider = _serviceProvider;
-            _task = PerperStartup.RunAsync($"{_agentName}", PerperStartup.DiscoverStreamAndCallTypes(_assmebly), cancellationToken);
+            _task = PerperStartup.RunAsync($"{_agentName}", PerperStartup.DiscoverStreamAndCallTypes(_assembly), cancellationToken);
             return Task.CompletedTask;
         }
 

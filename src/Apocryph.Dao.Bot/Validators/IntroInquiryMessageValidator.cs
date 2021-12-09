@@ -19,19 +19,19 @@ namespace Apocryph.Dao.Bot.Validators
                     }
                     catch
                     {
-                        context.AddFailure("Address", "Address is invalid");
+                        context.AddFailure("Address", ValidationResources.IntroInquiryMessageValidatorr_Address_NotValid);
                     }
                 })
                 .CustomAsync(async (_, context, _) =>
                 {
                     if (!await state.IsAddressAvailable(context.InstanceToValidate.UserId, context.InstanceToValidate.Address))
                     {
-                        context.AddFailure("Address", "Address already taken");
+                        context.AddFailure("Address", ValidationResources.IntroInquiryMessageValidatorr_Address_NotAvailable);
                     }
 
                     if (await state.IsAddressSigned(context.InstanceToValidate.UserId, context.InstanceToValidate.Address))
                     {
-                        context.AddFailure("Address", "Address is confirmed already");
+                        context.AddFailure("Address", ValidationResources.IntroInquiryMessageValidatorr_Address_ConfirmedAlready);
                     }
                 });
         }

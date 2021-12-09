@@ -1,10 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Apocryph.Dao.Bot.Message;
+using Apocryph.Dao.Bot.Tests.Fixtures;
 using Apocryph.Dao.Bot.Validators;
-using FluentValidation;
-using Moq;
-using Perper.Model;
+using FluentAssertions;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
 
@@ -13,39 +11,39 @@ namespace Apocryph.Dao.Bot.Tests.Validators
     [TestFixture]
     public class GetBalanceMessageValidatorTests
     {
-        [Test, Ignore("TODO")]
-        public void Returns_Error_When_Address_has_not_been_registered()
+        private InMemoryState _state;
+        private GetBalanceMessageValidator _validator;
+        
+        [SetUp]
+        public void Setup()
         {
-            var stateMock = new Mock<IState>();
-            
-            stateMock.Setup(x => x.TryGetAsync<string>($"user-by-userId:{100L}"))
-                .Returns(() => new Task<(bool, string)>(() => new(false, string.Empty)));
-            
-            var validator = new GetBalanceMessageValidator(stateMock.Object);
-            var result = validator.TestValidate(new GetBalanceMessage(100L));
-            
-            result.ShouldHaveValidationErrorFor(person => person.UserId);
-            
-            stateMock.VerifyAll();
+            _state = new InMemoryState();
+            _validator = new GetBalanceMessageValidator(_state);
         }
         
-        [Test, Ignore("TODO")]
-        public void Returns_Error_When_Address_has_not_been_confirmed()
+        [Test]
+        public void Returns_Error_When_Address_Has_Not_Been_Registered()
         {
-            var stateMock = new Mock<IState>();
+            // arrange & act
+            var result = _validator.TestValidate(new GetBalanceMessage(100L));
             
-            stateMock.Setup(x => x.TryGetAsync<string>($"user-by-userId:{100L}"))
-                .Returns(() => new Task<(bool, string)>(() => new(true, "address")));
-
-            stateMock.Setup(x => x.TryGetAsync<bool>($"user-by-userId-address:{100L}:address"))
-                .Returns(() => new Task<(bool, bool)>(() => new(false, false)));
-            
-            var validator = new GetBalanceMessageValidator(stateMock.Object);
-            var result = validator.TestValidate(new GetBalanceMessage(100L));
-            
+            // assert
             result.ShouldHaveValidationErrorFor(person => person.UserId);
+            result.Errors.Count.Should().Be(1);
+        }
+        
+        [Test]
+        public async Task Returns_Error_When_Address_Has_Not_Been_Confirmed()
+        {
+            // arrange
+            await _state.RegisterAddress(100L, "address");
             
-            stateMock.VerifyAll();
+            // act
+            var result = _validator.TestValidate(new GetBalanceMessage(100L));
+            
+            // assert
+            result.ShouldHaveValidationErrorFor(person => person.UserId);
+            result.Errors.Count.Should().Be(1);
         }
     }
 }

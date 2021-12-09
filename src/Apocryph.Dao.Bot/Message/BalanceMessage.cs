@@ -4,11 +4,14 @@ namespace Apocryph.Dao.Bot.Message
 {
     public record BalanceMessage(ulong UserId, decimal Amount, params string[] Errors) : IOutboundMessage
     {
-        public bool IsValid() => !Errors.Any();
-
         public string DisplayOutput()
         {
-            return $"Balance: {Amount} CRYPTH";
+            if (!Errors.Any())
+            {
+                return string.Format(MessageResources.BalanceMessage_OnSuccess, Amount);
+            }
+
+            return string.Format(MessageResources.GenericMessage_OnFailure, ((IOutboundMessage)this).ErrorsStr);
         } 
     }
 }

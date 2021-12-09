@@ -1,57 +1,43 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Apocryph.Dao.Bot.Message;
 using Apocryph.Dao.Bot.Validators;
 using Microsoft.Extensions.Options;
 using Nethereum.Signer;
 using Perper.Model;
-using Serilog;
 
 namespace Apocryph.Dao.Bot.Streams
 {
-    public class IntroAttemptDialogStream
+    public class IntroAttemptDialogStream : InboundStream<IntroAttemptMessage, IntroConfirmationMessage>
     {
         private readonly IntroAttemptMessageValidator _validator;
-        private readonly IState _state;
 
-        public IntroAttemptDialogStream(EthereumMessageSigner messageSigner, IState  state, IOptions<Configuration.Dao> options)
+        public IntroAttemptDialogStream(IState state, EthereumMessageSigner messageSigner, IOptions<Configuration.Dao> options) : base(state)
         {
             _validator = new IntroAttemptMessageValidator(messageSigner, state, options);
-            _state = state;
         }
-
-        public async IAsyncEnumerable<IOutboundMessage> RunAsync(IAsyncEnumerable<IWebInboundMessage> messages)
+ 
+        protected override async Task<IntroConfirmationMessage> RunImplAsync(IntroAttemptMessage message)
         {
-            await foreach (var message in messages.Where(m => m is IntroAttemptMessage).Cast<IntroAttemptMessage>())
+            var result = await _validator.ValidateAsync(message, CancellationToken.None);
+
+            if (result.IsValid)
             {
-                var sessionLog = Log.ForContext("Session", message.Session);
-                var result = await _validator.ValidateAsync(message, CancellationToken.None);
+                var webSessionData = await State.GetSession(message.Session);
+                await State.SignAddress(webSessionData.UserId, message.Address);
 
-                if (result.IsValid)
-                {
-                    var webSessionData = await _state.GetSession(message.Session);
-                    await _state.SignAddress(webSessionData.UserId, message.Address);
-
-                    yield return new IntroConfirmationMessage(
-                        Session: message.Session,
-                        UserName: webSessionData.UserName,
-                        UserId: webSessionData.UserId);
-
-                    sessionLog.Information("Processed {@Message}", message);
-                }
-                else
-                {
-                    var errors = result.Errors.Select(x => x.ErrorMessage).ToArray();
-                    yield return new IntroConfirmationMessage(
-                        Session: message.Session,
-                        UserName: string.Empty,
-                        UserId: default,
-                        Errors: result.Errors.Select(x => x.ErrorMessage).ToArray());
-
-                    sessionLog.Information("Processed {@Message} with errors {@Errors}", message, errors);
-                }
+                return new IntroConfirmationMessage(
+                    Session: message.Session,
+                    UserName: webSessionData.UserName,
+                    UserId: webSessionData.UserId);
             }
+           
+            return new IntroConfirmationMessage(
+                Session: message.Session,
+                UserName: string.Empty,
+                UserId: default,
+                Errors: result.Errors.Select(x => x.ErrorMessage).ToArray());
         }
     }
 }
