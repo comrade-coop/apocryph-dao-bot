@@ -1,6 +1,7 @@
 import Web3Modal from 'web3modal';
 import Web3 from "web3";
 import { convertUtf8ToHex } from "@walletconnect/utils"
+import VotingAbi from "./voting.abi"
 
 const Web3Service = {
     web3Modal: null,
@@ -31,7 +32,7 @@ const Web3Service = {
             this.provider = await this.web3Modal.connect();
             console.log("Connection established!");
             this.web3 = new Web3(this.provider);
-           return true;
+            return true;
         } catch (e) {
             console.log("Could not get a wallet connection", e);
             return false;
@@ -54,6 +55,39 @@ const Web3Service = {
             return result;
         } catch (error) {
             console.error(error); // tslint:disable-line
+        }
+    },
+
+
+    async vote(voteId, voteStatus) {
+        console.log("Voting");
+
+        try {
+            const contractAddress = process.env.VUE_APP_VOTING_CONTRACT;
+            const abi = VotingAbi._abi;
+            const voteContract = new this.web3.eth.Contract(abi, contractAddress);
+            
+            voteContract.methods.vote(voteId, voteStatus).call().then(console.log);
+
+        } catch (error) {
+            console.error(error); // tslint:disable-line
+        }
+    },
+
+    async voteActive(voteId) {
+
+        console.log("Voting");
+
+        try {
+            const contractAddress = process.env.VUE_APP_VOTING_CONTRACT;
+            const voteContract = new this.web3.eth.Contract(VotingAbi.abi, contractAddress);
+
+            var isActive = await voteContract.methods.voteActive(voteId);
+            return isActive;
+
+        } catch (error) {
+            console.error(error); // tslint:disable-line
+            return false;
         }
     }
 };

@@ -2,22 +2,11 @@
   <div class="container">
     <main>
       <h1 class="terminal-prompt">APOCRYPH DAO</h1>
-      <SignAddress />
+      <router-view/>
       <hr>
     </main>
   </div>
 </template>
-
-<script>
-import SignAddress from './components/SignAddress.vue'
-
-export default {
-  name: 'App',
-  components: {
-    SignAddress
-  }
-}
-</script>
 
 <style>
 .components-grid {
