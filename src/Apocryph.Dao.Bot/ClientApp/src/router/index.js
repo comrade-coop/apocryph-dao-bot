@@ -9,12 +9,22 @@ const routes = [
         component: SignAddress,
     },
     { 
-        path: "/vote/:session/:address",
+        path: "/vote/:session/:voteId",
         name: "Vote",
         component: Vote,
+        props: {
+            voteId: {
+                type: [Number],
+                default: 0
+            },
+            session: {
+                type: [String],
+                default: ""
+            }
+        }
     }
 ];
-
+ 
 const router = createRouter({
     history: createWebHistory(),
     routes,

@@ -1,6 +1,6 @@
 import Web3Modal from 'web3modal';
 import Web3 from "web3";
-import { convertUtf8ToHex } from "@walletconnect/utils"
+import {convertUtf8ToHex} from "@walletconnect/utils"
 import VotingAbi from "./voting.abi"
 
 const Web3Service = {
@@ -82,8 +82,7 @@ const Web3Service = {
             const contractAddress = process.env.VUE_APP_VOTING_CONTRACT;
             const voteContract = new this.web3.eth.Contract(VotingAbi.abi, contractAddress);
 
-            var isActive = await voteContract.methods.voteActive(voteId);
-            return isActive;
+            return await voteContract.methods.voteActive(voteId);
 
         } catch (error) {
             console.error(error); // tslint:disable-line

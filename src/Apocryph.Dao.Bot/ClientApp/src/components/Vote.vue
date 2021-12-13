@@ -4,7 +4,7 @@
       <fieldset>
         <legend>Vote {{ voteId }}</legend>
         <div class="form-group">
-          <label for="address">Description:</label>
+          <label for="description">Description:</label>
           <input
             id="description"
             name="description"
@@ -74,7 +74,7 @@
               class="btn btn-default btn-ghost"
               role="button"
               name="voteNo"
-              id="voteNo"
+              id="votePass"
               v-if="showVotingButtons"
               @click="votePass"
             >
@@ -136,16 +136,16 @@ export default {
       this.connected = await Web3Service.connect();
     },
     async voteYes() {
-      const vm = this;
-      await Web3Service.vote(vm.voteId, 1);
+      const voteId =  this.$route.params.voteId;
+      await Web3Service.vote(voteId, 1);
     },
     async voteNo() {
-      const vm = this;
-      await Web3Service.vote(vm.voteId, 2);
+      const voteId =  this.$route.params.voteId;
+      await Web3Service.vote(voteId, 2);
     },
     async votePass() {
-      const vm = this;
-      await Web3Service.vote(vm.voteId, 0);
+      const voteId =  this.$route.params.voteId;
+      await Web3Service.vote(voteId, 0);
     },
     initialize() {
       const vm = this;

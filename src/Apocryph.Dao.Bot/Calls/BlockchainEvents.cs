@@ -12,12 +12,10 @@ namespace Apocryph.Dao.Bot.Calls
     public class BlockchainEvents
     {
         private readonly IContext _context;
-        private readonly Channel<IOutboundMessage> _channel;
         
-        public BlockchainEvents(IContext context, Channel<IOutboundMessage> channel)
+        public BlockchainEvents(IContext context)
         {
             _context = context;
-            _channel = channel;
         }
  
         public async Task RunAsync()
