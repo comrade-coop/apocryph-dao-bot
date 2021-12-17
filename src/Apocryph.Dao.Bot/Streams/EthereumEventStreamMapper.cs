@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Apocryph.Dao.Bot.Events;
 using Apocryph.Dao.Bot.Message;
 using Nethereum.ABI.FunctionEncoding.Attributes;
@@ -8,9 +7,9 @@ namespace Apocryph.Dao.Bot.Streams
 {
     public class EthereumEventStreamMapper
     {
-        public async IAsyncEnumerable<IOutboundMessage> RunAsync(IAsyncEnumerable<IEventDTO> proposalDtoEvents, IAsyncEnumerable<IEventDTO> transferDtoEvents)
+        public async IAsyncEnumerable<IOutboundMessage> RunAsync(IAsyncEnumerable<IEventDTO> eventStream)
         {
-            await foreach (var message in AsyncEnumerableEx.Merge(proposalDtoEvents, transferDtoEvents))
+            await foreach (var message in eventStream)
             {
                 if (message is ProposalEventDTO proposalEventDto)
                 {
