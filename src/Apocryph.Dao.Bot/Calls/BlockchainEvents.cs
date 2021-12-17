@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Channels;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Apocryph.Dao.Bot.Events;
 using Apocryph.Dao.Bot.Message;
 using Apocryph.Dao.Bot.Streams;
@@ -24,14 +21,14 @@ namespace Apocryph.Dao.Bot.Calls
  
         public async Task RunAsync()
         {
-            var coreTeamProposalEventDtoStream = await _context.StreamFunctionAsync<ProposalEventDTO>(nameof(EthereumEventStream<ProposalEventDTO>), new[] { _options.CoreTeamVotingContractAddress }).ConfigureAwait(false);
-            var apocryphDaoProposalEventDtoStream = await _context.StreamFunctionAsync<ProposalEventDTO>(nameof(EthereumEventStream<ProposalEventDTO>), new[] { _options.ApocryphDaoVotingContractAddress }).ConfigureAwait(false);
+            var coreTeamProposalEventStream = await _context.StreamFunctionAsync<ProposalEventDTO>(nameof(ProposalEventStream), new[] { _options.CoreTeamVotingContractAddress }).ConfigureAwait(false);
+            var proposalEventStream = await _context.StreamFunctionAsync<ProposalEventDTO>(nameof(ProposalEventStream), new[] { _options.ApocryphDaoVotingContractAddress }).ConfigureAwait(false);
+           
+            var coreTeamProposalEventStreamMapper = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(EthereumEventStreamMapper), new object[] { coreTeamProposalEventStream }).ConfigureAwait(false);
+            var proposalEventStreamMapper = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(EthereumEventStreamMapper), new object[] { proposalEventStream }).ConfigureAwait(false);
 
-            var coreTeamProposalEventDtoStreamMapper = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(EthereumEventStreamMapper), new object[] { coreTeamProposalEventDtoStream }).ConfigureAwait(false);
-            var apocryphDaoProposalEventDtoStreamMapper = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(EthereumEventStreamMapper), new object[] { apocryphDaoProposalEventDtoStream }).ConfigureAwait(false);
-
-            await _context.StreamActionAsync(nameof(DiscordOutputStream), new IStream[] { coreTeamProposalEventDtoStreamMapper });
-            await _context.StreamActionAsync(nameof(DiscordOutputStream), new IStream[] { apocryphDaoProposalEventDtoStreamMapper });
+            await _context.StreamActionAsync(nameof(DiscordOutputStream), new IStream[] { coreTeamProposalEventStreamMapper });
+            await _context.StreamActionAsync(nameof(DiscordOutputStream), new IStream[] { proposalEventStreamMapper });
         }
     }
 }

@@ -8,7 +8,7 @@ using Perper.Model;
 
 namespace Apocryph.Dao.Bot.Streams
 {
-    public class EthereumEventStream<TEvent> where TEvent : IEventDTO, new()
+    public abstract class EthereumEventStream<TEvent> where TEvent : IEventDTO, new()
     {
         private readonly IWeb3 _web3;
         private readonly IState _state;
@@ -53,6 +53,5 @@ namespace Apocryph.Dao.Bot.Streams
             
             // ReSharper disable once IteratorNeverReturns
         }
-      
    }
 }
