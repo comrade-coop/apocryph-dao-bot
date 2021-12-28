@@ -126,7 +126,8 @@ export default {
       return this.connected === false;
     },
     showVotingButtons() {
-      return this.connected === true;
+      var notVoted = (this.success == false && this.error == false)
+      return this.connected && notVoted;
     },
   },
   methods: {
@@ -135,17 +136,54 @@ export default {
 
       this.connected = await Web3Service.connect();
     },
-    async voteYes() {
-      const voteId =  this.$route.params.voteId;
-      await Web3Service.vote(voteId, 1);
+    showVoteButtons() {
+      return this.showVoteButtons === false;
     },
-    async voteNo() {
+    async voteYes(e) {
+      if (e) e.preventDefault();
+      const vm = this;
+
       const voteId =  this.$route.params.voteId;
-      await Web3Service.vote(voteId, 2);
+      var result = await Web3Service.vote(voteId, 1);
+
+      if (result){
+        vm.success = true;
+        vm.error = false;
+      } else {
+        vm.success = false;
+        vm.error = true;
+      }
     },
-    async votePass() {
+    async voteNo(e) {
+      if (e) e.preventDefault();
+      const vm = this;
+
       const voteId =  this.$route.params.voteId;
-      await Web3Service.vote(voteId, 0);
+      var result = await Web3Service.vote(voteId, 2);
+
+      if (result){
+        vm.success = true;
+        vm.error = false;
+      } else {
+        vm.success = false;
+        vm.error = true;
+      }
+    },
+    async votePass(e) {
+      if (e) e.preventDefault();
+      const vm = this;
+
+      const voteId =  this.$route.params.voteId;
+      var result = await Web3Service.vote(voteId, 0);
+
+      if (result){
+        vm.success = true;
+        vm.error = false;
+      } else {
+        vm.success = false;
+        vm.error = true;
+      }
+
     },
     initialize() {
       const vm = this;

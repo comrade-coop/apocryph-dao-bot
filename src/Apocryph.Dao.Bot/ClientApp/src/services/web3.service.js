@@ -68,9 +68,10 @@ const Web3Service = {
             const voteContract = new this.web3.eth.Contract(abi, contractAddress);
             
             voteContract.methods.vote(voteId, voteStatus).call().then(console.log);
-
+            return true;
         } catch (error) {
             console.error(error); // tslint:disable-line
+            return false;
         }
     },
 
