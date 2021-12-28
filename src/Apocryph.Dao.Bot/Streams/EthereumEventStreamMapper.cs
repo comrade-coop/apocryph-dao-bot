@@ -2,11 +2,19 @@
 using Apocryph.Dao.Bot.Events;
 using Apocryph.Dao.Bot.Message;
 using Nethereum.ABI.FunctionEncoding.Attributes;
+using Perper.Model;
 
 namespace Apocryph.Dao.Bot.Streams
 {
     public class EthereumEventStreamMapper
     {
+        private readonly IState _state;
+
+        public EthereumEventStreamMapper(IState state)
+        {
+            _state = state;
+        }
+    
         public async IAsyncEnumerable<IOutboundMessage> RunAsync(IAsyncEnumerable<IEventDTO> eventStream)
         {
             await foreach (var message in eventStream)

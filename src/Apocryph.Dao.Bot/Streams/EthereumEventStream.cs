@@ -21,6 +21,9 @@ namespace Apocryph.Dao.Bot.Streams
         
         public async IAsyncEnumerable<TEvent> RunAsync(string contractAddress)
         {
+            if(string.IsNullOrWhiteSpace(contractAddress))
+                yield break;
+            
             var lastBlockNUmber = BlockParameter.CreateEarliest();
             var blockData = await _state.GetLatestBlockData<TEvent>(contractAddress);
             if (blockData != null)
