@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Apocryph.Dao.Bot.Events;
 using Apocryph.Dao.Bot.Message;
 using Nethereum.ABI.FunctionEncoding.Attributes;

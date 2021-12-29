@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Apocryph.Dao.Bot.Tests.Fixtures;
 using FluentAssertions;
 using NUnit.Framework;

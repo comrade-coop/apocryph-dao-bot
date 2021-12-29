@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Apocryph.Dao.Bot.Events;
 using Apocryph.Dao.Bot.Message;
 using Apocryph.Dao.Bot.Streams;
