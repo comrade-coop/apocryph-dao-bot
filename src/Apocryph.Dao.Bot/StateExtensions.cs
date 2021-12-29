@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Perper.Model;
 
@@ -81,15 +81,15 @@ namespace Apocryph.Dao.Bot
             return result.Item1 && result.Item2;
         }
 
-        public static async Task<BlockData<TEvent>> GetLatestBlockData<TEvent>(this IState state)
+        public static async Task<BlockData<TEvent>> GetLatestBlockData<TEvent>(this IState state, string contractAddress)
         {
-            var result = await state.TryGetAsync<BlockData<TEvent>>($"{typeof(TEvent).Name.ToLower()}-block-data");
+            var result = await state.TryGetAsync<BlockData<TEvent>>($"{contractAddress}-{typeof(TEvent).Name.ToLower()}-block-data");
             return result.Item2;
         }
         
-        public static async Task AppendDataToLatestBlock<TEvent>(this IState state, ulong blockNumber, TEvent item)
+        public static async Task AppendDataToLatestBlock<TEvent>(this IState state, string contractAddress, ulong blockNumber, TEvent item)
         {
-            var key = $"{typeof(TEvent).Name.ToLower()}-block-data";
+            var key = $"{contractAddress}-{typeof(TEvent).Name.ToLower()}-block-data";
             
             var result = await state.TryGetAsync<BlockData<TEvent>>(key);
             

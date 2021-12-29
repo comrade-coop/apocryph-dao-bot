@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using Apocryph.Dao.Bot.Calls;
 using Apocryph.Dao.Bot.Message;
 using Apocryph.Dao.Bot.Services;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -20,13 +22,18 @@ namespace Apocryph.Dao.Bot.Tests.Fixtures
     public class PerperFixture
     {
         protected IHost Host;
- 
+        
+        public virtual IConfiguration GetConfiguration()
+        {
+            return new ConfigurationBuilder()
+                .ConfigureTestSettings()
+                .Build();
+        }
+        
         [OneTimeSetUp]
         public void SetupFixture()
         {
-            IConfiguration configuration = new ConfigurationBuilder()
-                .ConfigureTestSettings()
-                .Build();
+            var configuration = GetConfiguration();
             
             Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
                 .UseConsoleLifetime()
@@ -105,6 +112,5 @@ namespace Apocryph.Dao.Bot.Tests.Fixtures
         }
 
         public Configuration.Discord GetDiscordConfiguration => Host.Services.GetService<Configuration.Discord>();
-    
     }
 }
