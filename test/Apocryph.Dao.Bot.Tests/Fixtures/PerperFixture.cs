@@ -79,6 +79,8 @@ namespace Apocryph.Dao.Bot.Tests.Fixtures
                     services.AddSingleton(Channel.CreateUnbounded<IOutboundMessage>());
                     services.AddSingleton<EthereumMessageSigner>();
                     services.AddHostedService(serviceProvider => new PerperHostedService(serviceProvider, $"apocryph-dao-bot-testing-{Guid.NewGuid()}", typeof(Init).Assembly));
+
+                    services.AddSignalR();
                 })
                 .ConfigureLogging((_, logging) =>
                 {
