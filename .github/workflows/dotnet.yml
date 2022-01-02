@@ -36,10 +36,9 @@ jobs:
         files: 'test/Apocryph.Dao.Bot.Tests/appsettings.Development.json'
       env:
         Discord.AuthToken: ${{ secrets.DISCORD_AUTH_TOKEN }}
-        Dao.CoreTeamVotingContractAddress: '0x38Ba6a12Ab9537e718d3214beA6643FFDA7D3E69'
-        Dao.ApocryphDaoVotingContractAddress: '0xF1eBacf9656fB06B837C1D1a9cE9E06E2897Bcf8'
         Ethereum.Web3Url: ${{ secrets.ETH_WEB3_URL }}
         Ethereum.TokenAddress: '0x0d2cb6d6392114def2f1e93a6ee830ae0cad683d'
+        Airdrop.Wallet.PrivateKey: ${{ secrets.AIRDROP_WALLET_KEY }}
     - name: Test
       run: dotnet test --no-build --verbosity normal
       
