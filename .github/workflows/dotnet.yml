@@ -1,0 +1,36 @@
+name: .NET
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: App Settings Variable Substitution
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: 'test/Apocryph.Dao.Bot.Tests/appsettings.Development.json'
+      env:
+        Discord.AuthToken: ${{ secrets.DISCORD_AUTH_TOKEN }}
+        Dao.CoreTeamVotingContractAddress: ${{ env.DAO_CORE_VOTING }}
+        Dao.ApocryphDaoVotingContractAddress: ${{ env.DAO_CRYPH_VOTING }}
+        Ethereum.Web3Url: ${{ secrets.ETH_WEB3_URL }}
+        Ethereum.TokenAddress: ${{ env.ETH_TOKEN_ADDRESS }}
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    
