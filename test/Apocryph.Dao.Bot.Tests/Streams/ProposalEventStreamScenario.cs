@@ -22,7 +22,7 @@ namespace Apocryph.Dao.Bot.Tests.Streams
                 .Build();
         }
  
-        [Test]
+        [Test, Ignore("additional setup required")]
         public async Task ReceiveEvents()
         {
             var count = 0;

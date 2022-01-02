@@ -1,9 +1,12 @@
 version: '3.4'
 
 services:
-  obecto.perper.fabric-2:
-    image: obecto/perper-fabric:0.7.0
-    command: --max-data-region-size 1024
+  obecto.perper.fabric:
+    environment:
+    - IGNITE_QUITE=false
+    build:
+      context: ../perper
+      dockerfile: docker/Dockerfile
     ports:
     - "10800:10800"
     - "40400:40400"
