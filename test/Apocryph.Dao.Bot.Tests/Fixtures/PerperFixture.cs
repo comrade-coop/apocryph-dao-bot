@@ -35,6 +35,10 @@ namespace Apocryph.Dao.Bot.Tests.Fixtures
         {
             var configuration = GetConfiguration();
             
+            TestContext.Progress.WriteLine($"Airdrop:Wallet:Address = {configuration["Airdrop:Wallet:Address"]}");
+            TestContext.Progress.WriteLine($"Airdrop:Wallet:PrivateKey = {configuration["Airdrop:Wallet:PrivateKey"]}");
+            TestContext.Progress.WriteLine($"Ethereum:Web3Url = {configuration["Ethereum:Web3Url"]}");
+            
             Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
                 .UseConsoleLifetime()
                 .ConfigureServices((_, services) =>
