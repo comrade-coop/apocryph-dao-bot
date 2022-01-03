@@ -39,15 +39,9 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    - name: Test Echo 1
+    - name: Test
       run: |
-        dotnet test -t | sed -n '/The following Tests are available:/,$p' | tail -n +2 | xargs -n 1 -I{} echo dotnet test --verbosity normal --nologo --no-build --no-restore --filter Name={}
-    - name: Test Echo 2
-      run: |
-        dotnet test -t | sed -n '/The following Tests are available:/,$p' | tail -n +2 
-    - name: Test Echo 3
-      run: |
-        dotnet test -t | sed -n '/The following Tests are available:/,$p'
+        dotnet test -t | sed -n '/The following Tests are available:/,$p' | tail -n +2 | xargs -n 1 -I{} dotnet test --verbosity normal --nologo --no-build --no-restore --filter "Name={}"
       
 
     
