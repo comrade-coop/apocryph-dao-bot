@@ -13,7 +13,7 @@ jobs:
     
     services:
       perper:
-        image: obecto/perper-fabric:0.7.1
+        image: obecto/perper-fabric:0.7.0
         ports:
           - 10800:10800
           - 40400:40400
@@ -39,12 +39,9 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    - name: Test Help
-      run: |
-        dotnet test --help
     - name: Test
       run: |
-        dotnet test --nologo --verbosity detailed --no-build --no-restore --filter 'Name=Processing_IntroAttemptMessage_Returns_Errors'
+        dotnet test -t | sed -n '/The following Tests are available:/,$p' | tail -n +2 | xargs -n 1 -I{} dotnet test --verbosity normal --nologo --no-build --no-restore --filter "Name={}"
       
 
     
