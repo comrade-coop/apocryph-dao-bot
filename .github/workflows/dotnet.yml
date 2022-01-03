@@ -39,9 +39,12 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
+    - name: Test Help
+      run: |
+        dotnet test --help
     - name: Test
       run: |
-        dotnet test --nologo --verbosity detailed --no-build --no-restore --filter Name=Processing_IntroAttemptMessage_Returns_Errors
+        dotnet test --nologo --verbosity detailed --no-build --no-restore --filter 'Name=Processing_IntroAttemptMessage_Returns_Errors'
       
 
     
