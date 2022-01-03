@@ -1,6 +1,8 @@
 🚧 _(This project is under active development, please check below for updates)_ 🚧
 
 # Apocryph DAO Bot
+[![.NET](https://github.com/comrade-coop/apocryph-dao-bot/actions/workflows/dotnet.yml/badge.svg?branch=master)](https://github.com/comrade-coop/apocryph-dao-bot/actions/workflows/dotnet.yml)
+
 Discord bot for interacting with [Apocryph DAO](https://github.com/comrade-coop/apocryph-dao)
 running on Ethereum. You can use the bot to seamlessly 
 query information about the DAO, vote, buy / sell tokens on 
