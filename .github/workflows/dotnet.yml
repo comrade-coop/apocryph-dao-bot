@@ -40,7 +40,8 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test -t | sed -n '/The following Tests are available:/,$p'
+      run: |
+        dotnet test -t | sed -n '/The following Tests are available:/,$p' | xargs -n 1 -I{} dotnet test --verbosity normal --nologo --no-build --no-restore --filter Name={}
       
 
     
