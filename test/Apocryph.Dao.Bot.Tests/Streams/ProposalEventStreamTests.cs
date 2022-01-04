@@ -9,7 +9,7 @@ using NUnit.Framework;
 
 namespace Apocryph.Dao.Bot.Tests.Streams
 {
-    public class ProposalEventStreamScenario : PerperFixture
+    public class ProposalEventStreamTests : PerperFixture
     {
         public override IConfiguration GetConfiguration()
         {

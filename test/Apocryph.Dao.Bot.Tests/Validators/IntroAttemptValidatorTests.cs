@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Apocryph.Dao.Bot.Configuration;
 using Apocryph.Dao.Bot.Message;
 using Apocryph.Dao.Bot.Tests.Fixtures;
 using Apocryph.Dao.Bot.Validators;
@@ -13,10 +12,10 @@ using NUnit.Framework;
 namespace Apocryph.Dao.Bot.Tests.Validators
 {
     [TestFixture]
-    public class IntroAttemptMessageValidatorTests
+    public class IntroAttemptValidatorTests
     {
         private InMemoryState _state;
-        private IntroAttemptMessageValidator _validator;
+        private IntroAttemptValidator _validator;
         
         private string Address = "0x699608158E4B13f98ad99EAb5Ccd65d2bfc2a333";
         private string Signature = "0x6bd5a6bbd46c255dbd9ec22bf56c3dc24bf9a5aafe136d660329a67c0c87462b6f944c49b7bb0f4ac0edd8a19d87842b5141986d8c31584bf0c06a92c686d6541b";
@@ -28,7 +27,7 @@ namespace Apocryph.Dao.Bot.Tests.Validators
             
             await _state.RegisterAddress(100L, "address");
 
-            _validator = new IntroAttemptMessageValidator(new EthereumMessageSigner(), _state, new OptionsWrapper<Configuration.Dao>(
+            _validator = new IntroAttemptValidator(new EthereumMessageSigner(), _state, new OptionsWrapper<Configuration.Dao>(
                 new Configuration.Dao
                 {
                     SignAddressUrlTemplate = "http://localhost:8080/sign-address/{0}/{1}"

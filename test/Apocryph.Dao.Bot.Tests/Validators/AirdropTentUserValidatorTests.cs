@@ -11,10 +11,10 @@ using NUnit.Framework;
 namespace Apocryph.Dao.Bot.Tests.Validators
 {
     [TestFixture]
-    public class AirdropTentUserMessageValidatorTests : ValidatorFixture
+    public class AirdropTentUserValidatorTests : ValidatorFixture
     {
         private InMemoryState _state;
-        private AirdropTentUserMessageValidator _validator;
+        private AirdropTentUserValidator _validator;
         
         [SetUp]
         public async Task Setup()
@@ -24,7 +24,7 @@ namespace Apocryph.Dao.Bot.Tests.Validators
             await _state.RegisterAddress(100L, "address");
            
 
-            _validator = new AirdropTentUserMessageValidator(_state, TokenService, new OptionsWrapper<Airdrop>(
+            _validator = new AirdropTentUserValidator(_state, TokenService, new OptionsWrapper<Airdrop>(
                 new Airdrop
                 {
                     Tent = new Tent

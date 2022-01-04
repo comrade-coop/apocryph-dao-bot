@@ -9,7 +9,7 @@ using NUnit.Framework;
 
 namespace Apocryph.Dao.Bot.Tests.Streams
 {
-    public class AirdropTentUserScenario : PerperFixture
+    public class AirdropTentUserStreamTests : PerperFixture
     {
         private ulong _userId = 1000L;
         

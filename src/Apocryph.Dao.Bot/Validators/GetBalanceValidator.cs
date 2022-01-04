@@ -4,9 +4,9 @@ using Perper.Model;
 
 namespace Apocryph.Dao.Bot.Validators
 {
-    public class GetBalanceMessageValidator : AbstractValidator<GetBalanceMessage>
+    public class GetBalanceValidator : AbstractValidator<GetBalanceMessage>
     {
-        public GetBalanceMessageValidator(IState state)
+        public GetBalanceValidator(IState state)
         {
             RuleFor(x => x.UserId).ValidateUserOnBoarding(state);
         }

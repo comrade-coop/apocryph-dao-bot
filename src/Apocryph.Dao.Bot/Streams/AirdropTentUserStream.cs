@@ -12,7 +12,7 @@ namespace Apocryph.Dao.Bot.Streams
 {
     public class AirdropTentUserStream : InboundStream<AirdropTentUserMessage, AirdropConfirmationMessage>
     {
-        private readonly AirdropTentUserMessageValidator _validator;
+        private readonly AirdropTentUserValidator _validator;
         private readonly StandardTokenService _tokenService;
         private readonly IOptions<Airdrop> _options;
 
@@ -20,7 +20,7 @@ namespace Apocryph.Dao.Bot.Streams
         {
             _options = options;
             _tokenService = tokenService;
-            _validator = new AirdropTentUserMessageValidator(state, tokenService, options);
+            _validator = new AirdropTentUserValidator(state, tokenService, options);
         }
         
         protected override async Task<AirdropConfirmationMessage> RunImplAsync(AirdropTentUserMessage message)

@@ -9,21 +9,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Nethereum.Web3;
 using Serilog;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Channels;
 using Apocryph.Dao.Bot.Hubs;
 using Apocryph.Dao.Bot.Infrastructure;
-using Apocryph.Dao.Bot.Streams;
-using FluentValidation.AspNetCore;
+using Ipfs.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi.Models;
-using Nethereum.HdWallet;
 using Nethereum.Signer;
 using Nethereum.StandardTokenEIP20;
-using Nethereum.Web3.Accounts;
 using Nethereum.Web3.Accounts.Managed;
 using VueCliMiddleware;
 
@@ -79,6 +74,10 @@ namespace Apocryph.Dao.Bot
             services.AddSingleton(Channel.CreateUnbounded<IWebInboundMessage>());
             services.AddSingleton(Channel.CreateUnbounded<IInboundMessage>());
             services.AddSingleton(Channel.CreateUnbounded<IOutboundMessage>());
+            services.AddSingleton<IWebOutboundMessageHandler, WebOutboundMessageHandler>();
+            
+            services.AddSingleton(new IpfsClient());
+            services.AddTransient<VotingDataService>();
             services.AddSingleton<EthereumMessageSigner>();
             
             services.AddSingleton(new DiscordSocketConfig());

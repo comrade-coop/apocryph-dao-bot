@@ -1,9 +1,27 @@
-version: '3.4'
+version: '3.9'
 
 services:
+  ipfs:
+    image: ipfs/js-ipfs:latest
+    command: >
+      sh -c jsipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin  '["http://localhost:127.0.0.1"]' &&
+            jsipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "POST", "GET"]'
+    ports:
+    - "8080:8080"
+    - "5001:5001"
+    - "4001:4001"
+    - "4001:4001/udp"
+    volumes:
+    - "ipfs_staging:/export"
+    - "ipfs_data:/data/ipfs"
+
   obecto.perper.fabric-2:
     image: obecto/perper-fabric:0.7.0
-    command: --max-data-region-size 1024
+    command: --max-data-region-size 2048
     ports:
     - "10800:10800"
     - "40400:40400"
+
+volumes:
+  ipfs_staging:
+  ipfs_data:

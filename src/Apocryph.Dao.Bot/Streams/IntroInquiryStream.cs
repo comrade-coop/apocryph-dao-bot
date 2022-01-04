@@ -10,22 +10,22 @@ using Nethereum.Web3;
 
 namespace Apocryph.Dao.Bot.Streams
 {
-    public class IntroInquiryDialogStream : InboundStream<IntroInquiryMessage, IntroChallengeMessage>
+    public class IntroInquiryStream : InboundStream<IntroInquiryMessage, IntroChallengeMessage>
     {
         private readonly IState _state;
         private readonly IOptions<Configuration.Dao> _options;
-        private readonly IntroInquiryMessageValidator _messageValidator;
+        private readonly IntroInquiryValidator _validator;
 
-        public IntroInquiryDialogStream(IState state, IWeb3 web3, IOptions<Configuration.Dao> options) : base(state)
+        public IntroInquiryStream(IState state, IWeb3 web3, IOptions<Configuration.Dao> options) : base(state)
         {
             _state = state;
             _options = options;
-            _messageValidator = new IntroInquiryMessageValidator(state, web3);
+            _validator = new IntroInquiryValidator(state, web3);
         }
  
         protected override async Task<IntroChallengeMessage> RunImplAsync(IntroInquiryMessage message)
         {
-            var result = await _messageValidator.ValidateAsync(message, CancellationToken.None);
+            var result = await _validator.ValidateAsync(message, CancellationToken.None);
             var session = Guid.NewGuid().ToString("N");
             
             if (result.IsValid)

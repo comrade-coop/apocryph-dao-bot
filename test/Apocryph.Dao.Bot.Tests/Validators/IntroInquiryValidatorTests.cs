@@ -1,23 +1,19 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Apocryph.Dao.Bot.Message;
 using Apocryph.Dao.Bot.Tests.Fixtures;
 using Apocryph.Dao.Bot.Validators;
 using FluentAssertions;
 using FluentValidation.TestHelper;
-using Microsoft.Extensions.Options;
-using Moq;
-using Nethereum.Signer;
 using Nethereum.Web3;
 using NUnit.Framework;
 
 namespace Apocryph.Dao.Bot.Tests.Validators
 {
     [TestFixture]
-    public class IntroInquiryMessageValidatorTests
+    public class IntroInquiryValidatorTests
     {
         private InMemoryState _state;
-        private IntroInquiryMessageValidator _validator;
+        private IntroInquiryValidator _validator;
 
         private string _address = "0x699608158E4B13f98ad99EAb5Ccd65d2bfc2a333";
         private string _userName = "TestUser";
@@ -27,7 +23,7 @@ namespace Apocryph.Dao.Bot.Tests.Validators
         public void Setup()
         {
             _state = new InMemoryState();
-            _validator = new IntroInquiryMessageValidator( _state, new Web3());
+            _validator = new IntroInquiryValidator( _state, new Web3());
         }
         
         [Test]

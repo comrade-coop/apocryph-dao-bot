@@ -1,7 +1,8 @@
 import Web3Modal from 'web3modal';
 import Web3 from "web3";
-import {convertUtf8ToHex} from "@walletconnect/utils"
 import VotingAbi from "./voting.abi"
+import { convertUtf8ToHex } from "@walletconnect/utils"
+import * as bs58 from 'bs58'
 
 const Web3Service = {
     web3Modal: null,
@@ -58,6 +59,23 @@ const Web3Service = {
         }
     },
 
+    async createVoteProposal(contractAddress, multihash, byteCode) {
+        const rationale = bs58.decode(multihash).slice(2).toString('hex');
+        const actionsRoot = this.web3.utils.toHex(this.web3.utils.padRight(byteCode, 32));
+        console.log(rationale);
+        console.log(actionsRoot);
+       
+
+        try {
+            const abi = VotingAbi._abi;
+            const voteContract = new this.web3.eth.Contract(abi, contractAddress);
+            voteContract.methods.propose(rationale, actionsRoot).call().then(console.log);
+            return true;
+        } catch (error) {
+            console.error(error); // tslint:disable-line
+            return false;
+        }
+    },
 
     async vote(voteId, voteStatus) {
         console.log("Voting");
@@ -66,7 +84,7 @@ const Web3Service = {
             const contractAddress = process.env.VUE_APP_VOTING_CONTRACT;
             const abi = VotingAbi._abi;
             const voteContract = new this.web3.eth.Contract(abi, contractAddress);
-            
+
             voteContract.methods.vote(voteId, voteStatus).call().then(console.log);
             return true;
         } catch (error) {

@@ -9,16 +9,16 @@ using NUnit.Framework;
 namespace Apocryph.Dao.Bot.Tests.Validators
 {
     [TestFixture]
-    public class GetBalanceMessageValidatorTests
+    public class GetBalanceValidatorTests
     {
         private InMemoryState _state;
-        private GetBalanceMessageValidator _validator;
+        private GetBalanceValidator _validator;
         
         [SetUp]
         public void Setup()
         {
             _state = new InMemoryState();
-            _validator = new GetBalanceMessageValidator(_state);
+            _validator = new GetBalanceValidator(_state);
         }
         
         [Test]

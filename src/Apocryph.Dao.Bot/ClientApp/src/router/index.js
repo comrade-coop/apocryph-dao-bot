@@ -1,12 +1,25 @@
 ﻿import { createWebHistory, createRouter } from "vue-router";
 import SignAddress from "@/components/SignAddress.vue";
 import Vote from "@/components/Vote.vue";
+import VoteCreate from "@/components/VoteCreate.vue";
+
 
 const routes = [
     {
         path: "/sign-address/:session/:address",
         name: "SignAddress",
         component: SignAddress,
+    },
+    {
+        path: "/vote/create/:session",
+        name: "VoteCreate",
+        component: VoteCreate,
+        props: {
+            session: {
+                type: [String],
+                default: ""
+            }
+        }
     },
     { 
         path: "/vote/:session/:voteId",

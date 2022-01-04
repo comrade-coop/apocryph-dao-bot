@@ -8,9 +8,9 @@ using Perper.Model;
 
 namespace Apocryph.Dao.Bot.Validators
 {
-    public class AirdropTentUserMessageValidator : AbstractValidator<AirdropTentUserMessage>
+    public class AirdropTentUserValidator : AbstractValidator<AirdropTentUserMessage>
     {
-        public AirdropTentUserMessageValidator(IState state, StandardTokenService tokenService, IOptions<Airdrop> options)
+        public AirdropTentUserValidator(IState state, StandardTokenService tokenService, IOptions<Airdrop> options)
         {
             RuleFor(x => x.UserExistsInTentServer).Equal(true).WithMessage(ValidationResources.AirdropTentUserMessageValidator_UserExistsInTentServer);
             RuleFor(x => x.UserId)

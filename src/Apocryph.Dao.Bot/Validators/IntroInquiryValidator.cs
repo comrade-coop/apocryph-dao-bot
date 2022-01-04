@@ -5,9 +5,9 @@ using Perper.Model;
 
 namespace Apocryph.Dao.Bot.Validators
 {
-    public class IntroInquiryMessageValidator : AbstractValidator<IntroInquiryMessage>
+    public class IntroInquiryValidator : AbstractValidator<IntroInquiryMessage>
     {
-        public IntroInquiryMessageValidator(IState state, IWeb3 web3)
+        public IntroInquiryValidator(IState state, IWeb3 web3)
         {
             RuleFor(x => x.UserName).NotNull().NotEmpty();
             RuleFor(x => x.Address).NotNull().NotEmpty()

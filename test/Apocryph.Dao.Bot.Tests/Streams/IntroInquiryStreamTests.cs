@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace Apocryph.Dao.Bot.Tests.Streams
 {
-    public class IntroInquiryDialogStreamTests : PerperFixture
+    public class IntroInquiryStreamTests : PerperFixture
     {
         private static string _session = "__session__";
         private string _address = "0x699608158E4B13f98ad99EAb5Ccd65d2bfc2a333";

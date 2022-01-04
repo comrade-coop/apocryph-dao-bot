@@ -101,7 +101,7 @@ import signalR from "@/services/signalr";
 import axios from "axios";
 
 export default {
-  name: "SignAddress",
+  name: "Vote",
   setup() {
     axios.defaults.baseURL = process.env.VUE_APP_BASE_API_URL;
     onMounted(() => {
