@@ -42,6 +42,8 @@ jobs:
     - name: Test
       run: |
         dotnet test -t | sed -n '/The following Tests are available:/,$p' | tail -n +2 | xargs -n 1 -I{} dotnet test --verbosity normal --nologo --no-build --no-restore --filter "Name={}"
-      
+    - name: Deploy
+      run: |
+        curl -X POST https://apocryph-dao-bot-cd.kubo.zone      
 
     

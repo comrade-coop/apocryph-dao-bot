@@ -1,12 +1,19 @@
 version: '3.4'
 
 services:
-  obecto.perper.fabric:
-    environment:
-    - IGNITE_QUITE=false
+  apocryph.dao.bot:
     build:
-      context: ../perper
+      context: ../
       dockerfile: docker/Dockerfile
+    environment:
+      - APACHE_IGNITE_ENDPOINT=obecto.perper.fabric:10800
+      - PERPER_FABRIC_ENDPOINT=obecto.perper.fabric:40400
     ports:
-    - "10800:10800"
-    - "40400:40400"
+    - "8080:80"
+    depends_on:
+      - obecto.perper.fabric
+  obecto.perper.fabric:
+    image: obecto/perper-fabric:0.7.0
+    ports:
+    - "10800:10800" # for local debugging
+    - "40400:40400" # for local debugging

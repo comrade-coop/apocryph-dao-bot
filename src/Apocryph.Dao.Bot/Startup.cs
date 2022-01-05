@@ -129,7 +129,7 @@ namespace Apocryph.Dao.Bot
             
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = env.IsDevelopment() ? "ClientApp/" : "dist";
+                spa.Options.SourcePath = env.IsDevelopment() ? "ClientApp/" : "ClientApp/dist";
 
                 if (env.IsDevelopment())
                 {
