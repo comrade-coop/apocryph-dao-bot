@@ -5,7 +5,7 @@ WORKDIR /app
 EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
-RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
 WORKDIR /src
 COPY ["src/Apocryph.Dao.Bot/Apocryph.Dao.Bot.csproj", "src/Apocryph.Dao.Bot/"]
