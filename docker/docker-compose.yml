@@ -7,7 +7,7 @@ services:
       dockerfile: docker/Dockerfile
     environment:
       - APACHE_IGNITE_ENDPOINT=obecto.perper.fabric:10800
-      - PERPER_FABRIC_ENDPOINT=obecto.perper.fabric:40400
+      - PERPER_FABRIC_ENDPOINT=http://obecto.perper.fabric:40400
     ports:
     - "8080:80"
     depends_on:
