@@ -53,6 +53,8 @@ namespace Apocryph.Dao.Bot.Services
             if (message.Author.Id == _client?.CurrentUser.Id)
                 return;
 
+            Log.Information($"Receive message: {message.Content}");
+
             var tokens = message.Content.Split(' ');
             if(!tokens.Any())return;
             

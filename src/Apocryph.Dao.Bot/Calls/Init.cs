@@ -1,6 +1,7 @@
 using Perper.Model;
 using System;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace Apocryph.Dao.Bot.Calls
 {
@@ -14,6 +15,7 @@ namespace Apocryph.Dao.Bot.Calls
  
         public async Task RunAsync()
         {
+             Log.Information("Bot init");
              await _context.CallActionAsync(nameof(BlockchainEvents), Array.Empty<object>()).ConfigureAwait(false);
              await _context.CallActionAsync(nameof(UserInteractions), Array.Empty<object>()).ConfigureAwait(false);
         }
