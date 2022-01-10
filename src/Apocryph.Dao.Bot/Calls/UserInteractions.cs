@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Apocryph.Dao.Bot.Message;
 using Apocryph.Dao.Bot.Streams;
 using Perper.Model;
+using Serilog;
 // ReSharper disable CoVariantArrayConversion
 
 namespace Apocryph.Dao.Bot.Calls
@@ -18,6 +19,7 @@ namespace Apocryph.Dao.Bot.Calls
 
         public async Task RunAsync()
         {
+            Log.Information("UserInteractions init");
             var discordInputStream = await _context.StreamFunctionAsync<IInboundMessage>(nameof(DiscordInputStream), Array.Empty<object>()).ConfigureAwait(false);
             var webInputStream = await _context.StreamFunctionAsync<IWebInboundMessage>(nameof(WebInputStream), Array.Empty<object>()).ConfigureAwait(false);
 

@@ -22,7 +22,7 @@ namespace Apocryph.Dao.Bot.Tests.Streams
                 .Build();
         }
  
-        [Test]
+        [Test, Ignore("additional setup required")]
         public async Task ReceiveEvents()
         {
             var count = 0;
@@ -30,7 +30,7 @@ namespace Apocryph.Dao.Bot.Tests.Streams
             while (await channel.Reader.WaitToReadAsync())
             {
                 var message = await channel.Reader.ReadAsync();
-                if (message is ProposalEventMessage proposalEventMessage)
+                if (message is ProposalEventMessage _)
                 {
                     count++;
                     if (count == 2)

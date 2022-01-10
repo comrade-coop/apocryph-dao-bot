@@ -1,0 +1,49 @@
+name: .NET
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    services:
+      perper:
+        image: obecto/perper-fabric:0.7.0
+        ports:
+          - 10800:10800
+          - 40400:40400
+  
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: App Settings Variable Substitution
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: 'test/Apocryph.Dao.Bot.Tests/appsettings.Development.json'
+      env:
+        Discord.AuthToken: ${{ secrets.DISCORD_AUTH_TOKEN }}
+        Ethereum.Web3Url: ${{ secrets.ETH_WEB3_URL }}
+        Ethereum.TokenAddress: '0x0d2cb6d6392114def2f1e93a6ee830ae0cad683d'
+        Airdrop.Wallet.PrivateKey: ${{ secrets.AIRDROP_WALLET_KEY }}
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Test
+      run: |
+        dotnet test -t | sed -n '/The following Tests are available:/,$p' | tail -n +2 | xargs -n 1 -I{} dotnet test --verbosity normal --nologo --no-build --no-restore --filter "Name={}"
+    - name: Deploy
+      run: |
+        curl -X POST https://apocryph-dao-bot-cd.kubo.zone      
+
+    

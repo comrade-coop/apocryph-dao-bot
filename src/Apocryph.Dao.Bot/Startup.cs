@@ -33,6 +33,8 @@ namespace Apocryph.Dao.Bot
 
         public IConfiguration Configuration { get; }
 
+        private IWebHostEnvironment CurrentEnvironment { get; set; } 
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -87,7 +89,7 @@ namespace Apocryph.Dao.Bot
             services.AddControllers();
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp";
+                configuration.RootPath = CurrentEnvironment.IsDevelopment() ? "ClientApp" : "ClientApp/dist";
             });
 
             services.AddSignalR();
@@ -97,6 +99,8 @@ namespace Apocryph.Dao.Bot
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            CurrentEnvironment = env;
+
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
@@ -128,7 +132,7 @@ namespace Apocryph.Dao.Bot
             
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = env.IsDevelopment() ? "ClientApp/" : "dist";
+                spa.Options.SourcePath = env.IsDevelopment() ? "ClientApp/" : "ClientApp/dist/";
 
                 if (env.IsDevelopment())
                 {
