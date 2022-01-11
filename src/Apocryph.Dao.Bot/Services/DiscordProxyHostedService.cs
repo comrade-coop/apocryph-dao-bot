@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using System;
+using Microsoft.Extensions.Hosting;
 using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
@@ -13,16 +14,23 @@ namespace Apocryph.Dao.Bot.Services
 {
     public sealed class DiscordProxyHostedService : IHostedService
     {
-        private readonly IOptions<Configuration.Discord> _options;
+        private readonly IOptions<Configuration.Discord> _discordOptions;
+        private readonly IOptions<Configuration.Dao> _daoOptions;
         private readonly DiscordSocketConfig _socketConfig;
         private DiscordSocketClient _client;
         private readonly Channel<IInboundMessage> _inboundChannel;
         private readonly Channel<IOutboundMessage> _outboundChannel;
         private Task _messageSender;
 
-        public DiscordProxyHostedService(IOptions<Configuration.Discord> options, DiscordSocketConfig socketConfig, Channel<IInboundMessage> inboundChannel, Channel<IOutboundMessage> outboundChannel)
+        public DiscordProxyHostedService(
+            IOptions<Configuration.Discord> discordOptions,
+            IOptions<Configuration.Dao> daoOptions,
+            DiscordSocketConfig socketConfig,
+            Channel<IInboundMessage> inboundChannel, 
+            Channel<IOutboundMessage> outboundChannel)
         {
-            _options = options;
+            _discordOptions = discordOptions;
+            _daoOptions = daoOptions;
             _socketConfig = socketConfig;
             _inboundChannel = inboundChannel;
             _outboundChannel = outboundChannel;
@@ -34,7 +42,7 @@ namespace Apocryph.Dao.Bot.Services
             _client.MessageReceived += MessageReceivedAsync;
             _client.Log += OnClientOnLog;
 
-            await _client.LoginAsync(TokenType.Bot, _options.Value.AuthToken);
+            await _client.LoginAsync(TokenType.Bot, _discordOptions.Value.AuthToken);
             await _client.StartAsync();
 
             InitializeMessageSender(cancellationToken);
@@ -187,10 +195,16 @@ namespace Apocryph.Dao.Bot.Services
                     {
                         if (message is ProposalEventMessage proposalEventMessage)
                         {
-                            var votingChannel = _client.GroupChannels.FirstOrDefault(x => x.Name.ToLower().Equals("voting"));
-                            if (votingChannel != null)
+                            proposalEventMessage.FetchData();
+
+                            var votingChannel = _daoOptions.Value.ContractToChannel
+                                .Where(x => String.Equals(x.Value, proposalEventMessage.ContractAddress, StringComparison.CurrentCultureIgnoreCase))
+                                .Select(x=> x.Key)
+                                .ToArray();
+                                
+                            if (votingChannel.Any())
                             {
-                                var channelGroup = _client.GroupChannels.FirstOrDefault(x => x.Name.Equals("voting"));
+                                var channelGroup = _client.GroupChannels.FirstOrDefault(x => x.Name.Equals(votingChannel.SingleOrDefault(), StringComparison.CurrentCultureIgnoreCase));
                                 var channel = await _client.GetGroupChannelAsync(channelGroup.Id);
                                 await channel.SendMessageAsync(proposalEventMessage.DisplayOutput());
                             }

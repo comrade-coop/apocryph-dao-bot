@@ -30,6 +30,21 @@
         </div>
 
         <div class="form-group">
+          <div class="button-grid">
+            <div class="form-group">
+              <label for="expiration">Title:</label>
+              <input
+                id="title"
+                name="title"
+                type="text"
+                v-model="title"
+                :disabled="success"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
           <label for="description">Description:</label>
           <textarea
             id="description"
@@ -115,11 +130,11 @@ export default {
 
         const rationaleCid = await ipfs.add(
           JSON.stringify({
-            session: vm.session,
-            description: vm.description,
-            expirationBlock: vm.expirationBlock,
-            actionsHash: vm.actionsBytes,
             contractAddress: vm.contractAddress,
+            expirationBlock: vm.expirationBlock,
+            title: vm.title,
+            description: vm.description,
+            actionsHash: vm.actionsBytes
           })
         );
 

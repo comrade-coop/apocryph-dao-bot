@@ -37,6 +37,6 @@
         <value>Voting data stored</value>
     </data>
         <data name="ProposalEventMessage_OnSuccess" xml:space="preserve">
-        <value>{0}</value>
+        <value>Vote Proposal {0}: {1} {2}</value>
     </data>
 </root>
