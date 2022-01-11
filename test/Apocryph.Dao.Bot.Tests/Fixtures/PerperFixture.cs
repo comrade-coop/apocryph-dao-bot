@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using Apocryph.Dao.Bot.Calls;
 using Apocryph.Dao.Bot.Message;
 using Apocryph.Dao.Bot.Services;
-using Ipfs.Engine;
-using Ipfs.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -84,8 +82,6 @@ namespace Apocryph.Dao.Bot.Tests.Fixtures
                     services.AddSingleton(Channel.CreateUnbounded<IOutboundMessage>());
                     
                     services.AddSingleton<IWebOutboundMessageHandler, WebOutboundMessageHandler>();
-                    services.AddSingleton(new IpfsClient());
-                    services.AddTransient<VotingDataService>();
                     
                     services.AddSingleton<EthereumMessageSigner>();
                     services.AddHostedService(serviceProvider => new PerperHostedService(serviceProvider, $"apocryph-dao-bot-testing-{Guid.NewGuid()}", typeof(Init).Assembly));

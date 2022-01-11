@@ -24,8 +24,6 @@
     <PackageReference Include="Discord.Net" Version="2.4.0" />
     <PackageReference Include="FluentValidation" Version="10.3.4" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.4" />
-    <PackageReference Include="Ipfs.Engine" Version="0.13.0" />
-    <PackageReference Include="Ipfs.Http.Client" Version="0.33.0" />
     <PackageReference Include="Nethereum.HdWallet" Version="4.1.1" />
     <PackageReference Include="Nethereum.Parity" Version="4.1.1" />
     <PackageReference Include="Nethereum.StandardTokenEIP20" Version="4.1.1" />
