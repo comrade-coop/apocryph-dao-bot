@@ -1,4 +1,5 @@
 ﻿using System;
+using Apocryph.Dao.Bot.Configuration;
 using Apocryph.Dao.Bot.Message;
 using FluentValidation;
 using Microsoft.Extensions.Options;
@@ -9,7 +10,7 @@ namespace Apocryph.Dao.Bot.Validators
 {
     public class IntroAttemptValidator  : AbstractValidator<IntroAttemptMessage>
     { 
-        public IntroAttemptValidator(EthereumMessageSigner messageSigner, IState state, IOptions<Configuration.Dao> options)
+        public IntroAttemptValidator(EthereumMessageSigner messageSigner, IState state)
         {
             RuleFor(x => x.SignedAddress).NotNull().NotEmpty();
             RuleFor(x => x.Session).NotNull().NotEmpty()

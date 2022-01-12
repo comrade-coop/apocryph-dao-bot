@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Apocryph.Dao.Bot.Configuration;
 using Apocryph.Dao.Bot.Events;
 using Apocryph.Dao.Bot.Message;
 using Microsoft.Extensions.Options;
@@ -8,11 +9,11 @@ namespace Apocryph.Dao.Bot.Streams
 {
     public class EthereumEventStreamMapper
     {
-        private readonly Configuration.Dao _options;
+        private readonly DaoBotConfig _config;
 
-        public EthereumEventStreamMapper(IOptions<Configuration.Dao> options)
+        public EthereumEventStreamMapper(IOptions<DaoBotConfig> options)
         {
-            _options = options.Value;
+            _config = options.Value;
         }
     
         public async IAsyncEnumerable<IOutboundMessage> RunAsync(IAsyncEnumerable<IEventDTO> eventStream)
@@ -21,7 +22,7 @@ namespace Apocryph.Dao.Bot.Streams
             {
                 if (message is ProposalEventDTO proposalEventDto)
                 {
-                    yield return new ProposalEventMessage(proposalEventDto.VoteId, proposalEventDto.Rationale, _options.VoteProposalUrlTemplate);
+                    yield return new ProposalEventMessageBuilder().Build(_config, proposalEventDto.VoteId, proposalEventDto.Rationale);
                 }
                 
                 else if (message is TransferEventDTO transferEventDto)

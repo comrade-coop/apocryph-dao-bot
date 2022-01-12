@@ -12,6 +12,7 @@ using Serilog;
 using System.IO;
 using System.Reflection;
 using System.Threading.Channels;
+using Apocryph.Dao.Bot.Configuration;
 using Apocryph.Dao.Bot.Hubs;
 using Apocryph.Dao.Bot.Infrastructure;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -43,29 +44,23 @@ namespace Apocryph.Dao.Bot
                 .CreateLogger();
 
             services.AddOptions()
-                .Configure<Configuration.Discord>(Configuration.GetSection("Discord"));
-
-            services.AddOptions()
-                .Configure<Configuration.Dao>(Configuration.GetSection("Dao"));
-
-            services.AddOptions()
-                .Configure<Configuration.Airdrop>(Configuration.GetSection("Airdrop"));
-            
+                .Configure<DaoBotConfig>(Configuration.GetSection("DaoBotConfig"));
+           
             var managedAccount = new ManagedAccount(
-                Configuration["Airdrop:Wallet:Address"], 
-                Configuration["Airdrop:Wallet:PrivateKey"]);
+                Configuration["DaoBot:TentAirdrop:AccountAddress"], 
+                Configuration["DaoBot:TentAirdrop:AccountPrivateKey"]);
             
-            var web3 = new Web3(managedAccount, Configuration["Ethereum:Web3Url"])
+            var web3 = new Web3(managedAccount, Configuration["DaoBot:EvmApiUrl"])
             {
                 TransactionManager = { UseLegacyAsDefault = false }
             };
             
             services.AddSingleton<IWeb3>(web3);
             
-            var tokenService = new StandardTokenService(web3, Configuration["Ethereum:TokenAddress"]);
+            var tokenService = new StandardTokenService(web3, Configuration["DaoBot:CryphTokenAddress"]);
             var currentAllowance = tokenService.AllowanceQueryAsync(
-                    Configuration["Airdrop:Tent:SourceAddress"],
-                    Configuration["Ethereum:TokenAddress"])
+                    Configuration["DaoBot:TentAirdrop:TentTokenAddress"],
+                    Configuration["DaoBot:CryphTokenAddress"])
                 .GetAwaiter()
                 .GetResult();
                     

@@ -11,12 +11,12 @@ namespace Apocryph.Dao.Bot.Tests.Fixtures
         [OneTimeSetUp]
         public void ValidatorFixtureSetup()
         {
-            var web3 = new Web3(Configuration["Ethereum:Web3Url"])
+            var web3 = new Web3(Configuration["DaoBot:EvmApiUrl"])
             {
                 TransactionManager = { UseLegacyAsDefault = false }
             };
             
-            TokenService = new StandardTokenService(web3, Configuration["Ethereum:TokenAddress"]);
+            TokenService = new StandardTokenService(web3, Configuration["DaoBot:TentAirdrop:TentTokenAddress"]);
         }
     }
 }

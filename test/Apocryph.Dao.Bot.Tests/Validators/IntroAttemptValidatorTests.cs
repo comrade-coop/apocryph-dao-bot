@@ -5,7 +5,6 @@ using Apocryph.Dao.Bot.Tests.Fixtures;
 using Apocryph.Dao.Bot.Validators;
 using FluentAssertions;
 using FluentValidation.TestHelper;
-using Microsoft.Extensions.Options;
 using Nethereum.Signer;
 using NUnit.Framework;
 
@@ -27,11 +26,7 @@ namespace Apocryph.Dao.Bot.Tests.Validators
             
             await _state.RegisterAddress(100L, "address");
 
-            _validator = new IntroAttemptValidator(new EthereumMessageSigner(), _state, new OptionsWrapper<Configuration.Dao>(
-                new Configuration.Dao
-                {
-                    SignAddressUrlTemplate = "http://localhost:8080/sign-address/{0}/{1}"
-                }));
+            _validator = new IntroAttemptValidator(new EthereumMessageSigner(), _state);
         }
         
         [Test]

@@ -10,7 +10,7 @@ namespace Apocryph.Dao.Bot.Validators
 {
     public class AirdropTentUserValidator : AbstractValidator<AirdropTentUserMessage>
     {
-        public AirdropTentUserValidator(IState state, StandardTokenService tokenService, IOptions<Airdrop> options)
+        public AirdropTentUserValidator(IState state, StandardTokenService tokenService, DaoBotConfig config)
         {
             RuleFor(x => x.UserExistsInTentServer).Equal(true).WithMessage(ValidationResources.AirdropTentUserMessageValidator_UserExistsInTentServer);
             RuleFor(x => x.UserId)
@@ -26,8 +26,8 @@ namespace Apocryph.Dao.Bot.Validators
 
             RuleFor(x => x).CustomAsync(async (_, context, _) =>
             {
-                var senderBalance = await tokenService.BalanceOfQueryAsync(options.Value.Tent.SourceAddress);
-                if (UnitConversion.Convert.FromWei(senderBalance) < options.Value.Tent.Amount)
+                var senderBalance = await tokenService.BalanceOfQueryAsync(config.TentAirdrop.TentTokenAddress);
+                if (UnitConversion.Convert.FromWei(senderBalance) < config.TentAirdrop.MinAmount)
                 {
                     context.AddFailure("Balance", ValidationResources.AirdropTentUserMessageValidator_AirdropAccountIsEmpty);
                 }

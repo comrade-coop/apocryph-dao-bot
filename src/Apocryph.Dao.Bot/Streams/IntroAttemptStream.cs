@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Apocryph.Dao.Bot.Configuration;
 using Apocryph.Dao.Bot.Message;
 using Apocryph.Dao.Bot.Validators;
 using Microsoft.Extensions.Options;
@@ -13,10 +14,9 @@ namespace Apocryph.Dao.Bot.Streams
     {
         private readonly IntroAttemptValidator _validator;
 
-        public IntroAttemptStream(IState state, EthereumMessageSigner messageSigner,
-            IOptions<Configuration.Dao> options) : base(state)
+        public IntroAttemptStream(IState state, EthereumMessageSigner messageSigner) : base(state)
         {
-            _validator = new IntroAttemptValidator(messageSigner, state, options);
+            _validator = new IntroAttemptValidator(messageSigner, state);
         }
 
         protected override async Task<IntroConfirmationMessage> RunImplAsync(IntroAttemptMessage message)
