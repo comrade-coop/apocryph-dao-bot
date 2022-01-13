@@ -27,10 +27,10 @@ jobs:
       with:
         files: 'test/Apocryph.Dao.Bot.Tests/appsettings.Development.json'
       env:
-        Discord.AuthToken: ${{ secrets.DISCORD_AUTH_TOKEN }}
-        Ethereum.Web3Url: ${{ secrets.ETH_WEB3_URL }}
-        Ethereum.TokenAddress: '0x0d2cb6d6392114def2f1e93a6ee830ae0cad683d'
-        Airdrop.Wallet.PrivateKey: ${{ secrets.AIRDROP_WALLET_KEY }}
+        DaoBot.DiscordAuthToken: ${{ secrets.DISCORD_AUTH_TOKEN }}
+        DaoBot.EvmApiUrl: ${{ secrets.ETH_WEB3_URL }}
+        DaoBot.CryphTokenAddress: '0x0d2cb6d6392114def2f1e93a6ee830ae0cad683d'
+        DaoBot.TentAirdrop.AccountPrivateKey: ${{ secrets.AIRDROP_WALLET_KEY }}
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
