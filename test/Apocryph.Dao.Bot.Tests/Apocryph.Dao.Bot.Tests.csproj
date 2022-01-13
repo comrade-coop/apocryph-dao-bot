@@ -33,4 +33,10 @@
       <ProjectReference Include="..\..\src\Apocryph.Dao.Bot\Apocryph.Dao.Bot.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="appsettings.test.local.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

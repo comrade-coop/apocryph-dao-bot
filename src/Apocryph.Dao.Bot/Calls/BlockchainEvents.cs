@@ -22,9 +22,9 @@ namespace Apocryph.Dao.Bot.Calls
  
         public async Task RunAsync()
         {
-            var communityProposalEventStream = await _context.StreamFunctionAsync<ProposalEventDTO>(nameof(ProposalEventStream), new[] { _config.GetDaoVotingAddress(DaoBotConfig.CommunityDao) }).ConfigureAwait(false);
-            var cooperativeProposalEventStream = await _context.StreamFunctionAsync<ProposalEventDTO>(nameof(ProposalEventStream), new[] { _config.GetDaoVotingAddress(DaoBotConfig.CooperativeDao) }).ConfigureAwait(false);
-            var coreTeamProposalEventStream = await _context.StreamFunctionAsync<ProposalEventDTO>(nameof(ProposalEventStream), new[] { _config.GetDaoVotingAddress(DaoBotConfig.CoreTeamDao) }).ConfigureAwait(false);
+            var communityProposalEventStream = await _context.StreamFunctionAsync<ProposalEventDTO>(nameof(ProposalEventStream), new[] { _config.GetDaoVotingAddress(DaoBotConfigConst.CommunityDao) }).ConfigureAwait(false);
+            var cooperativeProposalEventStream = await _context.StreamFunctionAsync<ProposalEventDTO>(nameof(ProposalEventStream), new[] { _config.GetDaoVotingAddress(DaoBotConfigConst.CooperativeDao) }).ConfigureAwait(false);
+            var coreTeamProposalEventStream = await _context.StreamFunctionAsync<ProposalEventDTO>(nameof(ProposalEventStream), new[] { _config.GetDaoVotingAddress(DaoBotConfigConst.CoreTeamDao) }).ConfigureAwait(false);
            
             var communityProposalEventStreamMapper = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(EthereumEventStreamMapper), new object[] { communityProposalEventStream }).ConfigureAwait(false);
             var cooperativeProposalEventStreamMapper = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(EthereumEventStreamMapper), new object[] { cooperativeProposalEventStream }).ConfigureAwait(false);
