@@ -16,7 +16,7 @@ namespace Apocryph.Dao.Bot.Tests.Scenarios
             {
                 message.UserId.Should().Be(UserId);
                 message.Errors.Length.Should().Be(0);
-                message.Amount.Should().BeGreaterOrEqualTo(GetDiscordConfiguration.AirdropTentAmount);
+                message.Amount.Should().BeGreaterOrEqualTo(GetDaoBotConfig.TentAirdrop.MinAmount);
             });
         }
     }

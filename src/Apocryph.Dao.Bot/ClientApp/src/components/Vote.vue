@@ -2,50 +2,34 @@
   <section>
     <form>
       <fieldset>
-        <legend>Vote {{ voteId }}</legend>
+        <legend>{{ title }}</legend>
+
         <div class="form-group">
-          <label for="description">Description:</label>
-          <input
-            id="description"
-            name="description"
-            type="text"
-            v-model="description"
-            disabled
-          />
+          <label for="expiration">Expiration block: </label>
+          <span> {{expirationBlock}}</span>
         </div>
 
         <div class="form-group">
-          <label for="link">Link:</label>
-          <input id="link" name="link" type="text" v-model="link" disabled />
+          <label>Description:</label>
+          <p>{{ description }}</p>
         </div>
 
         <div class="form-group">
-          <label for="type">Type:</label>
-          <input id="type" name="type" type="text" v-model="type" disabled />
+          <label>Actions:</label>
+          <p class="break-word-container">{{ actionsHash }}</p>
         </div>
-
-        <div class="form-group">
-          <label for="expiration">Expiration:</label>
-          <input
-            id="expiration"
-            name="expiration"
-            type="text"
-            v-model="expiration"
-            disabled
-          />
-        </div>
-
+        
         <div class="form-group">
           <div class="button-grid">
             <button
-              class="btn btn-default"
+              class="btn btn-default btn-ghost"
               role="button"
-              name="connectMetamask"
-              id="connectMetamask"
-              @click="onConnect"
-              v-if="showConnectMetamask"
+              name="voteNo"
+              id="votePass"
+              v-if="showVotingButtons"
+              @click="vote(0, $event)"
             >
-              Connect MetaMask
+              Pass
             </button>
 
             <button
@@ -54,7 +38,7 @@
               name="voteYes"
               id="voteYes"
               v-if="showVotingButtons"
-              @click="voteYes"
+              @click="vote(1, $event)"
             >
               Yes
             </button>
@@ -65,20 +49,9 @@
               name="voteNo"
               id="voteNo"
               v-if="showVotingButtons"
-              @click="voteNo"
+              @click="vote(2, $event)"
             >
               No
-            </button>
-
-            <button
-              class="btn btn-default btn-ghost"
-              role="button"
-              name="voteNo"
-              id="votePass"
-              v-if="showVotingButtons"
-              @click="votePass"
-            >
-              Pass
             </button>
 
             <div class="terminal-alert terminal-alert-primary" v-if="success">
@@ -93,119 +66,97 @@
     </form>
   </section>
 </template>
- 
+ <style>
+ label {
+   font-weight: bold;
+ }
+.break-word-container {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    word-wrap: break-word;
+}
+</style>
 <script>
-import { onMounted } from "vue";
-import Web3Service from "../services/web3.service";
-import signalR from "@/services/signalr";
+import * as ethers from "ethers";
 import axios from "axios";
 
 export default {
-  name: "SignAddress",
+  name: "Vote",
   setup() {
     axios.defaults.baseURL = process.env.VUE_APP_BASE_API_URL;
-    onMounted(() => {
-      Web3Service.init();
-    });
+    const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+    const abi = JSON.stringify(require("../abi/DeadlineVoting.json").abi);
+    const signer = provider.getSigner();
+    return {
+      provider,
+      signer,
+      abi,
+    };
   },
   data() {
     return {
-      connected: false,
+      contractAddress: null,
       success: false,
       error: false,
+      expirationBlock: null,
+      title: null,
+      description: null,
+      actionsHash: null,
     };
   },
   computed: {
-    session() {
-      return this.$route.params.session;
-    },
     voteId() {
       return this.$route.params.voteId;
     },
-    showConnectMetamask() {
-      return this.connected === false;
-    },
     showVotingButtons() {
-      var notVoted = (this.success == false && this.error == false)
-      return this.connected && notVoted;
+      return this.success == false && this.error == false;
     },
   },
   methods: {
-    async onConnect(e) {
-      if (e) e.preventDefault();
-
-      this.connected = await Web3Service.connect();
-    },
-    showVoteButtons() {
-      return this.showVoteButtons === false;
-    },
-    async voteYes(e) {
-      if (e) e.preventDefault();
+    async vote(option, e) {
+      if (e) e.preventDefault()
       const vm = this;
 
-      const voteId =  this.$route.params.voteId;
-      var result = await Web3Service.vote(voteId, 1);
+      try {
+        await this.provider.send("eth_requestAccounts", [])
 
-      if (result){
-        vm.success = true;
-        vm.error = false;
-      } else {
-        vm.success = false;
-        vm.error = true;
+        vm.success = true
+        console.log(option)
+
+      } catch (err) {
+        console.error(err)
+        vm.error = true
       }
     },
-    async voteNo(e) {
-      if (e) e.preventDefault();
+    async initialize() {
       const vm = this;
+      const all = require("it-all")
+      const { concat: uint8ArrayConcat } = require("uint8arrays/concat")
+      const { toString: uint8ArrayToString } = require("uint8arrays/to-string")
+      const cid = this.$route.params.cid
+      const ipfs = await this.$ipfs
 
-      const voteId =  this.$route.params.voteId;
-      var result = await Web3Service.vote(voteId, 2);
+      try {
 
-      if (result){
-        vm.success = true;
-        vm.error = false;
-      } else {
-        vm.success = false;
-        vm.error = true;
+        const data = uint8ArrayConcat(await all(ipfs.cat(cid)));
+        const json = JSON.parse(uint8ArrayToString(data));
+
+        vm.expirationBlock = json.expirationBlock;
+        vm.title = json.title;
+        vm.description = json.description;
+        vm.actionsHash = json.actionsHash;
+
+      } catch (err) {
+        console.error(err);
       }
-    },
-    async votePass(e) {
-      if (e) e.preventDefault();
-      const vm = this;
-
-      const voteId =  this.$route.params.voteId;
-      var result = await Web3Service.vote(voteId, 0);
-
-      if (result){
-        vm.success = true;
-        vm.error = false;
-      } else {
-        vm.success = false;
-        vm.error = true;
-      }
-
-    },
-    initialize() {
-      const vm = this;
-
-      signalR.connect(
-        process.env.VUE_APP_BASE_API_URL,
-        this.$route.params.session
-      );
-      signalR.connection.on("onError", () => {
-        vm.error = true;
-      });
-
-      signalR.connection.on("onSuccess", () => {
-        vm.success = true;
-      });
-    },
+    }
   },
   watch: {
     $route: "initialize",
   },
   created() {
     this.initialize();
-  }
+  },
 };
 </script>

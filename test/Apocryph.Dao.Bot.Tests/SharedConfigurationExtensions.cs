@@ -10,7 +10,7 @@ namespace Apocryph.Dao.Bot.Tests
             builder.SetBasePath(Directory.GetCurrentDirectory());
             builder.AddJsonFile("appsettings.json", false, false);
             builder.AddJsonFile("appsettings.Development.json", false, false);
-            builder.AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true);
+            builder.AddJsonFile("appsettings.test.local.json", optional: true, reloadOnChange: true);
             return builder;
         }
     }

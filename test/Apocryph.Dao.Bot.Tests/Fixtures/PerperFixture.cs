@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using Apocryph.Dao.Bot.Calls;
+using Apocryph.Dao.Bot.Configuration;
 using Apocryph.Dao.Bot.Message;
 using Apocryph.Dao.Bot.Services;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -33,6 +32,11 @@ namespace Apocryph.Dao.Bot.Tests.Fixtures
         [OneTimeSetUp]
         public void SetupFixture()
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .Enrich.FromLogContext()
+                .CreateLogger();
+            
             var configuration = GetConfiguration();
             
             Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
@@ -45,29 +49,23 @@ namespace Apocryph.Dao.Bot.Tests.Fixtures
                         .CreateLogger();
 
                     services.AddOptions()
-                        .Configure<Configuration.Discord>(configuration.GetSection("Discord"));
-
-                    services.AddOptions()
-                        .Configure<Configuration.Dao>(configuration.GetSection("Dao"));
-
-                    services.AddOptions()
-                        .Configure<Configuration.Airdrop>(configuration.GetSection("Airdrop"));
-                    
+                        .Configure<DaoBotConfig>(configuration.GetSection("DaoBot"));
+                  
                     var managedAccount = new ManagedAccount(
-                        configuration["Airdrop:Wallet:Address"], 
-                        configuration["Airdrop:Wallet:PrivateKey"]);
+                        configuration["DaoBot:TentAirdrop:AccountAddress"], 
+                        configuration["DaoBot:TentAirdrop:AccountPrivateKey"]);
             
-                    var web3 = new Web3(managedAccount, configuration["Ethereum:Web3Url"])
+                    var web3 = new Web3(managedAccount, configuration["DaoBot:EvmApiUrl"])
                     {
                         TransactionManager = { UseLegacyAsDefault = false }
                     };
             
                     services.AddSingleton<IWeb3>(web3);
                     
-                    var tokenService = new StandardTokenService(web3, configuration["Ethereum:TokenAddress"]);
+                    var tokenService = new StandardTokenService(web3, configuration["DaoBot:CryphTokenAddress"]);
                     var currentAllowance = tokenService.AllowanceQueryAsync(
-                            configuration["Airdrop:Tent:SourceAddress"],
-                            configuration["Ethereum:TokenAddress"])
+                            configuration["DaoBot:TentAirdrop:TentTokenAddress"],
+                            configuration["DaoBot:CryphTokenAddress"])
                         .GetAwaiter()
                         .GetResult();
                     
@@ -77,10 +75,11 @@ namespace Apocryph.Dao.Bot.Tests.Fixtures
                     services.AddSingleton(Channel.CreateUnbounded<IWebInboundMessage>());
                     services.AddSingleton(Channel.CreateUnbounded<IInboundMessage>());
                     services.AddSingleton(Channel.CreateUnbounded<IOutboundMessage>());
+                    
+                    services.AddSingleton<IWebOutboundMessageHandler, WebOutboundMessageHandler>();
+                    
                     services.AddSingleton<EthereumMessageSigner>();
                     services.AddHostedService(serviceProvider => new PerperHostedService(serviceProvider, $"apocryph-dao-bot-testing-{Guid.NewGuid()}", typeof(Init).Assembly));
-
-                    services.AddSignalR();
                 })
                 .ConfigureLogging((_, logging) =>
                 {
@@ -113,6 +112,6 @@ namespace Apocryph.Dao.Bot.Tests.Fixtures
             action(result);
         }
 
-        public Configuration.Discord GetDiscordConfiguration => Host.Services.GetService<Configuration.Discord>();
+        public DaoBotConfig GetDaoBotConfig => Host.Services.GetService<DaoBotConfig>();
     }
 }

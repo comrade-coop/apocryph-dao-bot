@@ -4,28 +4,29 @@ using Perper.Model;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Apocryph.Dao.Bot.Configuration;
 using Apocryph.Dao.Bot.Validators;
 using Microsoft.Extensions.Options;
 using Nethereum.Web3;
 
 namespace Apocryph.Dao.Bot.Streams
 {
-    public class IntroInquiryDialogStream : InboundStream<IntroInquiryMessage, IntroChallengeMessage>
+    public class IntroInquiryStream : InboundStream<IntroInquiryMessage, IntroChallengeMessage>
     {
         private readonly IState _state;
-        private readonly IOptions<Configuration.Dao> _options;
-        private readonly IntroInquiryMessageValidator _messageValidator;
+        private readonly DaoBotConfig _config;
+        private readonly IntroInquiryValidator _validator;
 
-        public IntroInquiryDialogStream(IState state, IWeb3 web3, IOptions<Configuration.Dao> options) : base(state)
+        public IntroInquiryStream(IState state, IWeb3 web3, IOptions<DaoBotConfig> options) : base(state)
         {
             _state = state;
-            _options = options;
-            _messageValidator = new IntroInquiryMessageValidator(state, web3);
+            _config = options.Value;
+            _validator = new IntroInquiryValidator(state, web3);
         }
  
         protected override async Task<IntroChallengeMessage> RunImplAsync(IntroInquiryMessage message)
         {
-            var result = await _messageValidator.ValidateAsync(message, CancellationToken.None);
+            var result = await _validator.ValidateAsync(message, CancellationToken.None);
             var session = Guid.NewGuid().ToString("N");
             
             if (result.IsValid)
@@ -38,7 +39,7 @@ namespace Apocryph.Dao.Bot.Streams
                     UserName: message.UserName,
                     UserId: message.UserId,
                     Address: message.Address,
-                    UrlTemplate: _options.Value.SignAddressUrlTemplate,
+                    UrlTemplate: _config.SignAddressUrl,
                     Errors: result.Errors.Select(x => x.ErrorMessage).ToArray());
             }
             
@@ -47,7 +48,7 @@ namespace Apocryph.Dao.Bot.Streams
                 UserName: message.UserName,
                 UserId: message.UserId,
                 Address: message.Address,
-                UrlTemplate: _options.Value.SignAddressUrlTemplate,
+                UrlTemplate: _config.SignAddressUrl,
                 Errors: result.Errors.Select(x => x.ErrorMessage).ToArray());
         }
     }

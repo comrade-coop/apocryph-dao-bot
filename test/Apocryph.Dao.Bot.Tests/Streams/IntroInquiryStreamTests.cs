@@ -6,9 +6,9 @@ using NUnit.Framework;
 
 namespace Apocryph.Dao.Bot.Tests.Streams
 {
-    public class IntroInquiryDialogStreamTests : PerperFixture
+    public class IntroInquiryStreamTests : PerperFixture
     {
-        private string _invalidAddress = "0x____________invalid_adress______________";
+        private string _invalidAddress = "0x____________invalid-address______________";
         private string _userName = "TestUser";
         private ulong _userId = 1000L;
         

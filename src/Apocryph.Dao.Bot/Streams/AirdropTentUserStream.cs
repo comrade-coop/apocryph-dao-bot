@@ -12,15 +12,15 @@ namespace Apocryph.Dao.Bot.Streams
 {
     public class AirdropTentUserStream : InboundStream<AirdropTentUserMessage, AirdropConfirmationMessage>
     {
-        private readonly AirdropTentUserMessageValidator _validator;
+        private readonly AirdropTentUserValidator _validator;
         private readonly StandardTokenService _tokenService;
-        private readonly IOptions<Airdrop> _options;
+        private readonly DaoBotConfig _config;
 
-        public AirdropTentUserStream(IState state, StandardTokenService tokenService, IOptions<Airdrop> options) : base(state)
+        public AirdropTentUserStream(IState state, StandardTokenService tokenService, IOptions<DaoBotConfig> options) : base(state)
         {
-            _options = options;
+            _config = options.Value;
             _tokenService = tokenService;
-            _validator = new AirdropTentUserMessageValidator(state, tokenService, options);
+            _validator = new AirdropTentUserValidator(state, tokenService, _config);
         }
         
         protected override async Task<AirdropConfirmationMessage> RunImplAsync(AirdropTentUserMessage message)
@@ -30,9 +30,7 @@ namespace Apocryph.Dao.Bot.Streams
             if (result.IsValid)
             {
                 var userAddress = await State.GetAddress(message.UserId);
-                var txHash = await _tokenService.TransferFromRequestAsync(
-                    _options.Value.Tent.SourceAddress, userAddress,
-                    UnitConversion.Convert.ToWei(_options.Value.Tent.Amount));
+                var txHash = await _tokenService.TransferFromRequestAsync(_config.TentAirdrop.TentTokenAddress, userAddress, UnitConversion.Convert.ToWei(_config.TentAirdrop.MinAmount));
 
                 if (string.IsNullOrEmpty(txHash))
                 {
@@ -45,7 +43,7 @@ namespace Apocryph.Dao.Bot.Streams
                
                 return new AirdropConfirmationMessage(
                     UserId: message.UserId, 
-                    Amount: _options.Value.Tent.Amount,
+                    Amount: _config.TentAirdrop.MinAmount,
                     TxHash: txHash);
             }
           

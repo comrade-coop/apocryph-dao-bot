@@ -9,21 +9,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Nethereum.Web3;
 using Serilog;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Channels;
+using Apocryph.Dao.Bot.Configuration;
 using Apocryph.Dao.Bot.Hubs;
 using Apocryph.Dao.Bot.Infrastructure;
-using Apocryph.Dao.Bot.Streams;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi.Models;
-using Nethereum.HdWallet;
 using Nethereum.Signer;
 using Nethereum.StandardTokenEIP20;
-using Nethereum.Web3.Accounts;
 using Nethereum.Web3.Accounts.Managed;
 using VueCliMiddleware;
 
@@ -49,29 +44,23 @@ namespace Apocryph.Dao.Bot
                 .CreateLogger();
 
             services.AddOptions()
-                .Configure<Configuration.Discord>(Configuration.GetSection("Discord"));
-
-            services.AddOptions()
-                .Configure<Configuration.Dao>(Configuration.GetSection("Dao"));
-
-            services.AddOptions()
-                .Configure<Configuration.Airdrop>(Configuration.GetSection("Airdrop"));
-            
+                .Configure<DaoBotConfig>(Configuration.GetSection("DaoBot"));
+           
             var managedAccount = new ManagedAccount(
-                Configuration["Airdrop:Wallet:Address"], 
-                Configuration["Airdrop:Wallet:PrivateKey"]);
+                Configuration["DaoBot:TentAirdrop:AccountAddress"], 
+                Configuration["DaoBot:TentAirdrop:AccountPrivateKey"]);
             
-            var web3 = new Web3(managedAccount, Configuration["Ethereum:Web3Url"])
+            var web3 = new Web3(managedAccount, Configuration["DaoBot:EvmApiUrl"])
             {
                 TransactionManager = { UseLegacyAsDefault = false }
             };
             
             services.AddSingleton<IWeb3>(web3);
             
-            var tokenService = new StandardTokenService(web3, Configuration["Ethereum:TokenAddress"]);
+            var tokenService = new StandardTokenService(web3, Configuration["DaoBot:CryphTokenAddress"]);
             var currentAllowance = tokenService.AllowanceQueryAsync(
-                    Configuration["Airdrop:Tent:SourceAddress"],
-                    Configuration["Ethereum:TokenAddress"])
+                    Configuration["DaoBot:TentAirdrop:TentTokenAddress"],
+                    Configuration["DaoBot:CryphTokenAddress"])
                 .GetAwaiter()
                 .GetResult();
                     
@@ -81,6 +70,8 @@ namespace Apocryph.Dao.Bot
             services.AddSingleton(Channel.CreateUnbounded<IWebInboundMessage>());
             services.AddSingleton(Channel.CreateUnbounded<IInboundMessage>());
             services.AddSingleton(Channel.CreateUnbounded<IOutboundMessage>());
+            services.AddSingleton<IWebOutboundMessageHandler, WebOutboundMessageHandler>();
+
             services.AddSingleton<EthereumMessageSigner>();
             
             services.AddSingleton(new DiscordSocketConfig());

@@ -2,6 +2,11 @@
 
 namespace Apocryph.Dao.Bot.Message
 {
+    public interface IWebOutboundMessage : IOutboundMessage
+    {
+        string Session { get; init; }
+    }
+    
     public interface IOutboundMessage
     {
         ulong UserId { get; init; }

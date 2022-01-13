@@ -106,11 +106,20 @@ namespace Apocryph.Dao.Bot.Message {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}.
+        ///   Looks up a localized string similar to Vote Proposal {0}: {1} {2}.
         /// </summary>
         internal static string ProposalEventMessage_OnSuccess {
             get {
                 return ResourceManager.GetString("ProposalEventMessage_OnSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Voting data stored.
+        /// </summary>
+        internal static string VoteProposalHashMessage_OnSuccess {
+            get {
+                return ResourceManager.GetString("VoteProposalHashMessage_OnSuccess", resourceCulture);
             }
         }
     }

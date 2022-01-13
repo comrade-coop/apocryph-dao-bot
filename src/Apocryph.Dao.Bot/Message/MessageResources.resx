@@ -33,7 +33,10 @@
     <data name="IntroConfirmationMessage_OnSuccess" xml:space="preserve">
         <value>Address confirmed</value>
     </data>
-    <data name="ProposalEventMessage_OnSuccess" xml:space="preserve">
-        <value>{0}</value>
+    <data name="VoteProposalHashMessage_OnSuccess" xml:space="preserve">
+        <value>Voting data stored</value>
+    </data>
+        <data name="ProposalEventMessage_OnSuccess" xml:space="preserve">
+        <value>Vote Proposal {0}: {1} {2}</value>
     </data>
 </root>

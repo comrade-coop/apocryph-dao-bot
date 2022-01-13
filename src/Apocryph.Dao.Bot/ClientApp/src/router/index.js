@@ -1,6 +1,8 @@
 ﻿import { createWebHistory, createRouter } from "vue-router";
 import SignAddress from "@/components/SignAddress.vue";
 import Vote from "@/components/Vote.vue";
+import VoteCreate from "@/components/VoteCreate.vue";
+
 
 const routes = [
     {
@@ -8,16 +10,17 @@ const routes = [
         name: "SignAddress",
         component: SignAddress,
     },
+    {
+        path: "/vote/create",
+        name: "VoteCreate",
+        component: VoteCreate
+    },
     { 
-        path: "/vote/:session/:voteId",
+        path: "/vote/:cid",
         name: "Vote",
         component: Vote,
         props: {
-            voteId: {
-                type: [Number],
-                default: 0
-            },
-            session: {
+            cid: {
                 type: [String],
                 default: ""
             }

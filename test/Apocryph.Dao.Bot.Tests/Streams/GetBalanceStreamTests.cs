@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace Apocryph.Dao.Bot.Tests.Streams
 {
-    public class GetBalanceDialogStreamTests : PerperFixture
+    public class GetBalanceStreamTests : PerperFixture
     {
         private ulong _userId = 1000L;
         

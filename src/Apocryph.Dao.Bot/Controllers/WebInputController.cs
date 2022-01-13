@@ -18,8 +18,10 @@ namespace Apocryph.Dao.Bot.Controllers
             _channel = channel;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] IntroAttemptMessage input)
+        [HttpPost("intro-attempt")]
+        public async Task<IActionResult> Post([FromBody] IntroAttemptMessage input) => await HandleWebInboundMessage(input);
+ 
+        private async Task<IActionResult> HandleWebInboundMessage(IWebInboundMessage input)
         {
             var sessionLog = Log.ForContext("Session", input.Session);
             

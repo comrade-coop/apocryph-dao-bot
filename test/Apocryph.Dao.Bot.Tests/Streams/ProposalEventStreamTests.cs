@@ -9,7 +9,7 @@ using NUnit.Framework;
 
 namespace Apocryph.Dao.Bot.Tests.Streams
 {
-    public class ProposalEventStreamScenario : PerperFixture
+    public class ProposalEventStreamTests : PerperFixture
     {
         public override IConfiguration GetConfiguration()
         {
@@ -30,7 +30,7 @@ namespace Apocryph.Dao.Bot.Tests.Streams
             while (await channel.Reader.WaitToReadAsync())
             {
                 var message = await channel.Reader.ReadAsync();
-                if (message is ProposalEventMessage proposalEventMessage)
+                if (message is ProposalEventMessage _)
                 {
                     count++;
                     if (count == 2)

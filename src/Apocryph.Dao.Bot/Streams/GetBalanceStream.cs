@@ -8,15 +8,15 @@ using Perper.Model;
 
 namespace Apocryph.Dao.Bot.Streams
 {
-    public class GetBalanceDialogStream : InboundStream<GetBalanceMessage, BalanceMessage>
+    public class GetBalanceStream : InboundStream<GetBalanceMessage, BalanceMessage>
     {
         private readonly StandardTokenService _tokenService;
-        private readonly GetBalanceMessageValidator _validator;
+        private readonly GetBalanceValidator _validator;
 
-        public GetBalanceDialogStream(IState state, StandardTokenService tokenService) : base(state)
+        public GetBalanceStream(IState state, StandardTokenService tokenService) : base(state)
         {
             _tokenService = tokenService;
-            _validator = new GetBalanceMessageValidator(state);
+            _validator = new GetBalanceValidator(state);
         }
 
         protected override async Task<BalanceMessage> RunImplAsync(GetBalanceMessage message)

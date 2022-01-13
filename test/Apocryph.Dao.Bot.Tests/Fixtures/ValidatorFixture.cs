@@ -1,28 +1,22 @@
-﻿using Microsoft.Extensions.Configuration;
-using Nethereum.StandardTokenEIP20;
+﻿using Nethereum.StandardTokenEIP20;
 using Nethereum.Web3;
 using NUnit.Framework;
 
 namespace Apocryph.Dao.Bot.Tests.Fixtures
 {
-    public class ValidatorFixture
+    public class ValidatorFixture : ConfigurationFixture
     {
-        protected IConfiguration Configuration;
         protected StandardTokenService TokenService;
         
         [OneTimeSetUp]
-        public void SetupFixture()
+        public void ValidatorFixtureSetup()
         {
-            Configuration = new ConfigurationBuilder()
-                .ConfigureTestSettings()
-                .Build();
-
-            var web3 = new Web3(Configuration["Ethereum:Web3Url"])
+            var web3 = new Web3(Configuration["DaoBot:EvmApiUrl"])
             {
                 TransactionManager = { UseLegacyAsDefault = false }
             };
             
-            TokenService = new StandardTokenService(web3, Configuration["Ethereum:TokenAddress"]);
+            TokenService = new StandardTokenService(web3, Configuration["DaoBot:TentAirdrop:TentTokenAddress"]);
         }
     }
 }

@@ -7,5 +7,8 @@ namespace Apocryph.Dao.Bot.Events
     {
         [Parameter("uint256", "voteId", 1, true)]
         public ulong VoteId { get; set; }
+        
+        [Parameter("bytes32", "rationale", 2, false)]
+        public string Rationale { get; set; }
     }
 }
