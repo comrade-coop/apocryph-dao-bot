@@ -119,10 +119,15 @@ export default {
       const vm = this;
 
       try {
-        await this.provider.send("eth_requestAccounts", [])
 
+        await this.provider.send("eth_requestAccounts", [])
+        const votingContract = new ethers.Contract(
+                  vm.contractAddress,
+                  this.abi,
+                  this.signer)
+
+        await votingContract.vote(this.voteId(), option)
         vm.success = true
-        console.log(option)
 
       } catch (err) {
         console.error(err)
@@ -142,10 +147,11 @@ export default {
         const data = uint8ArrayConcat(await all(ipfs.cat(cid)));
         const json = JSON.parse(uint8ArrayToString(data));
 
-        vm.expirationBlock = json.expirationBlock;
-        vm.title = json.title;
-        vm.description = json.description;
-        vm.actionsHash = json.actionsHash;
+        vm.contractAddress = json.contractAddress
+        vm.expirationBlock = json.expirationBlock
+        vm.title = json.title
+        vm.description = json.description
+        vm.actionsHash = json.actionsHash
 
       } catch (err) {
         console.error(err);
