@@ -14,7 +14,7 @@ services:
       - obecto.perper.fabric
   obecto.perper.fabric:
     image: obecto/perper-fabric:0.7.0
-	command: --max-data-region-size 1024
+    command: --max-data-region-size 1024
     ports:
     - "10800:10800" # for local debugging
     - "40400:40400" # for local debugging
