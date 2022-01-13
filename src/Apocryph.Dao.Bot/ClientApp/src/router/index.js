@@ -11,26 +11,16 @@ const routes = [
         component: SignAddress,
     },
     {
-        path: "/vote/create/:session",
+        path: "/vote/create",
         name: "VoteCreate",
-        component: VoteCreate,
-        props: {
-            session: {
-                type: [String],
-                default: ""
-            }
-        }
+        component: VoteCreate
     },
     { 
-        path: "/vote/:session/:voteId",
+        path: "/vote/:cid",
         name: "Vote",
         component: Vote,
         props: {
-            voteId: {
-                type: [Number],
-                default: 0
-            },
-            session: {
+            cid: {
                 type: [String],
                 default: ""
             }
