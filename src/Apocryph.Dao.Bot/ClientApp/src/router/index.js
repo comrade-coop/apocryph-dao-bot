@@ -16,10 +16,13 @@ const routes = [
         component: VoteCreate
     },
     { 
-        path: "/vote/:cid",
+        path: "/vote/:voteId/:cid",
         name: "Vote",
         component: Vote,
         props: {
+            voteId:{
+                type: [Number]
+            },
             cid: {
                 type: [String],
                 default: ""
