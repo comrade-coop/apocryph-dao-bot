@@ -58,7 +58,7 @@ namespace Apocryph.Dao.Bot.Services
             if (message.Author.Id == _client?.CurrentUser.Id)
                 return;
 
-            Log.Information($"Receive message: {message.Content}");
+            Log.Information("Receive message: {Content}", message.Content);
 
             var tokens = message.Content.Split(' ');
             if(!tokens.Any())return;
@@ -86,7 +86,7 @@ namespace Apocryph.Dao.Bot.Services
                 await _inboundChannel.Writer.WriteAsync(new GetBalanceMessage(message.Author.Id));
             }
             
-            return;
+          
             
             // ---------------------- DEBUG --------------------------------
             // NOTE: THE FOLLOWING CODE IS FOR DEBUG PURPOSES ONLY!

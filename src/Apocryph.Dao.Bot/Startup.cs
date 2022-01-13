@@ -44,7 +44,7 @@ namespace Apocryph.Dao.Bot
                 .CreateLogger();
 
             services.AddOptions()
-                .Configure<DaoBotConfig>(Configuration.GetSection("DaoBotConfig"));
+                .Configure<DaoBotConfig>(Configuration.GetSection("DaoBot"));
            
             var managedAccount = new ManagedAccount(
                 Configuration["DaoBot:TentAirdrop:AccountAddress"], 
