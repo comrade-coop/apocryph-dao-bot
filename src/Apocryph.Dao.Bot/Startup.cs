@@ -77,7 +77,7 @@ namespace Apocryph.Dao.Bot
             services.AddSingleton(new DiscordSocketConfig());
             services.AddHostedService<DiscordProxyHostedService>();
 
-            services.AddHostedService(serviceProvider => new PerperHostedService(serviceProvider, "apocryph-dao-bot", Assembly.GetEntryAssembly()));
+            services.AddHostedService(serviceProvider => new PerperHostedService(serviceProvider, "apocryph-dao-bot-31", Assembly.GetEntryAssembly()));
             services.AddControllers();
             services.AddSpaStaticFiles(configuration =>
             {
