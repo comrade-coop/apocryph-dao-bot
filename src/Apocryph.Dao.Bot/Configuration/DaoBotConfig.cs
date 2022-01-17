@@ -13,6 +13,7 @@ namespace Apocryph.Dao.Bot.Configuration
         public string EvmApiUrl { get; set; }
         public string CryphTokenAddress { get; set; }
         public TentAirdropConfig TentAirdrop { get; set; }
+        public bool SkipBlockchainEvents { get; set; } = false;
     }
 
     public static class DaoBotConfigHelper

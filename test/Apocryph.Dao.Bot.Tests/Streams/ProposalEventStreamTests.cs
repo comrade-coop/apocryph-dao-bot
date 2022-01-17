@@ -17,7 +17,7 @@ namespace Apocryph.Dao.Bot.Tests.Streams
                 .ConfigureTestSettings()
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
-                    { "Dao:ApocryphDaoVotingContractAddress", "0x411f8fa863c1750f2f2516f4d9D0792C0f93b263" },
+                    { "DaoBot:SkipBlockchainEvents", "false" },
                 })
                 .Build();
         }
