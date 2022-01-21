@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
 using System.Threading;
@@ -192,11 +193,22 @@ namespace Apocryph.Dao.Bot.Services
                     {
                         if (message is ProposalEventMessage proposalEventMessage)
                         {
-                            if (proposalEventMessage.DaoName != null)
+                            if (proposalEventMessage.Channel != null)
                             {
-                                var channelGroup = _client.GroupChannels.FirstOrDefault(x => x.Name.Equals(proposalEventMessage.DaoName, StringComparison.CurrentCultureIgnoreCase));
-                                var channel = await _client.GetGroupChannelAsync(channelGroup.Id);
-                                await channel.SendMessageAsync(proposalEventMessage.DisplayOutput());
+                                var channelId = _client.Guilds.First().Channels.Single(x => x.Name == proposalEventMessage.Channel).Id;
+                                var channel = _client.GetChannel(channelId) as IMessageChannel;
+                                
+                                var colorNumber = new Random().Next(0, 16777215);
+                                var embedMessage = new EmbedBuilder
+                                {
+                                    Title = $"{proposalEventMessage.Channel.ToUpper().Replace("-", " ")} DAO - Vote Proposal: {proposalEventMessage.VoteId}",
+                                    Description = "New voting proposal has been placed",
+                                    Url = proposalEventMessage.GetUrl(),
+                                    ThumbnailUrl = proposalEventMessage.GetThumbnailUrl(),  
+                                    Color = new Color((uint)colorNumber)
+                                }.Build();
+            
+                                await channel.SendMessageAsync("", false, embedMessage);
                             }
                         }
                         else

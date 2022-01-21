@@ -74,7 +74,7 @@
               role="button"
               name="createVoteProposal"
               id="createVoteProposal"
-              v-if="!success || !error"
+              v-if="success == error"
               @click="createVoteProposal"
             >
               Create vote proposal

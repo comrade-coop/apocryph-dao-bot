@@ -9,6 +9,8 @@ namespace Apocryph.Dao.Bot.Events
         public ulong VoteId { get; set; }
         
         [Parameter("bytes32", "rationale", 2, false)]
-        public string Rationale { get; set; }
+        public byte[] Rationale { get; set; }
+
+        public string Address { get; set; }
     }
 }

@@ -49,10 +49,10 @@ export default {
   },
   data() {
     return {
-      signed: false,
-      signature: null,
-      success: false,
+      showSignAddress: true,
       error: false,
+      success: false,
+      signature: null
     };
   },
   computed: {
@@ -61,10 +61,7 @@ export default {
     },
     address() {
       return this.$route.params.address;
-    },
-    showSignAddress() {
-      return this.signed === false || this.success || this.error;
-    },
+    }
   },
   methods: {
     async onAddressSign(e) {
@@ -89,13 +86,12 @@ export default {
             signedAddress: vm.signedAddress,
             address: vm.address,
           })
-          .then(() => {
-            this.signed = true;
-          })
           .catch(function (error) {
-            this.signed = false;
-            alert(error);
+            this.error = true;
+            alert(error)
           });
+
+          this.showSignAddress = false
       }
     },
     initialize() {
