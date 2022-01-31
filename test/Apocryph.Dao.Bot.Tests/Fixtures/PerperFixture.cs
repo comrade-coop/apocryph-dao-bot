@@ -107,7 +107,8 @@ namespace Apocryph.Dao.Bot.Tests.Fixtures
         protected async Task ReceiveMessage<TChannelMessageType, TMessageBaseType>(Action<TMessageBaseType> action) where TMessageBaseType : class
         {
             var outboundChannel = Host.Services.GetService<Channel<TChannelMessageType>>();
-            var result = await outboundChannel.Reader.ReadAsync() as TMessageBaseType;
+            var msg = await outboundChannel.Reader.ReadAsync();
+            var result = msg as TMessageBaseType;
 
             action(result);
         }

@@ -31,13 +31,12 @@ namespace Apocryph.Dao.Bot.Streams
                 lastBlockNUmber = new BlockParameter(blockData.BlockNumber);
             }
                 
-            var transferEventHandler = _web3.Eth.GetEvent<TEvent>(contractAddress);
+            var transferEventHandler = _web3.Eth.GetEvent<TEvent>(contractAddress.ToLower());
             var transferFilterInput = transferEventHandler.CreateFilterInput(lastBlockNUmber, BlockParameter.CreateLatest());
             var allEvents = await transferEventHandler.GetAllChangesAsync(transferFilterInput);
             
             foreach (var @event in allEvents)
             {
-                await _state.AppendDataToLatestBlock(contractAddress, (ulong)@event.Log.BlockNumber.Value, @event.Event);
                 yield return @event.Event;
             }
             

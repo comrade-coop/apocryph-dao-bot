@@ -16,7 +16,10 @@ namespace Apocryph.Dao.Bot.Tests.Fixtures
         public async Task Setup()
         {
             await SendMessage<IInboundMessage>(new IntroInquiryMessage(UserName, UserId, Address));
-            await ReceiveMessage<IOutboundMessage, IntroChallengeMessage>(message => { Session = message.Session; });
+            await ReceiveMessage<IOutboundMessage, IntroChallengeMessage>(message =>
+            {
+                Session = message.Session;
+            });
             await SendMessage<IWebInboundMessage>(new IntroAttemptMessage(Session, Address, Signature));
             await ReceiveMessage<IOutboundMessage, IntroConfirmationMessage>(message => { });
         }
