@@ -86,7 +86,7 @@ export default {
   setup() {
     axios.defaults.baseURL = process.env.VUE_APP_BASE_API_URL;
     const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-    const abi = JSON.stringify(require("../abi/DeadlineVoting.json").abi);
+    const abi = JSON.stringify(require("../abi/DeadlineQuorumVoting.json").abi);
     const signer = provider.getSigner();
     return {
       provider,
@@ -96,6 +96,7 @@ export default {
   },
   data() {
     return {
+      voteId: null,
       contractAddress: null,
       success: false,
       error: false,
@@ -103,14 +104,16 @@ export default {
       title: null,
       description: null,
       actionsHash: null,
+      isVotable: false,
+      isEnactable: false
     };
   },
   computed: {
-    voteId() {
-      return this.$route.params.voteId;
-    },
     showVotingButtons() {
-      return this.success == false && this.error == false;
+      if(this.isVotable) {
+         return this.success == false && this.error == false
+      }
+      return false
     },
   },
   methods: {
@@ -126,7 +129,7 @@ export default {
                   this.abi,
                   this.signer)
 
-        await votingContract.vote(this.voteId(), option)
+        await votingContract.vote(vm.voteId, option)
         vm.success = true
 
       } catch (err) {
@@ -134,7 +137,16 @@ export default {
         vm.error = true
       }
     },
-    async initialize() {
+    async initButtons() {
+      const vm = this;
+      const votingContract = new ethers.Contract(
+                  vm.contractAddress,
+                  this.abi,
+                  this.signer)
+      vm.isVotable = await votingContract.isVotable(vm.voteId)
+      vm.isEnactable = await votingContract.isEnactable(vm.voteId)
+    },
+    async initVm() {
       const vm = this;
       const all = require("it-all")
       const { concat: uint8ArrayConcat } = require("uint8arrays/concat")
@@ -147,6 +159,7 @@ export default {
         const data = uint8ArrayConcat(await all(ipfs.cat(cid)));
         const json = JSON.parse(uint8ArrayToString(data));
 
+        vm.voteId = this.$route.params.voteId
         vm.contractAddress = json.contractAddress
         vm.expirationBlock = json.expirationBlock
         vm.title = json.title
@@ -161,8 +174,9 @@ export default {
   watch: {
     $route: "initialize",
   },
-  created() {
-    this.initialize();
+  async created() {
+    await this.initVm();
+    await this.initButtons();
   },
 };
 </script>

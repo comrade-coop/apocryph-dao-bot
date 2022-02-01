@@ -121,7 +121,7 @@ export default {
         await provider.send("eth_requestAccounts", []);
         const signer = provider.getSigner();
 
-        const abi = JSON.stringify(require("../abi/DeadlineVoting.json").abi);
+        const abi = JSON.stringify(require("../abi/DeadlineQuorumVoting.json").abi);
         const votingContract = new ethers.Contract(
           vm.contractAddress,
           abi,

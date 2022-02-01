@@ -82,6 +82,13 @@ namespace Apocryph.Dao.Bot.Services
                 return;
             }
             
+            if (tokens.Length == 3 && tokens[0] == "/vote" && tokens[1] == "enact" && int.TryParse(tokens[2], out var voteId))
+            {
+                // first issue comes here... we have vote id, but we dont have its ipfs hash :)
+                
+                await _inboundChannel.Writer.WriteAsync(new GetBalanceMessage(message.Author.Id));
+            }
+            
             if (tokens[0] == "/balance")
             {
                 await _inboundChannel.Writer.WriteAsync(new GetBalanceMessage(message.Author.Id));
