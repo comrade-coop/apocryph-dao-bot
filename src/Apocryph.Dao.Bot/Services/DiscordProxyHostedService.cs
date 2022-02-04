@@ -84,6 +84,7 @@ namespace Apocryph.Dao.Bot.Services
             
             if (tokens.Length == 3 && tokens[0] == "/vote" && tokens[1] == "enact" && int.TryParse(tokens[2], out var voteId))
             {
+                // TODO: here
                 // first issue comes here... we have vote id, but we dont have its ipfs hash :)
                 
                 await _inboundChannel.Writer.WriteAsync(new GetBalanceMessage(message.Author.Id));
@@ -198,31 +199,38 @@ namespace Apocryph.Dao.Bot.Services
                 {
                     await foreach (var message in _outboundChannel.Reader.ReadAllAsync(cancellationToken))
                     {
-                        if (message is ProposalEventMessage proposalEventMessage)
+                        try
                         {
-                            if (proposalEventMessage.Channel != null)
+                            if (message is ProposalEventMessage proposalEventMessage)
                             {
-                                var channelId = _client.Guilds.First().Channels.Single(x => x.Name == proposalEventMessage.Channel).Id;
-                                var channel = _client.GetChannel(channelId) as IMessageChannel;
-                                
-                                var colorNumber = new Random().Next(0, 16777215);
-                                var embedMessage = new EmbedBuilder
+                                if (proposalEventMessage.Channel != null)
                                 {
-                                    Title = $"{proposalEventMessage.Channel.ToUpper().Replace("-", " ")} DAO - Vote Proposal: {proposalEventMessage.VoteId}",
-                                    Description = "New voting proposal has been placed",
-                                    Url = proposalEventMessage.GetUrl(),
-                                    ThumbnailUrl = proposalEventMessage.GetThumbnailUrl(),  
-                                    Color = new Color((uint)colorNumber)
-                                }.Build();
+                                    var channelId = _client.Guilds.First().Channels.Single(x => x.Name == proposalEventMessage.Channel).Id;
+                                    var channel = _client.GetChannel(channelId) as IMessageChannel;
+                                
+                                    var colorNumber = new Random().Next(0, 16777215);
+                                    var embedMessage = new EmbedBuilder
+                                    {
+                                        Title = $"Vote proposal: {proposalEventMessage.Title}",
+                                        Description = proposalEventMessage.Description,
+                                        Url = proposalEventMessage.GetUrl(),
+                                        ThumbnailUrl = proposalEventMessage.GetThumbnailUrl(),  
+                                        Color = new Color((uint)colorNumber)
+                                    }.Build();
             
-                                await channel.SendMessageAsync("", false, embedMessage);
+                                    await channel.SendMessageAsync("", false, embedMessage);
+                                }
+                            }
+                            else
+                            {
+                                await _client
+                                    .GetUser(message.UserId)
+                                    .SendMessageAsync(message.DisplayOutput());    
                             }
                         }
-                        else
+                        catch(Exception ex)
                         {
-                            await _client
-                                .GetUser(message.UserId)
-                                .SendMessageAsync(message.DisplayOutput());    
+                            Log.Error(ex, "Failed to send discord message");
                         }
                     }
                 },

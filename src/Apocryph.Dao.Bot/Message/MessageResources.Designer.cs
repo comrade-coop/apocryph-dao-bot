@@ -88,6 +88,15 @@ namespace Apocryph.Dao.Bot.Message {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to https://robohash.org/{0}.png?size=200x200&amp;set=set2&amp;bg=2.
+        /// </summary>
+        internal static string GetRoboHashUrl {
+            get {
+                return ResourceManager.GetString("GetRoboHashUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hello {0}, please visit {1} to confirm your address.
         /// </summary>
         internal static string IntroChallengeMessage_OnSuccess {
@@ -102,15 +111,6 @@ namespace Apocryph.Dao.Bot.Message {
         internal static string IntroConfirmationMessage_OnSuccess {
             get {
                 return ResourceManager.GetString("IntroConfirmationMessage_OnSuccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to https://scontent-waw1-1.xx.fbcdn.net/v/t1.6435-9/88434866_138538214319337_2977996710908788736_n.jpg?_nc_cat=111&amp;ccb=1-5&amp;_nc_sid=09cbfe&amp;_nc_ohc=VGBh61kPV5oAX8RIdHB&amp;_nc_ht=scontent-waw1-1.xx&amp;oh=00_AT81uNqnTjqIqTnBXdpb7G2y6TmjipaoXY7_19TpBeC4sw&amp;oe=62063A92.
-        /// </summary>
-        internal static string ProposalEventMessage_GetThumbnailUrl {
-            get {
-                return ResourceManager.GetString("ProposalEventMessage_GetThumbnailUrl", resourceCulture);
             }
         }
         

@@ -87,9 +87,7 @@
             Vote proposal created
           </div>
           <div class="terminal-alert terminal-alert-error" v-if="error">
-            <dl>
-              Vote proposal creation failed
-            </dl>
+            <dl>Vote proposal creation failed</dl>
           </div>
         </div>
       </fieldset>
@@ -99,9 +97,13 @@
  
 <script>
 import * as ethers from "ethers";
+import axios from "axios";
 
 export default {
   name: "VoteCreate",
+  setup() {
+    axios.defaults.baseURL = process.env.VUE_APP_BASE_API_URL;
+  },
   data() {
     return {
       error: false,
@@ -113,7 +115,6 @@ export default {
       if (e) e.preventDefault();
       var vm = this;
       try {
-        const ipfs = await this.$ipfs;
         const provider = new ethers.providers.Web3Provider(
           window.ethereum,
           "any"
@@ -121,33 +122,45 @@ export default {
         await provider.send("eth_requestAccounts", []);
         const signer = provider.getSigner();
 
-        const abi = JSON.stringify(require("../abi/DeadlineQuorumVoting.json").abi);
+        const abi = JSON.stringify(
+          require("../abi/DeadlineQuorumVoting.json").abi
+        );
         const votingContract = new ethers.Contract(
           vm.contractAddress,
           abi,
           signer
         );
 
-        const rationaleCid = await ipfs.add(
-          JSON.stringify({
-            contractAddress: vm.contractAddress,
-            expirationBlock: vm.expirationBlock,
-            title: vm.title,
-            description: vm.description,
-            actionsHash: vm.actionsBytes
-          })
-        );
+        let response = await axios
+          .post(
+            "api/ipfs/proposal",
+             {
+              contractAddress: vm.contractAddress,
+              expirationBlock: vm.expirationBlock,
+              title: vm.title,
+              description: vm.description,
+              actionsHash: vm.actionsBytes,
+            } 
+          )
+          .catch(function (error) {
+            this.error = true;
+            alert(error);
+          });
+
+        console.log(response.data.cid)
 
         const rationaleHash = ethers.utils.hexlify(
-          ethers.utils.base58.decode(rationaleCid.path).slice(2)
+          ethers.utils.base58.decode(response.data.cid).slice(2)
         );
+
         const actionsHash = ethers.utils.keccak256(vm.actionsBytes);
         await votingContract.propose(rationaleHash, actionsHash);
+
         vm.success = true;
 
       } catch (err) {
         console.error(err);
-        vm.error = true;
+        // vm.error = true;
       }
     },
   },

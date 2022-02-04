@@ -54,6 +54,17 @@
               No
             </button>
 
+            <button
+              class="btn btn-primary"
+              role="button"
+              name="enact"
+              id="enact"
+            
+              @click="enact($event)"
+            >
+              Enact
+            </button>
+
             <div class="terminal-alert terminal-alert-primary" v-if="success">
               Thank you for voting
             </div>
@@ -136,6 +147,27 @@ export default {
         console.error(err)
         vm.error = true
       }
+    },
+    async enact(e) {
+      if (e) e.preventDefault()
+      const vm = this
+
+      try {
+
+        await this.provider.send("eth_requestAccounts", [])
+        const votingContract = new ethers.Contract(
+                  vm.contractAddress,
+                  this.abi,
+                  this.signer)
+
+        await votingContract.enact(vm.voteId)
+        vm.success = true
+
+      } catch (err) {
+        console.error(err)
+        vm.error = true
+      }
+
     },
     async initButtons() {
       const vm = this;

@@ -1,9 +1,9 @@
-using Nethereum.ABI.FunctionEncoding.Attributes;
+﻿using Nethereum.ABI.FunctionEncoding.Attributes;
 
 namespace Apocryph.Dao.Bot.Events
 {
-    [Event("Proposal")]
-    public class ProposalEventDTO : IEventDTO
+    [Event("Enaction")]
+    public class EnactionEventDTO : IEventDTO
     {
         [Parameter("bytes32", "voteId", 1, true)]
         public byte[] VoteId { get; set; }

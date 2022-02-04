@@ -1,9 +1,6 @@
-using System.Linq;
-using Serilog;
-
 namespace Apocryph.Dao.Bot.Message
 {
-    public record ProposalEventMessage(ulong VoteId, string Cid) : IOutboundMessage
+    public record ProposalEventMessage(string VoteId, string Cid) : IOutboundMessage
     {
         public ulong UserId { get; init; }
         public string[] Errors { get; init; }
@@ -11,7 +8,8 @@ namespace Apocryph.Dao.Bot.Message
         public string Channel { get; set; }
         public string Title { get; set; }
         public string UrlTemplate { get; set; }
- 
+        public string Description { get; set; }
+
         public string DisplayOutput()
         {
             var url = string.Format(UrlTemplate, VoteId, Cid);
@@ -25,7 +23,8 @@ namespace Apocryph.Dao.Bot.Message
 
         public string GetThumbnailUrl()
         {
-            return MessageResources.ProposalEventMessage_GetThumbnailUrl;
+            var url = string.Format(MessageResources.GetRoboHashUrl, Cid);
+            return url;
         }
     }
 }
