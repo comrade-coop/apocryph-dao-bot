@@ -9,6 +9,7 @@ using Apocryph.Dao.Bot.Infrastructure;
 using Ipfs;
 using Ipfs.Http;
 using Nethereum.Contracts;
+using Nethereum.Hex.HexConvertors.Extensions;
 using Newtonsoft.Json;
 using Serilog;
 
@@ -18,7 +19,7 @@ namespace Apocryph.Dao.Bot.Message
     {
         public ProposalEventMessage Build(DaoBotConfig config, EventLog<ProposalEventDTO> eventLog)
         {
-            var voteId = EncryptionUtil.ByteToHash(eventLog.Event.VoteId);
+            var voteId =  eventLog.Event.VoteId.ToHex(true);
             var base34 = new byte[] { 0x12, 0x20 }.Concat(eventLog.Event.Rationale).ToArray();
             var cid = Base58.Encode(base34);
             

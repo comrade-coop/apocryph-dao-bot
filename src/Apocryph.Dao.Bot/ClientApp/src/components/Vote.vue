@@ -6,7 +6,7 @@
 
         <div class="form-group">
           <label for="expiration">Expiration block: </label>
-          <span> {{expirationBlock}}</span>
+          <span> {{ expirationBlock }}</span>
         </div>
 
         <div class="form-group">
@@ -18,7 +18,7 @@
           <label>Actions:</label>
           <p class="break-word-container">{{ actionsHash }}</p>
         </div>
-        
+
         <div class="form-group">
           <div class="button-grid">
             <button
@@ -59,7 +59,6 @@
               role="button"
               name="enact"
               id="enact"
-            
               @click="enact($event)"
             >
               Enact
@@ -69,7 +68,7 @@
               Thank you for voting
             </div>
             <div class="terminal-alert terminal-alert-error" v-if="error">
-              Voting failed, or you voted already
+              {{errorMessage}}
             </div>
           </div>
         </div>
@@ -78,14 +77,14 @@
   </section>
 </template>
  <style>
- label {
-   font-weight: bold;
- }
+label {
+  font-weight: bold;
+}
 .break-word-container {
-    display: table;
-    table-layout: fixed;
-    width: 100%;
-    word-wrap: break-word;
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+  word-wrap: break-word;
 }
 </style>
 <script>
@@ -111,97 +110,98 @@ export default {
       contractAddress: null,
       success: false,
       error: false,
+      errorMessage: "Voting failed",
       expirationBlock: null,
       title: null,
       description: null,
       actionsHash: null,
       isVotable: false,
-      isEnactable: false
+      isEnactable: false,
     };
   },
   computed: {
     showVotingButtons() {
-      if(this.isVotable) {
-         return this.success == false && this.error == false
+      if (this.isVotable) {
+        return this.success == false && this.error == false;
       }
-      return false
+      return false;
     },
   },
   methods: {
     async vote(option, e) {
-      if (e) e.preventDefault()
+      if (e) e.preventDefault();
       const vm = this;
 
       try {
-
-        await this.provider.send("eth_requestAccounts", [])
+        await this.provider.send("eth_requestAccounts", []);
         const votingContract = new ethers.Contract(
-                  vm.contractAddress,
-                  this.abi,
-                  this.signer)
+          vm.contractAddress,
+          this.abi,
+          this.signer
+        );
 
-        await votingContract.vote(vm.voteId, option)
-        vm.success = true
-
+        await votingContract.vote(vm.voteId, option);
+        vm.success = true;
       } catch (err) {
-        console.error(err)
-        vm.error = true
+        var rawMessage  = err.data.message
+        if(rawMessage.startsWith('Reverted'))
+          rawMessage  = ethers.utils.toUtf8String(rawMessage.substring(9, rawMessage.length))
+        vm.errorMessage = rawMessage
+        vm.error = true;
       }
     },
     async enact(e) {
-      if (e) e.preventDefault()
-      const vm = this
+      if (e) e.preventDefault();
+      const vm = this;
 
       try {
-
-        await this.provider.send("eth_requestAccounts", [])
+        await this.provider.send("eth_requestAccounts", []);
         const votingContract = new ethers.Contract(
-                  vm.contractAddress,
-                  this.abi,
-                  this.signer)
+          vm.contractAddress,
+          this.abi,
+          this.signer
+        );
 
-        await votingContract.enact(vm.voteId)
-        vm.success = true
-
+        await votingContract.enact(vm.voteId);
+        vm.success = true;
       } catch (err) {
-        console.error(err)
-        vm.error = true
+        console.error(err);
+        vm.error = true;
       }
-
     },
     async initButtons() {
       const vm = this;
-      const votingContract = new ethers.Contract(
-                  vm.contractAddress,
-                  this.abi,
-                  this.signer)
-      vm.isVotable = await votingContract.isVotable(vm.voteId)
-      vm.isEnactable = await votingContract.isEnactable(vm.voteId)
+      /*const votingContract = new ethers.Contract(
+        vm.contractAddress,
+        this.abi,
+        this.signer
+      );*/
+      vm.isVotable = true //await votingContract.isVotable(vm.voteId);
+      vm.isEnactable = true //await votingContract.isEnactable(vm.voteId);
     },
     async initVm() {
       const vm = this;
-      const all = require("it-all")
-      const { concat: uint8ArrayConcat } = require("uint8arrays/concat")
-      const { toString: uint8ArrayToString } = require("uint8arrays/to-string")
-      const cid = this.$route.params.cid
-      const ipfs = await this.$ipfs
+      const cid = this.$route.params.cid;
 
       try {
-
-        const data = uint8ArrayConcat(await all(ipfs.cat(cid)));
-        const json = JSON.parse(uint8ArrayToString(data));
+        let json = await axios
+          .get(`api/ipfs/proposal?cid=${cid}`)
+          .catch(function (error) {
+            console.error(error);
+          });
 
         vm.voteId = this.$route.params.voteId
-        vm.contractAddress = json.contractAddress
-        vm.expirationBlock = json.expirationBlock
-        vm.title = json.title
-        vm.description = json.description
-        vm.actionsHash = json.actionsHash
+     
 
+        vm.contractAddress = json.data.contractAddress;
+        vm.expirationBlock = json.data.expirationBlock;
+        vm.title = json.data.title;
+        vm.description = json.data.description;
+        vm.actionsHash = json.data.actionsHash;
       } catch (err) {
         console.error(err);
       }
-    }
+    },
   },
   watch: {
     $route: "initialize",
