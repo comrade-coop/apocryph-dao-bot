@@ -60,6 +60,7 @@
               name="createVoteProposal"
               id="createVoteProposal"
               @click="createVoteProposal"
+              v-if="!success"
             >
               Create vote proposal
             </button>
@@ -159,6 +160,6 @@ export default {
         console.error(err)
       }
     },
-  },
+  }
 }
 </script>

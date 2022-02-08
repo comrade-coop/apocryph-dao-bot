@@ -214,6 +214,6 @@ export default {
   async created() {
     await this.initVm();
     await this.initButtons();
-  },
+  }
 };
 </script>
