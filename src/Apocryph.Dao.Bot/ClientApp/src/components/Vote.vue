@@ -5,18 +5,13 @@
         <legend>{{ title }}</legend>
 
         <div class="form-group">
-          <label for="expiration">Expiration block: </label>
-          <span> {{ expirationBlock }}</span>
-        </div>
-
-        <div class="form-group">
           <label>Description:</label>
           <p>{{ description }}</p>
         </div>
 
         <div class="form-group">
-          <label>Actions:</label>
-          <p class="break-word-container">{{ actionsHash }}</p>
+          <label>Actions Bytes:</label>
+          <p class="break-word-container">{{ actionsBytes }}</p>
         </div>
 
         <div class="form-group">
@@ -59,17 +54,20 @@
               role="button"
               name="enact"
               id="enact"
+              v-if="showEnactButton"
               @click="enact($event)"
             >
               Enact
             </button>
+          </div>
+        </div>
 
-            <div class="terminal-alert terminal-alert-primary" v-if="success">
-              Thank you for voting
-            </div>
-            <div class="terminal-alert terminal-alert-error" v-if="error">
-              {{errorMessage}}
-            </div>
+        <div class="form-group">
+          <div class="terminal-alert terminal-alert-primary" v-if="success">
+            Thank you for voting
+          </div>
+          <div class="terminal-alert terminal-alert-error" v-if="error">
+            {{ errorMessage }}
           </div>
         </div>
       </fieldset>
@@ -115,6 +113,7 @@ export default {
       title: null,
       description: null,
       actionsHash: null,
+      actionsBytes: null,
       isVotable: false,
       isEnactable: false,
     };
@@ -122,7 +121,13 @@ export default {
   computed: {
     showVotingButtons() {
       if (this.isVotable) {
-        return this.success == false && this.error == false;
+        return this.success == false && this.error == false
+      }
+      return false;
+    },
+    showEnactButton() {
+      if (this.isEnactable) {
+        return this.success == false && this.error == false
       }
       return false;
     },
@@ -130,24 +135,26 @@ export default {
   methods: {
     async vote(option, e) {
       if (e) e.preventDefault();
-      const vm = this;
+      const vm = this
 
       try {
-        await this.provider.send("eth_requestAccounts", []);
+        await this.provider.send("eth_requestAccounts", [])
         const votingContract = new ethers.Contract(
           vm.contractAddress,
           this.abi,
           this.signer
         );
 
-        await votingContract.vote(vm.voteId, option);
+        await votingContract.vote(vm.voteId, option)
         vm.success = true;
       } catch (err) {
-        var rawMessage  = err.data.message
-        if(rawMessage.startsWith('Reverted'))
-          rawMessage  = ethers.utils.toUtf8String(rawMessage.substring(9, rawMessage.length))
+        var rawMessage = err.data.message
+        if (rawMessage.startsWith("Reverted")) {
+          rawMessage = ethers.utils.toUtf8String(rawMessage.substring(9, rawMessage.length))
+        }
+          
         vm.errorMessage = rawMessage
-        vm.error = true;
+        vm.error = true
       }
     },
     async enact(e) {
@@ -171,13 +178,13 @@ export default {
     },
     async initButtons() {
       const vm = this;
-      /*const votingContract = new ethers.Contract(
+      const votingContract = new ethers.Contract(
         vm.contractAddress,
         this.abi,
         this.signer
-      );*/
-      vm.isVotable = true //await votingContract.isVotable(vm.voteId);
-      vm.isEnactable = true //await votingContract.isEnactable(vm.voteId);
+      )
+      vm.isVotable = await votingContract.isWithinVoteDeadline(vm.voteId)
+      vm.isEnactable = await votingContract.isAfterEnactDelay(vm.voteId)
     },
     async initVm() {
       const vm = this;
@@ -191,13 +198,11 @@ export default {
           });
 
         vm.voteId = this.$route.params.voteId
-     
+        vm.contractAddress = json.data.contractAddress
+        vm.title = json.data.title
+        vm.description = json.data.description
+        vm.actionsBytes = json.data.actionsBytes
 
-        vm.contractAddress = json.data.contractAddress;
-        vm.expirationBlock = json.data.expirationBlock;
-        vm.title = json.data.title;
-        vm.description = json.data.description;
-        vm.actionsHash = json.data.actionsHash;
       } catch (err) {
         console.error(err);
       }
