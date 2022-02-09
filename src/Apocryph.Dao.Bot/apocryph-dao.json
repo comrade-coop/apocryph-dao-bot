@@ -1,72 +1,77 @@
 {
-  "network": "rinkeby",
-  "networkUrl": "https://eth-rinkeby.alchemyapi.io/v2/Zma90mOZeCCU43EM6tXGqtBNI5qTZ7Ct",
-  "startBlock": 9261147,
+  "configFile": "config/apocryph.json",
+  "network": "gnosis_sokol",
+  "startBlock": 24976915,
   "contracts": {
     "deployer": {
       "type": "Fixed",
       "name": "Deployer",
-      "address": "0xC498341E8568aCeec2CAD95e326A2f72572FBB05"
+      "address": "0x307c60a4C8648F82C3F3a5243e563052178554c7"
     },
     "comrade": {
       "type": "Fixed",
       "name": "Comrade",
-      "address": "0xAE8687d444511a595Cc1EAdbFc1dFe58eB639C5f"
+      "address": "0x08f2951251bC4Cb33b47d9f6b63E6E820AA17AB8"
     },
     "coreTeam_TK": {
       "type": "Fixed",
       "name": "@todorkolev",
-      "address": "0xa9b4503992c2baFc8126de2F06B17D0De4495927"
+      "address": "0xad44EF69C802065B88Eb32032D96a4762a27fEBB"
     },
     "coreTeam_BA": {
       "type": "Fixed",
       "name": "@branimirangelov",
-      "address": "0xC498341E8568aCeec2CAD95e326A2f72572FBB05"
+      "address": "0xF4dA8D94A75cef4B88B6a645FB1658f250De32E5"
     },
     "coreTeam_BM": {
       "type": "Fixed",
       "name": "@bojidar-bg",
-      "address": "0x4019cC8D534BC620e022e9C5002770e068F32871"
+      "address": "0x6FffF52FB8f112889FEf5b3Abc94abA32627E5eE"
+    },
+    "coreTeam_KW": {
+      "type": "Fixed",
+      "name": "@kamilwojciechowski",
+      "address": "0x47A85C2721590a639fD728B654e15413c8F23997"
     },
     "bondingCurveToken": {
       "type": "FixedERC20",
       "name": "Bonding Curve Buy Token",
-      "address": "0x4aC0f506beA54cE63D60839C09Bed20bb8c82636"
+      "address": "0x05f2a28E1408061aed83D903b9b38769Bbb0a961"
     },
     "coreTeamGroup": {
       "type": "DelegatedGroup",
       "name": "Core Team",
-      "address": "0xc53C229e70DD11A3aa1E75f0d42116F73a012C94"
+      "address": "0xEFd73AD689A82F7334124C6b4CAce9B3C820A0D7"
     },
     "coreTeam": {
       "type": "Voting",
       "name": "Core Team",
-      "address": "0x38Ba6a12Ab9537e718d3214beA6643FFDA7D3E69"
+      "address": "0x62D077B4312082f554467bb4Fa01abDD27aF3AcC"
     },
     "apocryphToken": {
       "type": "TokenAgeToken",
       "name": "Apocryph Token",
-      "address": "0x9dD91B7aD73B5219F3859E4Ef63B749709FB8e92"
+      "address": "0xb3A4721cC8D78bA77574e464ffB1d9047Ac85756"
     },
     "vesting": {
       "type": "Vesting",
       "name": "Apocryph Token",
-      "address": "0x14591Fff0d3Bb150Bd27360180900f3CDE81e685"
+      "address": "0x5f7d47C4339958C596893b0f6C3E23c448b5d0a4"
     },
     "apocryph": {
       "type": "Voting",
       "name": "Apocryph DAO",
-      "address": "0xF1eBacf9656fB06B837C1D1a9cE9E06E2897Bcf8"
+      "address": "0x6F8A5446F91C8D95e18D727B89D7ff31299E5ae0"
     },
     "apocryphAllocations": {
       "type": "Allocations",
       "name": "Apocryph DAO",
-      "address": "0x9dEF5e7D112f861B89ce942B07624740ce304b18"
+      "address": "0x8d5F4679Fa47b4C0add7C381673eC744dCdd95f5"
     },
     "bondingCurve": {
       "type": "BondingCurve",
       "name": "Apocryph Bonding Curve",
-      "address": "0x9cF5633D9C18A6F113F7138B36Ca2647d7b61491"
+      "address": "0xa5234444EF44F77892f83B41c429C0C35C549eD7"
     }
   }
 }
