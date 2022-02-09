@@ -23,7 +23,7 @@ namespace Apocryph.Dao.Bot.Message
             var base34 = new byte[] { 0x12, 0x20 }.Concat(eventLog.Event.Rationale).ToArray();
             var cid = Base58.Encode(base34);
             
-            var message = new EnactionEventMessage(voteId)
+            var message = new EnactionEventMessage(voteId, cid)
             {
                 UrlTemplate = config.VoteProposalUrl,
                 ContractAddress = eventLog.Log.Address,

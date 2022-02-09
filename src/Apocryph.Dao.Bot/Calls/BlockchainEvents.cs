@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Threading.Tasks;
 using Apocryph.Dao.Bot.Configuration;
 using Apocryph.Dao.Bot.Events;
@@ -29,13 +28,13 @@ namespace Apocryph.Dao.Bot.Calls
                 return;
             
             var communityProposalEventStream = await _context.StreamFunctionAsync<EventLog<ProposalEventDTO>>(nameof(ProposalEventStream), new[] { _config.GetDaoVotingAddress(DaoBotConfigConst.CommunityDao) }).ConfigureAwait(false);
-            //var communityEnactionEventStream = await _context.StreamFunctionAsync< EventLog<EnactionEventDTO>>(nameof(EnactionEventStream), new[] { _config.GetDaoVotingAddress(DaoBotConfigConst.CommunityDao) }).ConfigureAwait(false);
+            var communityEnactionEventStream = await _context.StreamFunctionAsync< EventLog<EnactionEventDTO>>(nameof(EnactionEventStream), new[] { _config.GetDaoVotingAddress(DaoBotConfigConst.CommunityDao) }).ConfigureAwait(false);
            
             var communityProposalEventStreamMapper = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(ProposalEventStreamMapper), new object[] { communityProposalEventStream }).ConfigureAwait(false);
-            //var communityEnactionEventStreamMapper = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(EthereumEventStreamMapper<EnactionEventDTO>), new object[] { communityEnactionEventStream }).ConfigureAwait(false);
+            var communityEnactionEventStreamMapper = await _context.StreamFunctionAsync<IOutboundMessage>(nameof(EnactionEventStreamMapper), new object[] { communityEnactionEventStream }).ConfigureAwait(false);
             
             await _context.StreamActionAsync(nameof(DiscordOutputStream), new IStream[] { communityProposalEventStreamMapper });
-            //await _context.StreamActionAsync(nameof(DiscordOutputStream), new IStream[] { communityEnactionEventStreamMapper });
+            await _context.StreamActionAsync(nameof(DiscordOutputStream), new IStream[] { communityEnactionEventStreamMapper });
         }
     }
 }

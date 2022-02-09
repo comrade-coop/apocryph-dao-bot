@@ -201,6 +201,26 @@ namespace Apocryph.Dao.Bot.Services
                     {
                         try
                         {
+                            if (message is EnactionEventMessage enactionEventMessage)
+                            {
+                                if (enactionEventMessage.Channel != null)
+                                {
+                                    var channelId = _client.Guilds.First().Channels.Single(x => x.Name == enactionEventMessage.Channel).Id;
+                                    var channel = _client.GetChannel(channelId) as IMessageChannel;
+                                
+                                    var colorNumber = new Random().Next(0, 16777215);
+                                    var embedMessage = new EmbedBuilder
+                                    {
+                                        Title = $"Vote proposal: {enactionEventMessage.Title} has been enacted",
+                                        Url = enactionEventMessage.GetUrl(),
+                                        ThumbnailUrl = enactionEventMessage.GetThumbnailUrl(),  
+                                        Color = new Color((uint)colorNumber)
+                                    }.Build();
+            
+                                    await channel.SendMessageAsync("", false, embedMessage);
+                                }
+                            }
+
                             if (message is ProposalEventMessage proposalEventMessage)
                             {
                                 if (proposalEventMessage.Channel != null)
