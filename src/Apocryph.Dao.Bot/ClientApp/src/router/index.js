@@ -1,10 +1,15 @@
-﻿import { createWebHistory, createRouter } from "vue-router";
+import { createWebHistory, createRouter } from "vue-router";
 import SignAddress from "@/components/SignAddress.vue";
 import Vote from "@/components/Vote.vue";
 import VoteCreate from "@/components/VoteCreate.vue";
-
+import BCO from "../components/BCO.vue"
 
 const routes = [
+	{
+		path: "/bco",
+		name: "BCO",
+		component: BCO
+	},
     {
         path: "/sign-address/:session/:address",
         name: "SignAddress",
