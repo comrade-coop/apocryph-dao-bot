@@ -2,8 +2,6 @@
 using System.Linq;
 using Apocryph.Dao.Bot.Configuration;
 using Ipfs;
-using Ipfs.Http;
-using Newtonsoft.Json;
 using Serilog;
 
 namespace Apocryph.Dao.Bot.Message

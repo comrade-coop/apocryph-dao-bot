@@ -9,6 +9,7 @@ namespace Apocryph.Dao.Bot.Configuration
         public string DiscordAuthToken { get; set; }
         public string SignAddressUrl { get; set; }
         public string VoteProposalUrl { get; set; }
+        public string VoteCreationUrl { get; set; }
         public Dictionary<string, string> DaoVotingAddresses { get; set; }
         public string EvmApiUrl { get; set; }
         public string CryphTokenAddress { get; set; }

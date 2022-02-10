@@ -10,6 +10,8 @@ using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using Serilog;
+using Ipfs;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace Apocryph.Dao.Bot.Services
 {
@@ -81,110 +83,31 @@ namespace Apocryph.Dao.Bot.Services
                 await _inboundChannel.Writer.WriteAsync(new AirdropTentUserMessage(message.Author.Id, userExistInTentServer));
                 return;
             }
-            
+
             if (tokens[0] == "/balance")
             {
                 await _inboundChannel.Writer.WriteAsync(new GetBalanceMessage(message.Author.Id));
             }
-            
-          
-            
-            // ---------------------- DEBUG --------------------------------
-            // NOTE: THE FOLLOWING CODE IS FOR DEBUG PURPOSES ONLY!
-            /*
-            if (message.Content == ".HelloApocryph")
+
+            if (tokens.Length == 1 && tokens[0] == "/vote")
             {
-                var balance = 100m;
+                // Respond with vote creation URL
 
-                var addResult = _localToken.Add(message.Author.Username, message.Author.Id, balance);
-                if (addResult.IsValid)
+                var embedMessage = new EmbedBuilder
                 {
-                    Log.Information("Added user {Username}; ID is {Id}", message.Author.Username, message.Author.Id);
+                    Title = $"DAO - Vote Creation",
+                    Description = "Post a new vote",
+                    Url = _config.VoteCreationUrl,
+                    ThumbnailUrl = MessageResources.ProposalEventMessage_GetThumbnailUrl,
+                    Color = new Color(33)
+                }.Build();
 
-                    await message.Channel.SendMessageAsync($"Hello {message.Author.Username}. Your user ID is {message.Author.Id}. Use that ID for transfers. You have been awarded {balance} FAKE tokens.");
-                }
-                else
-                {
-                    await message.Channel.SendMessageAsync($"Welcome back {message.Author.Username}.");
-                }
+                // TODO: probably use VoteCreationMessage
+                await message.Channel.SendMessageAsync(string.Empty, false, embedMessage);
             }
 
-            if (message.Content.StartsWith(".People"))
-            {
-                var output = new StringBuilder();
-                output.AppendLine("----- FAKE TOKEN STATE -----");
-                foreach (var user in _localToken.UserBalances)
-                {
-                    output.AppendLine($"{user.Key} : {user.Value}");
-                }
-                output.AppendLine("----- ---------------- -----");
-
-                Log.Information("[{Username}] Requested the state of the token", message.Author.Username);
-
-                await message.Channel.SendMessageAsync(output.ToString());
-            }
-
-            if (message.Content.StartsWith(".Help"))
-            {
-                var commandsList = new StringBuilder();
-                commandsList.AppendLine("---- Apocryph DAO Bot FAKE Commands ----");
-                commandsList.AppendLine(".HelloApocryph");
-                commandsList.AppendLine(".Pay @mention {amount}");
-                commandsList.AppendLine(".Balance");
-                commandsList.AppendLine(".People");
-                commandsList.AppendLine(".Help");
-                commandsList.AppendLine("----- ---------------- -----");
-
-                await message.Channel.SendMessageAsync(commandsList.ToString());
-            }
-
-            if (message.Content.StartsWith(".Pay"))
-            {
-                if (message.MentionedUsers.Count == 1)
-                {
-                    if (message.MentionedUsers.Single().Id != message.Author.Id)
-                    {
-                        var inputs = message.Content.Substring(4, message.Content.Length - 4).Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                        if (inputs.Length == 2)
-                        {
-                            var amount = decimal.Parse(inputs[1], System.Globalization.NumberStyles.Any);
-                            var payResult = _localToken.Pay(message.Author.Username, message.MentionedUsers.Single().Username, amount);
-
-                            Log.Information("[{Username}] {Message}", message.Author.Username, payResult.Message);
-
-                            await message.Channel.SendMessageAsync(payResult.Message);
-                        }
-                        else
-                        {
-                            await message.Channel.SendMessageAsync("Wrong number of arguments!");
-                        }
-                    }
-                }
-            }
-
-            if (message.Content.StartsWith(".Balance"))
-            {
-                var balanceResult = _localToken.Balance(message.Author.Username);
-
-                if (!balanceResult.IsValid)
-                {
-                    Log.Information("[{Username}] {Message}", message.Author.Username, balanceResult.Message);
-
-                    await message.Channel.SendMessageAsync(balanceResult.Message);
-                }
-                else
-                {
-                    var balanceMessage = $"Current balance for {message.Author.Username} is {balanceResult.Amount} FAKE";
-                    Log.Information("[{Username}] {Message}", message.Author.Username, balanceMessage);
-                    await message.Channel.SendMessageAsync(balanceMessage);
-                }
-            }
-            // -----------------------------------------------------
-*/
-            
-            //TODO: Add token trading commands here
         }
-        
+
         private void InitializeMessageSender(CancellationToken cancellationToken)
         {
             _messageSender = Task.Factory.StartNew(async () =>
