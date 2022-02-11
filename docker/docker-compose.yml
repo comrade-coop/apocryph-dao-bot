@@ -22,11 +22,12 @@ services:
 
   ipfs:
     container_name: ipfs
-    image: ipfs/go-ipfs:latest
+    build:
+      context: ./ipfs
+      dockerfile: Dockerfile
     ports:
       - "5001:5001" # ipfs api - expose if needed/wanted
     volumes:
-      - "./ipfs/start_ipfs.sh:/usr/local/bin/start_ipfs"
       - ipfs_staging:/export
       - ipfs_data:/data/ipfs
 
