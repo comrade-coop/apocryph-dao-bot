@@ -18,6 +18,7 @@ namespace Apocryph.Dao.Bot.Services
         private readonly Configuration.DaoBotConfig _config;
         private readonly DiscordSocketConfig _socketConfig;
         private DiscordSocketClient _client;
+        private readonly Dictionary<ulong, ISocketMessageChannel> _privateChannels;
         private readonly Channel<IInboundMessage> _inboundChannel;
         private readonly Channel<IOutboundMessage> _outboundChannel;
         private Task _messageSender;
@@ -32,6 +33,8 @@ namespace Apocryph.Dao.Bot.Services
             _socketConfig = socketConfig;
             _inboundChannel = inboundChannel;
             _outboundChannel = outboundChannel;
+
+            _privateChannels = new Dictionary<ulong, ISocketMessageChannel>();
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -64,6 +67,8 @@ namespace Apocryph.Dao.Bot.Services
             var tokens = message.Content.Split(' ');
             if(!tokens.Any())return;
             
+            _privateChannels[message.Author.Id] = message.Channel;
+
             if (tokens[0] == "/introduce")
             {
                 var address = tokens[1];
@@ -243,9 +248,7 @@ namespace Apocryph.Dao.Bot.Services
                             }
                             else
                             {
-                                await _client
-                                    .GetUser(message.UserId)
-                                    .SendMessageAsync(message.DisplayOutput());    
+                                await _privateChannels[message.UserId].SendMessageAsync(message.DisplayOutput());    
                             }
                         }
                         catch(Exception ex)
