@@ -1,19 +1,16 @@
-namespace Apocryph.Dao.Bot.Message
+﻿namespace Apocryph.Dao.Bot.Message
 {
-    public record ProposalEventMessage(string VoteId, string Cid) : IOutboundMessage
+    public record EnactionEventMessage(string VoteId, string Cid) : IOutboundMessage
     {
-        public ulong UserId { get; init; }
-        public string[] Errors { get; init; }
-        public string ContractAddress { get; set; }
         public string Channel { get; set; }
+        public string ContractAddress { get; set; }
         public string Title { get; set; }
         public string UrlTemplate { get; set; }
-        public string Description { get; set; }
-
+        public ulong UserId { get; init; }
+        public string[] Errors { get; init; }
         public string DisplayOutput()
         {
-            var url = string.Format(UrlTemplate, VoteId, Cid);
-            return string.Format(MessageResources.ProposalEventMessage_OnSuccess, VoteId, Title, url);
+            return string.Empty;
         }
         
         public string GetUrl()

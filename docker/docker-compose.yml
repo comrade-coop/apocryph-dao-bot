@@ -9,28 +9,28 @@ services:
       - APACHE_IGNITE_ENDPOINT=obecto.perper.fabric:10800
       - PERPER_FABRIC_ENDPOINT=http://obecto.perper.fabric:40400
     ports:
-    - "8080:80"
+      - "8080:80"
     depends_on:
-    - obecto.perper.fabric
+      - obecto.perper.fabric
 
   obecto.perper.fabric:
     image: obecto/perper-fabric:0.7.0
     command: --max-data-region-size 1024
     ports:
-    - "10800:10800" # for local debugging
-    - "40400:40400" # for local debugging
+      - "10800:10800" # for local debugging
+      - "40400:40400" # for local debugging
 
   ipfs:
     container_name: ipfs
-    image: ipfs/go-ipfs:latest
+    build:
+      context: ./ipfs
+      dockerfile: Dockerfile
     ports:
       - "5001:5001" # ipfs api - expose if needed/wanted
-    #command: ./setup/ipfs.config.sh TODO: loginto the container and execute this script by hand; command is not working from here, fix later
     volumes:
-      - "./setup:/setup"
       - ipfs_staging:/export
       - ipfs_data:/data/ipfs
-  
+
 volumes:
   ipfs_staging:
   ipfs_data:

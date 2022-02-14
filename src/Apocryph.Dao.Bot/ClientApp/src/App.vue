@@ -32,3 +32,13 @@
   }
 }
 </style>
+<script>
+export default {
+  name: "App",
+  async created() {
+    if(!window.ethereum) {
+      alert("Please install MetaMask browser extension")
+    }
+  }
+}
+</script>

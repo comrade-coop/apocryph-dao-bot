@@ -17,22 +17,7 @@
         <div class="form-group">
           <div class="button-grid">
             <div class="form-group">
-              <label for="expiration">Expiration block:</label>
-              <input
-                id="expirationBlock"
-                name="expirationBlock"
-                type="number"
-                v-model="expirationBlock"
-                :disabled="success"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="button-grid">
-            <div class="form-group">
-              <label for="expiration">Title:</label>
+              <label for="title">Title:</label>
               <input
                 id="title"
                 name="title"
@@ -56,7 +41,7 @@
         </div>
 
         <div class="form-group">
-          <label for="contractAddress">Actions bytes:</label>
+          <label for="actionsBytes">Actions Bytes:</label>
           <textarea
             type="text"
             id="actionsBytes"
@@ -74,8 +59,8 @@
               role="button"
               name="createVoteProposal"
               id="createVoteProposal"
-              v-if="success == error"
               @click="createVoteProposal"
+              v-if="!success"
             >
               Create vote proposal
             </button>
@@ -83,13 +68,11 @@
         </div>
 
         <div class="form-group">
-          <div class="terminal-alert terminal-alert-primary" v-if="success">
+          <div class="terminal-alert terminal-alert-primary" v-if="success==true">
             Vote proposal created
           </div>
-          <div class="terminal-alert terminal-alert-error" v-if="error">
-            <dl>
-              Vote proposal creation failed
-            </dl>
+          <div class="terminal-alert terminal-alert-error" v-if="success==false">
+            <dl>{{ errorMessage }}</dl>
           </div>
         </div>
       </fieldset>
@@ -98,58 +81,85 @@
 </template>
  
 <script>
-import * as ethers from "ethers";
+import * as ethers from "ethers"
+import axios from "axios"
 
 export default {
   name: "VoteCreate",
+  setup() {
+    axios.defaults.baseURL = process.env.VUE_APP_BASE_API_URL
+  },
   data() {
     return {
-      error: false,
-      success: false,
-    };
+     success: null,
+      errorMessage: "Vote proposal creation failed"
+    }
   },
   methods: {
     async createVoteProposal(e) {
-      if (e) e.preventDefault();
-      var vm = this;
+      if (e) e.preventDefault()
+      var vm = this
+
       try {
-        const ipfs = await this.$ipfs;
         const provider = new ethers.providers.Web3Provider(
           window.ethereum,
           "any"
-        );
-        await provider.send("eth_requestAccounts", []);
-        const signer = provider.getSigner();
+        )
+        await provider.send("eth_requestAccounts", [])
+        const signer = provider.getSigner()
 
-        const abi = JSON.stringify(require("../abi/DeadlineVoting.json").abi);
+        const abi = JSON.stringify(
+          require("../abi/DeadlineQuorumVoting.json").abi
+        )
+
         const votingContract = new ethers.Contract(
           vm.contractAddress,
           abi,
           signer
-        );
+        )
 
-        const rationaleCid = await ipfs.add(
-          JSON.stringify({
+        const actionsHash = ethers.utils.keccak256(vm.actionsBytes)
+
+        let response = await axios
+          .post("api/ipfs/proposal", {
             contractAddress: vm.contractAddress,
-            expirationBlock: vm.expirationBlock,
             title: vm.title,
             description: vm.description,
-            actionsHash: vm.actionsBytes
+            actionsHash: actionsHash,
+            actionsBytes: vm.actionsBytes,
           })
-        );
+          .catch(function (err) {
+            this.success = false
+            console.error(err)
+          })
+
+        console.log(response.data.cid)
 
         const rationaleHash = ethers.utils.hexlify(
-          ethers.utils.base58.decode(rationaleCid.path).slice(2)
-        );
-        const actionsHash = ethers.utils.keccak256(vm.actionsBytes);
-        await votingContract.propose(rationaleHash, actionsHash);
-        vm.success = true;
+          ethers.utils.base58.decode(response.data.cid).slice(2)
+        )
+
+        await votingContract.propose(rationaleHash, actionsHash)
+
+        vm.success = true
 
       } catch (err) {
-        console.error(err);
-        vm.error = true;
+
+        vm.errorMessage = "Vote proposal creation failed"
+        if (err.data) { // smart contract errors
+          if (err.data.message.startsWith("Reverted")) {
+            vm.errorMessage = ethers.utils.toUtf8String(
+              err.data.message.substring(9, err.data.message.length)
+            )
+          }
+        } else if (err.message) { // MetaMask errors
+          vm.errorMessage = err.message
+        } 
+
+        vm.success = false
+        console.error(err)
       }
     },
-  },
-};
+  }
+}
 </script>
