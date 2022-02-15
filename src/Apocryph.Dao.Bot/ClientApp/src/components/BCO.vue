@@ -1,88 +1,45 @@
 <template>
-
 	<section>
 		<div class="terminal-nav">
-			<header>
-				<h2 style="width: 300px;">Bounded Curve Offering</h2>
-			</header>
+			<div class="terminal-logo">
+				<div style="white-space: nowrap;">
+					<b>Bounded Curve Offering</b>
+				</div>
+			</div>
 			<nav class="terminal-menu">
 				<ul>
 					<li>
-						Available {{balance}} / {{totalBalance}} CRYPTH Tokens
+						<label for="price">Available: </label> {{toCurrency(balance)}} CRYPTH
 					</li>
 				</ul>
 			</nav>
 		</div>
 	</section>
-
-
 	<section>
 		<div class="button-grid">
 			<div class="form-group">
-
-				<form>
-					<fieldset>
-						<legend>BUY</legend>
-						<div class="form-group trade-panel">
-							<label for="sellPrice">Price: {{buyPrice}} DAI</label>
-						</div>
-
-						<div class="form-group trade-panel">
-							<label for="buyAmount">Amount:</label>
-							<div>
-								<input type="number" id="buyAmount" name="buyAmount" v-model="buyAmount" />
-								<span>CRYPTH</span>
-							</div>
-						</div>
-
-						<div class="form-group trade-panel">
-							<label>Total: {{totalBuyAmount}} DAI</label>
-						</div>
-
-						<div class="form-group">
-							<button class="btn btn-primary" role="button" name="buy" id="buy" @click="buy">
-								BUY
-							</button>
-						</div>
-					</fieldset>
-				</form>
+				<BcoTrade title="Sell" buttonStyle="btn btn-primary btn-ghost" :getPrice="getSellPriceCallback" :getTotalAmount="getSellTotalPriceCallback"
+					:trade="sellCallback">
+				</BcoTrade>
 			</div>
 			<div class="form-group">
-				<form>
-					<fieldset>
-						<legend>SELL</legend>
-						<div class="form-group trade-panel">
-							<label for="sellPrice">Price: {{sellPrice}} DAI</label>
-						</div>
-						<div class="form-group trade-panel">
-							<label for="sellAmount">Amount:</label>
-							<div>
-								<input type="number" id="sellAmount" name="sellAmount" v-model="sellAmount" />
-								<span>CRYPTH</span>
-							</div>
-						</div>
-						<div class="form-group trade-panel">
-							<label>Total: {{totalSellAmount}} DAI</label>
-						</div>
-						<div class="form-group">
-							<button class="btn btn-error" role="button" name="sell" id="sell" @click="sell">
-								SELL
-							</button>
-						</div>
-					</fieldset>
-				</form>
+				<BcoTrade title="Buy" buttonStyle="btn btn-error btn-ghost" :getPrice="getBuyPriceCallback" :getTotalAmount="getBuyTotalPriceCallback"
+					:trade="buyCallback">
+				</BcoTrade>
 			</div>
 		</div>
 		<br />
 	</section>
-
 </template>
 
 <script>
 	import * as ethers from "ethers"
-
+	import BcoTrade from './BcoTrade'
 	export default {
 		name: "BCO",
+		components: {
+			BcoTrade
+		},
 		setup() {
 			const provider = new ethers.providers.Web3Provider(window.ethereum, "any")
 			const signer = provider.getSigner()
@@ -104,52 +61,114 @@
 		},
 		data() {
 			return {
-				buyPrice: 0.03,
-				sellPrice: 0.03,
-				sellAmount: 0,
-				buyAmount: 0,
-				balance: null,
-				availableTokens: null
+				balance: 0
 			}
 		},
-		computed: {
-			totalBuyAmount() {
-				return this.buyPrice * this.buyAmount;
-			},
-			totalSellAmount() {
-				return this.sellPrice * this.sellAmount;
-			},
-
-		},
 		methods: {
-
-			async buy(e) {
-				if (e) e.preventDefault()
-				console.log(this)
+			toCurrency(value) {
+				return value.toLocaleString('en-US', {
+					maximumFractionDigits: 2
+				})
+			},
+			async calculateBuyTotalAmountCallback() {
+				this.totalBuyAmount = 0
+				this.showBuyTotalAmountSpinner = true
+				setTimeout(() => {
+					this.totalBuyAmount = this.buyPrice * this.buyAmount
+					this.showBuyTotalAmountSpinner = false
+				}, 3000);
+			},
+			async buyCallback() {
+				//if (e) e.preventDefault()
+				//console.log(this)
 
 				await this.provider.send("eth_requestAccounts", [])
 				//var vm = this
 			},
-			async sell(e) {
-				if (e) e.preventDefault()
+			async sellCallback() {
+				//if (e) e.preventDefault()
 				//var vm = this
+			},
+			async getBuyPriceCallback() {
+				const price = await this.contract.getBuyPrice(1)
+				const result = ethers.FixedNumber.fromValue(price, 10).toString()
+				return result
+			},
+			async getBuyTotalPriceCallback(amount) {
+				const price = await this.contract.getBuyPrice(amount)
+				const result = ethers.FixedNumber.fromValue(price, 10).toString()
+				return result
+			},
+			async getSellPriceCallback() {
+				const price = await this.contract.getSellPrice(1)
+				const result = ethers.FixedNumber.fromValue(price, 10).toString()
+				return result
+			},
+			async getSellTotalPriceCallback(amount) {
+				const price = await this.contract.getSellPrice(amount)
+				const result = ethers.FixedNumber.fromValue(price, 10).toString()
+				return result
 			}
 		},
 		async mounted() {
-			const totalBalance = await this.contract.totalBalanceA()
+
+			const decimals = 10
 			const balance = await this.contract.balanceA()
-			this.totalBalance = ethers.FixedNumber.fromValue(totalBalance, 10).toString()
-			this.balance = ethers.FixedNumber.fromValue(balance, 10).toString()
+			this.balance = ethers.FixedNumber.fromValue(balance, decimals).toString()
+
+			//const totalBalance = await this.contract.totalBalanceA()
+			//this.totalBalance = ethers.FixedNumber.fromValue(totalBalance, decimals).toString()
+			// x = bco.balanceA(); price = calculateDueBalanceB(x) - calculateDueBalanceB(x-buyAmount)
+
+			//const initialPrice = 0.03
+			//const finalPrice = 1
+			//const tokenASupply = await this.contract.totalBalanceA()
+			//const lastValue = await this.contract.calculateDueBalanceB(tokenASupply)
+			//const value = await this.contract.calculateDueBalanceB(tokenASupply.add(-1000))
+			//console.log(value.toBigInt())
+			//console.log(lastValue.toBigInt())
+			//const price = lastValue.toBigInt() - value.toBigInt()
+			//console.log(price)
+
+			//console.log(ethers.FixedNumber.fromValue(price, decimals).toString())
+			//console.log(ethers.FixedNumber.fromValue(lastValue, decimals).toString())
+			//console.log(ethers.FixedNumber.fromValue(value, decimals).toString())
+
+
+
+
+
+
+			//const interpolatedPrice1 = (initialPrice + (finalPrice - initialPrice) * 1 / tokenASupply)
+			//const interpolatedPrice2 = (initialPrice + (finalPrice - initialPrice) * 2 / tokenASupply)
+			//const interpolatedPrice3 = (initialPrice + (finalPrice - initialPrice) * 3 / tokenASupply)
+
+			//console.log(ethers.FixedNumber.fromValue(interpolatedPrice1).toString())
+			//console.log(ethers.FixedNumber.fromValue(interpolatedPrice2, decimals).toString())
+			//console.log(ethers.FixedNumber.fromValue(interpolatedPrice3, decimals).toString())
+
+
 
 			try {
-				var b1 = await this.contract.calculateDueBalanceB(balance + 1)
-				console.log(b1)
 
-				var b2 = await this.contract.calculateDueBalanceB(balance - 1)
-				console.log(b2)
+				/*
+				
+				const value = await bondingCurve.calculateDueBalanceB(tokenASupply - i)
+				          if (lastValue !== undefined) {
+				            const price = (lastValue - value)
+				            const interpolatedPrice = (initialPrice + (finalPrice - initialPrice) * i / tokenASupply)
+				            expect(Math.abs(price - interpolatedPrice)).to.be.at.most(1)
+				
+				*/
+				//var b1 = await this.contract.calculateDueBalanceB(balance.add(1))
+				//var b2 = await this.contract.calculateDueBalanceB(balance.add(-1))
+				//const price = b1.toBigInt() - b2.toBigInt()
 
-				var price = b1 - b2
-				console.log(price)
+				//this.buyPrice = ethers.FixedNumber.fromValue(price).toString()
+				// console.log(ethers.FixedNumber.fromValue(b2, decimals).toString())
+
+
+
 			} catch (err) {
 				if (err.data) { // smart contract errors
 					if (err.data.message.startsWith("VM")) {
@@ -167,8 +186,15 @@
 </script>
 
 <style>
+	#totalAmountSpinner {
+		height: 30px;
+		width: 30px;
+		padding: 0;
+		margin: 0;
+	}
+
 	.trade-panel input {
-		width: 74%;
+		width: 80%;
 	}
 
 	.trade-panel span {
