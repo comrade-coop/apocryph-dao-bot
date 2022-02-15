@@ -26,6 +26,7 @@
 </template>
 
 <script>
+	import debounce from "lodash.debounce";
 	export default {
 		name: "BcoTrade",
 		props: {
@@ -53,18 +54,26 @@
 					maximumFractionDigits: 2
 				})
 			},
-			async calculateTotalAmount() {
-				this.totalAmount = 0
-				this.showTotalAmountSpinner = true
-				setTimeout(async () => {
-					this.totalAmount = await this.getPrice()
-					this.showTotalAmountSpinner = false
-				}, 3000);
-			},
 			async buttonClick(e) {
 				if (e) e.preventDefault()
 				await this.trade(this.amount)
 			}
+		},
+		async created() {
+			this.calculateTotalAmount = debounce(async() => {
+				this.totalAmount = 0
+				this.showTotalAmountSpinner = true
+				setTimeout(async () => {
+					this.totalAmount = await this.getPrice(this.amount)
+					this.showTotalAmountSpinner = false
+				}, 500)
+			}, 1000)
+		},
+		async mounted() {
+			this.price = await this.getPrice(1)
+		},
+		async beforeUnmount(){
+			this.calculateTotalAmount.cancel()
 		}
 	}
 </script>

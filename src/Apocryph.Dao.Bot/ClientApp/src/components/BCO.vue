@@ -61,7 +61,8 @@
 		},
 		data() {
 			return {
-				balance: 0
+				balance: 0,
+				decimals: 0
 			}
 		},
 		methods: {
@@ -91,30 +92,30 @@
 			},
 			async getBuyPriceCallback() {
 				const price = await this.contract.getBuyPrice(1)
-				const result = ethers.FixedNumber.fromValue(price, 10).toString()
+				const result = ethers.FixedNumber.fromValue(price, 0).toString()
 				return result
 			},
 			async getBuyTotalPriceCallback(amount) {
 				const price = await this.contract.getBuyPrice(amount)
-				const result = ethers.FixedNumber.fromValue(price, 10).toString()
+				const result = ethers.FixedNumber.fromValue(price, 0).toString()
 				return result
 			},
 			async getSellPriceCallback() {
 				const price = await this.contract.getSellPrice(1)
-				const result = ethers.FixedNumber.fromValue(price, 10).toString()
+				const result = ethers.FixedNumber.fromValue(price, 0).toString()
 				return result
 			},
 			async getSellTotalPriceCallback(amount) {
 				const price = await this.contract.getSellPrice(amount)
-				const result = ethers.FixedNumber.fromValue(price, 10).toString()
+				const result = ethers.FixedNumber.fromValue(price, 0).toString()
 				return result
 			}
 		},
 		async mounted() {
 
-			const decimals = 10
+			this.decimals =  await this.contract.priceDivisor()
 			const balance = await this.contract.balanceA()
-			this.balance = ethers.FixedNumber.fromValue(balance, decimals).toString()
+			this.balance = ethers.FixedNumber.fromValue(balance, 10).toString()
 
 			//const totalBalance = await this.contract.totalBalanceA()
 			//this.totalBalance = ethers.FixedNumber.fromValue(totalBalance, decimals).toString()

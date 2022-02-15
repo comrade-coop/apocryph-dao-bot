@@ -17,6 +17,7 @@
     "ethers": "^5.5.3",
     "ipfs-http-client": "^55.0.0",
     "it-all": "^1.0.6",
+    "lodash.debounce": "^4.0.8",
     "serve": "^13.0.2",
     "terminal.css": "^0.7.2",
     "vue": "^3.0.2",
