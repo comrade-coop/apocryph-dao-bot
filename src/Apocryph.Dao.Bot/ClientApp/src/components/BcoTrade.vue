@@ -72,7 +72,7 @@
 		},
 		async mounted() {
 			this.price = await this.getPrice(1)
-			this.bus.$on('reload', async () => {
+			this.$bus.on('reload', async () => {
 				this.price = await this.getPrice(1)
 			})
 		},

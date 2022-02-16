@@ -73,7 +73,7 @@ export default {
       ],
     };
     provider.on(filter, () => {
-      this.bus.$emit("reload");
+      this.$bus.trigger("reload");
     });
 
     const erc20Abi = JSON.stringify(require("../abi/ERC20.json"));
@@ -156,11 +156,10 @@ export default {
     },
   },
   async mounted() {
-    this.decimals = await this.contract.priceDivisor();
     const balance = await this.contract.balanceA();
     this.balance = ethers.FixedNumber.fromValue(balance, 10).toString();
 
-    this.bus.$on("reload", async () => {
+    this.$bus.on("reload", async () => {
       const balance = await this.contract.balanceA();
       this.balance = ethers.FixedNumber.fromValue(balance, 10).toString();
     });
