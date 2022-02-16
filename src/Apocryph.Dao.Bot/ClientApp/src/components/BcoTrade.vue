@@ -34,7 +34,8 @@
 			buttonStyle: String,
 			getPrice: Function,
 			getTotalAmount: Function,
-			trade: Function
+			trade: Function,
+			bus: null
 		},
 		setup() {
 
@@ -71,6 +72,9 @@
 		},
 		async mounted() {
 			this.price = await this.getPrice(1)
+			this.bus.$on('reload', async () => {
+				this.price = await this.getPrice(1)
+			})
 		},
 		async beforeUnmount(){
 			this.calculateTotalAmount.cancel()
